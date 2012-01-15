@@ -39,7 +39,12 @@ void move( uint8_t direction, uint8_t motorIndex, uint8_t speed);
 void rotateMainArm(uint8_t direction, uint8_t repeat, uint8_t speed);
 void rotateChair(uint8_t direction, uint16_t duration, uint8_t speed);
 void moveTimed(uint8_t direction, uint8_t motorIndex, uint8_t speed, uint16_t duration);
-
+void setLeds(uint8_t led1, uint8_t led2, uint8_t led3, uint8_t led4);
+void setLed1(uint8_t value);
+void setLed2(uint8_t value);
+void setLed3(uint8_t value);
+void setLed4(uint8_t value);
+void updateLeds( uint8_t motorIndex, uint8_t direction );
 
 volatile uint8_t led;
 volatile uint8_t currentBaseValue;
@@ -71,16 +76,50 @@ int main(void)
 
 #ifdef __DEBUG
 	Serial.println("Starting Motor");
+
+	setLeds(OFF, OFF, OFF, OFF);
+	delay(100);
+	setLed1(ON);
+	delay(100);
+	setLed2(ON);
+	delay(100);
+	setLed3(ON);
+	delay(100);
+	setLed4(ON);
+	delay(100);
+	setLed1(OFF);
+	delay(100);
+	setLed2(OFF);
+	delay(100);
+	setLed3(OFF);
+	delay(100);
+	setLed4(OFF);
+	delay(100);
 #endif
 
+#ifdef __DEBUG
+	Serial.println("FORWARD 5");
+#endif
 	rotateMainArm( FORWARD, 5, 255 );
 	delay(2000);
+#ifdef __DEBUG
+	Serial.println("BACKWARD 5");
+#endif
 	rotateMainArm( BACKWARD, 5, 255 );
 	delay(2000);
+#ifdef __DEBUG
+	Serial.println("MOVE MAIN 1.6");
+#endif
 	moveTimed( FORWARD, MAIN_ARM, 255, 1600 );
 	delay(4000);
+#ifdef __DEBUG
+	Serial.println("MOVE CHAIR 5");
+#endif
 	rotateChair( FORWARD, 5000, 255);
 	delay(4000);
+#ifdef __DEBUG
+	Serial.println("MOVE CHAIR 5.2");
+#endif
 	rotateChair( BACKWARD, 5200, 255);
 	delay(3000);
 	rotateChair( FORWARD, 6200, 100);
@@ -234,23 +273,24 @@ void initialize()
 	 // Set I/O to input
 	pinMode( LED_PIN, OUTPUT );
 	pinMode( BASE_INPUT_PIN, INPUT );
-	pinMode( BASE_STATUS_PIN, OUTPUT );
-
 	pinMode( SIDE_INPUT_PIN, INPUT );
-	pinMode( SIDE_STATUS_PIN, OUTPUT );
-
-	// Set outputs
-	digitalWrite(LED_PIN, LOW);
-	digitalWrite( BASE_STATUS_PIN, LOW );
-	digitalWrite( SIDE_STATUS_PIN, LOW );
 
 	// Set internal pull up resistor
 	digitalWrite(BASE_INPUT_PIN, HIGH);
 	digitalWrite(SIDE_INPUT_PIN, HIGH);
 
+	//	pinMode( BASE_STATUS_PIN, OUTPUT );
+//	pinMode( SIDE_STATUS_PIN, OUTPUT );
+
+	// Set outputs
+	digitalWrite(LED_PIN, LOW);
+
+//	digitalWrite( BASE_STATUS_PIN, LOW );
+//	digitalWrite( SIDE_STATUS_PIN, LOW );
+
 	// Setup motors
 	uint8_t i, j;
-	for(i = 0; i < 2; i++)
+	for(i = 0; i < NUM_MOTORS; i++)
 	{
 		for(j = 0; j< 3; j++ )
 		{
@@ -258,6 +298,11 @@ void initialize()
 			digitalWrite(motor[i][j], LOW);
 		}
 	}
+
+	// Configure LED port
+	DDRC = DDRC | 0x3F; // Set PC0..5 to output
+	PORTC = PORTC & 0xC0; // Set port to low
+
 
 	// I don't know if this is needed, but since we
 	// initialized the pins as digital above, I
@@ -351,6 +396,7 @@ void move( uint8_t direction, uint8_t motorIndex, uint8_t speed)
 		digitalWrite(motor[motorIndex][1], HIGH);
 		analogWrite( motor[motorIndex][2], speed );
 	}
+	updateLeds( motorIndex, direction );
 }
 
 void setSpeed(uint8_t motorIndex, uint8_t speed)
@@ -363,6 +409,7 @@ void forward(uint8_t motorIndex, uint8_t speed)
 	digitalWrite(motor[motorIndex][0], HIGH);
 	digitalWrite(motor[motorIndex][1], LOW);
 	analogWrite( motor[motorIndex][2], speed );
+	updateLeds( motorIndex, FORWARD );
 }
 
 void backward(uint8_t motorIndex, uint8_t speed)
@@ -370,6 +417,7 @@ void backward(uint8_t motorIndex, uint8_t speed)
 	digitalWrite(motor[motorIndex][0], LOW);
 	digitalWrite(motor[motorIndex][1], HIGH);
 	analogWrite( motor[motorIndex][2], speed );
+	updateLeds( motorIndex, BACKWARD );
 }
 
 void stop(uint8_t motorIndex)
@@ -377,6 +425,7 @@ void stop(uint8_t motorIndex)
 	digitalWrite(motor[motorIndex][0], LOW);
 	digitalWrite(motor[motorIndex][1], LOW);
 	analogWrite( motor[motorIndex][2], 0 );
+	updateLeds( motorIndex, STOP );
 }
 
 
@@ -401,8 +450,8 @@ void sample()
 	debounceInput( BASE_INPUT_PIN, (uint8_t *)&currentBaseValue, (uint8_t *)&baseCount, (uint8_t *)&baseChange );
 	debounceInput( SIDE_INPUT_PIN, (uint8_t *)&currentSideValue, (uint8_t *)&sideCount, (uint8_t *)&sideChange );
 
-	digitalWrite( BASE_STATUS_PIN, currentBaseValue );
-	digitalWrite( SIDE_STATUS_PIN, currentSideValue );
+//	digitalWrite( BASE_STATUS_PIN, currentBaseValue );
+//	digitalWrite( SIDE_STATUS_PIN, currentSideValue );
 
 }
 
@@ -437,6 +486,146 @@ void debounceInput( uint8_t pin, volatile uint8_t *currentValue, volatile uint8_
     	*currentValue = input;
     }
 }
+
+void updateLeds( uint8_t motorIndex, uint8_t direction )
+{
+	switch(direction)
+	{
+		case FORWARD:
+			if( motorIndex == 0 )
+			{
+				setLed1( ON );
+				setLed2( OFF );
+			}
+			else if( motorIndex == 1 )
+			{
+				setLed3( ON );
+				setLed4( OFF );
+			}
+			break;
+		case BACKWARD:
+			if( motorIndex == 0 )
+			{
+				setLed1( OFF );
+				setLed2( ON );
+			}
+			else if( motorIndex == 1 )
+			{
+				setLed3( OFF );
+				setLed4( ON );
+			}
+			break;
+		case STOP:
+			if( motorIndex == 0 )
+			{
+				setLed1( OFF );
+				setLed2( OFF );
+			}
+			else if( motorIndex == 1 )
+			{
+				setLed3( OFF );
+				setLed4( OFF );
+			}
+			break;
+
+		default:
+			break;
+	}
+}
+
+void setLeds(uint8_t led1, uint8_t led2, uint8_t led3, uint8_t led4)
+{
+	uint8_t value = PORTC;
+
+	if(led1 == OFF )
+	{
+		value = value & 0xFE;
+	}
+	else if (led1 == ON )
+	{
+		value = value | 0x01;
+	}
+
+	if(led2 == OFF )
+	{
+		value = value & 0xFD;
+	}
+	else if (led2 == ON )
+	{
+		value = value | 0x02;
+	}
+
+	if(led3 == OFF )
+	{
+		value = value & 0xFB;
+	}
+	else if (led3 == ON )
+	{
+		value = value | 0x04;
+	}
+
+	if(led4 == OFF )
+	{
+		value = value & 0xF7;
+	}
+	else if (led4 == ON )
+	{
+		value = value | 0x08;
+	}
+
+	PORTC = value;
+
+}
+
+
+void setLed1(uint8_t value)
+{
+	if(value == OFF )
+	{
+		PORTC = PORTC & 0xFE;
+	}
+	else if (value == ON )
+	{
+		PORTC = PORTC | 0x01;
+	}
+}
+
+void setLed2(uint8_t value)
+{
+	if(value == OFF )
+	{
+		PORTC = PORTC & 0xFD;
+	}
+	else if (value == ON )
+	{
+		PORTC = PORTC | 0x02;
+	}
+}
+
+void setLed3(uint8_t value)
+{
+	if(value == OFF )
+	{
+		PORTC = PORTC & 0xFB;
+	}
+	else if (value == ON )
+	{
+		PORTC = PORTC | 0x04;
+	}
+}
+
+void setLed4(uint8_t value)
+{
+	if(value == OFF )
+	{
+		PORTC = PORTC & 0xF7;
+	}
+	else if (value == ON )
+	{
+		PORTC = PORTC | 0x08;
+	}
+}
+
 
 
 extern "C" void __cxa_pure_virtual()
