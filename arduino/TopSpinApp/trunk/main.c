@@ -72,11 +72,7 @@ int main(void)
 #ifdef __DEBUG
 	// Notify of program start
 	Serial.println("PROGRAM START");
-#endif
-
-#ifdef __DEBUG
 	Serial.println("Starting Motor");
-
 	setLeds(OFF, OFF, OFF, OFF);
 	delay(100);
 	setLed1(ON);
@@ -97,29 +93,14 @@ int main(void)
 	delay(100);
 #endif
 
-#ifdef __DEBUG
-	Serial.println("FORWARD 5");
-#endif
 	rotateMainArm( FORWARD, 5, 255 );
 	delay(2000);
-#ifdef __DEBUG
-	Serial.println("BACKWARD 5");
-#endif
 	rotateMainArm( BACKWARD, 5, 255 );
 	delay(2000);
-#ifdef __DEBUG
-	Serial.println("MOVE MAIN 1.6");
-#endif
 	moveTimed( FORWARD, MAIN_ARM, 255, 1600 );
 	delay(4000);
-#ifdef __DEBUG
-	Serial.println("MOVE CHAIR 5");
-#endif
 	rotateChair( FORWARD, 5000, 255);
 	delay(4000);
-#ifdef __DEBUG
-	Serial.println("MOVE CHAIR 5.2");
-#endif
 	rotateChair( BACKWARD, 5200, 255);
 	delay(3000);
 	rotateChair( FORWARD, 6200, 100);
@@ -146,6 +127,7 @@ int main(void)
 	findHome();
 	delay(500);
 	fineTune();
+
 	while(1);
 
 #ifdef __DEBUG
@@ -279,14 +261,8 @@ void initialize()
 	digitalWrite(BASE_INPUT_PIN, HIGH);
 	digitalWrite(SIDE_INPUT_PIN, HIGH);
 
-	//	pinMode( BASE_STATUS_PIN, OUTPUT );
-//	pinMode( SIDE_STATUS_PIN, OUTPUT );
-
 	// Set outputs
 	digitalWrite(LED_PIN, LOW);
-
-//	digitalWrite( BASE_STATUS_PIN, LOW );
-//	digitalWrite( SIDE_STATUS_PIN, LOW );
 
 	// Setup motors
 	uint8_t i, j;
@@ -371,6 +347,9 @@ void step(uint8_t motorIndex, int8_t direction, uint8_t initialSpeed, uint8_t en
 
 }
 
+/**
+ * Moves specified motor in specified direction at specified speed for specified duration.
+ */
 void moveTimed(uint8_t direction, uint8_t motorIndex, uint8_t speed, uint16_t duration)
 {
 	move( direction, motorIndex, speed );
@@ -399,11 +378,17 @@ void move( uint8_t direction, uint8_t motorIndex, uint8_t speed)
 	updateLeds( motorIndex, direction );
 }
 
+/**
+ * Sets motor speed
+ */
 void setSpeed(uint8_t motorIndex, uint8_t speed)
 {
 	analogWrite( motor[motorIndex][2], speed );
 }
 
+/**
+ * Moves motor forward
+ */
 void forward(uint8_t motorIndex, uint8_t speed)
 {
 	digitalWrite(motor[motorIndex][0], HIGH);
@@ -412,6 +397,9 @@ void forward(uint8_t motorIndex, uint8_t speed)
 	updateLeds( motorIndex, FORWARD );
 }
 
+/**
+ * Moves motor backwards
+ */
 void backward(uint8_t motorIndex, uint8_t speed)
 {
 	digitalWrite(motor[motorIndex][0], LOW);
@@ -420,6 +408,9 @@ void backward(uint8_t motorIndex, uint8_t speed)
 	updateLeds( motorIndex, BACKWARD );
 }
 
+/**
+ * Stops motor
+ */
 void stop(uint8_t motorIndex)
 {
 	digitalWrite(motor[motorIndex][0], LOW);
@@ -428,7 +419,9 @@ void stop(uint8_t motorIndex)
 	updateLeds( motorIndex, STOP );
 }
 
-
+/**
+ * Tests output
+ */
 void testOutput()
 {
 	step(0, FORWARD, 0, 255, 1, 1, 255);
@@ -449,10 +442,6 @@ void sample()
 {
 	debounceInput( BASE_INPUT_PIN, (uint8_t *)&currentBaseValue, (uint8_t *)&baseCount, (uint8_t *)&baseChange );
 	debounceInput( SIDE_INPUT_PIN, (uint8_t *)&currentSideValue, (uint8_t *)&sideCount, (uint8_t *)&sideChange );
-
-//	digitalWrite( BASE_STATUS_PIN, currentBaseValue );
-//	digitalWrite( SIDE_STATUS_PIN, currentSideValue );
-
 }
 
 /**
@@ -487,6 +476,9 @@ void debounceInput( uint8_t pin, volatile uint8_t *currentValue, volatile uint8_
     }
 }
 
+/**
+ * Updates LEDs with current motor information
+ */
 void updateLeds( uint8_t motorIndex, uint8_t direction )
 {
 	switch(direction)
@@ -533,6 +525,9 @@ void updateLeds( uint8_t motorIndex, uint8_t direction )
 	}
 }
 
+/**
+ * Sets values of LEDs
+ */
 void setLeds(uint8_t led1, uint8_t led2, uint8_t led3, uint8_t led4)
 {
 	uint8_t value = PORTC;
