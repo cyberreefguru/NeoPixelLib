@@ -345,7 +345,7 @@ void Adafruit_SSD1306::ssd1306_command(uint8_t c)
 	else
 	{
 		// I2C
-		uint8_t control = 0x01; // Co = 0, D/C = 0; TMS: Changed to 0x01
+		uint8_t control = 0x01; // Co = 0, D/C = 0; TMS: Changed to 0x01 from 0x00
 		Wire.beginTransmission(_i2caddr);
 		Wire.write(control);
 		Wire.write(c);
