@@ -1,0 +1,161 @@
+VAL 14 TS 00 00 FF 00 FF 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 13 TS FF FF 00 00 FF 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 12 TS 00 FF 00 00 FF 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 11 TS FF 00 00 00 FF 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 10 TS 00 00 00 00 FF 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL F TS FF FF FF FF 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL E TS 00 FF FF FF 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL D TS FF 00 FF FF 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL C TS 00 00 FF FF 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL B TS FF FF 00 FF 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL A TS 00 FF 00 FF 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 9 TS FF 00 00 FF 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 8 TS 00 00 00 FF 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 7 TS FF FF FF 00 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 6 TS 00 FF FF 00 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 5 TS FF 00 FF 00 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 4 TS 00 00 FF 00 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 3 TS FF FF 00 00 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 2 TS 00 FF 00 00 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 1 TS FF 00 00 00 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 0 TS 00 00 00 00 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 1 TS FF 00 00 00 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 2 TS 00 FF 00 00 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 3 TS FF FF 00 00 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 4 TS 00 00 FF 00 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 5 TS FF 00 FF 00 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 6 TS 00 FF FF 00 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 7 TS FF FF FF 00 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 8 TS 00 00 00 FF 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 9 TS FF 00 00 FF 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL A TS 00 FF 00 FF 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL B TS FF FF 00 FF 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL C TS 00 00 FF FF 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL D TS FF 00 FF FF 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL E TS 00 FF FF FF 00 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL F TS FF FF FF FF 00 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 10 TS 00 00 00 00 FF 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 11 TS FF 00 00 00 FF 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 12 TS 00 FF 00 00 FF 00 00 00 ;
+
+Encode: CB - 1 NB - 0
+
+VAL 13 TS FF FF 00 00 FF 00 00 00 ;
+
+Encode: CB - 0 NB - 1
+
+VAL 14 TS 00 00 FF 00 FF 00 00 00 ;
