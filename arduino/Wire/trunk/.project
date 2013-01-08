@@ -80,11 +80,4 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>de.innot.avreclipse.core.avrnature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>avrlib</name>
-			<type>2</type>
-			<location>/Users/tom/Development/arduino/avrlib</location>
-		</link>
-	</linkedResources>
 </projectDescription>
