@@ -28,11 +28,17 @@
 							<tool id="it.baeyens.avreclipse.tool.compiler.winavr.lib.debug.902362107" name="AVR Compiler" superClass="it.baeyens.avreclipse.tool.compiler.winavr.lib.debug">
 								<option id="it.baeyens.avreclipse.compiler.option.debug.level.1981510083" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.compiler.option.debug.level"/>
 								<option id="it.baeyens.avreclipse.compiler.option.optimize.1766318638" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize"/>
+								<option id="it.baeyens.avreclipse.compiler.option.incpath.1707228401" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.compiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
+								</option>
 								<inputType id="it.baeyens.avreclipse.compiler.winavr.input.1305406654" name="C Source Files" superClass="it.baeyens.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool id="it.baeyens.avreclipse.tool.cppcompiler.lib.debug.739021666" name="AVR C++ Compiler" superClass="it.baeyens.avreclipse.tool.cppcompiler.lib.debug">
 								<option id="it.baeyens.avreclipse.cppcompiler.option.debug.level.1694792289" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.cppcompiler.option.debug.level"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.1603936389" name="Optimization Level" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.incpath.2019215350" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.cppcompiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
+								</option>
 								<inputType id="it.baeyens.avreclipse.cppcompiler.input.687948490" superClass="it.baeyens.avreclipse.cppcompiler.input"/>
 							</tool>
 							<tool id="it.baeyens.avreclipse.tool.linker.winavr.base.809993050" name="AVR C Linker" superClass="it.baeyens.avreclipse.tool.linker.winavr.base"/>
@@ -71,11 +77,17 @@
 							<tool id="it.baeyens.avreclipse.tool.compiler.winavr.lib.release.229534201" name="AVR Compiler" superClass="it.baeyens.avreclipse.tool.compiler.winavr.lib.release">
 								<option id="it.baeyens.avreclipse.compiler.option.debug.level.417617847" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.compiler.option.debug.level" value="it.baeyens.avreclipse.compiler.option.debug.level.none" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.compiler.option.optimize.298187338" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize" value="it.baeyens.avreclipse.compiler.optimize.size" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.compiler.option.incpath.158739328" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.compiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
+								</option>
 								<inputType id="it.baeyens.avreclipse.compiler.winavr.input.314372627" name="C Source Files" superClass="it.baeyens.avreclipse.compiler.winavr.input"/>
 							</tool>
 							<tool id="it.baeyens.avreclipse.tool.cppcompiler.lib.release.1608126314" name="AVR C++ Compiler" superClass="it.baeyens.avreclipse.tool.cppcompiler.lib.release">
 								<option id="it.baeyens.avreclipse.cppcompiler.option.debug.level.1963403019" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.cppcompiler.option.debug.level" value="it.baeyens.avreclipse.cppcompiler.option.debug.level.none" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.1305956596" name="Optimization Level" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize" value="it.baeyens.avreclipse.cppcompiler.optimize.size" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.incpath.1950507262" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.cppcompiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}}&quot;"/>
+								</option>
 								<inputType id="it.baeyens.avreclipse.cppcompiler.input.851281330" superClass="it.baeyens.avreclipse.cppcompiler.input"/>
 							</tool>
 							<tool id="it.baeyens.avreclipse.tool.linker.winavr.base.354148595" name="AVR C Linker" superClass="it.baeyens.avreclipse.tool.linker.winavr.base"/>
@@ -106,4 +118,12 @@
 		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/AvrLib10"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/AvrLib10"/>
+		</configuration>
+	</storageModule>
 </cproject>
