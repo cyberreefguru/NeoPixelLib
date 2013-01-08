@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?>
+
+<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="it.baeyens.avreclipse.configuration.lib.debug.491638100">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="it.baeyens.avreclipse.configuration.lib.debug.491638100" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="it.baeyens.avreclipse.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.debug,org.eclipse.cdt.build.core.buildArtefactType=it.baeyens.avreclipse.buildArtefactType.staticLib" cleanCommand="rm -f" description="" id="it.baeyens.avreclipse.configuration.lib.debug.491638100" name="Debug" parent="it.baeyens.avreclipse.configuration.lib.debug">
+					<folderInfo id="it.baeyens.avreclipse.configuration.lib.debug.491638100." name="/" resourcePath="">
+						<toolChain id="it.baeyens.avreclipse.toolchain.winavr.lib.debug.1438739385" name="AVR-GCC Toolchain" superClass="it.baeyens.avreclipse.toolchain.winavr.lib.debug">
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.debug.1985848976" name="Generate Extended Listing (Source + generated Assembler)" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.debug"/>
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.debug.815026182" name="Print Size" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.debug"/>
+							<targetPlatform id="it.baeyens.avreclipse.targetplatform.winavr.lib.debug.337635996" name="AVR Cross-Target" superClass="it.baeyens.avreclipse.targetplatform.winavr.lib.debug"/>
+							<builder buildPath="${workspace_loc:/avrlib1.0/Debug}" id="it.baeyens.avreclipse.target.builder.winavr.lib.debug.954548774" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.lib.debug"/>
+							<tool id="it.baeyens.avreclipse.tool.assembler.winavr.lib.debug.1056219524" name="AVR Assembler" superClass="it.baeyens.avreclipse.tool.assembler.winavr.lib.debug">
+								<option id="it.baeyens.avreclipse.assembler.option.debug.level.1605408370" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level"/>
+								<inputType id="it.baeyens.avreclipse.tool.assembler.input.2035599004" superClass="it.baeyens.avreclipse.tool.assembler.input"/>
+							</tool>
+							<tool id="it.baeyens.avreclipse.tool.compiler.winavr.lib.debug.902362107" name="AVR Compiler" superClass="it.baeyens.avreclipse.tool.compiler.winavr.lib.debug">
+								<option id="it.baeyens.avreclipse.compiler.option.debug.level.1981510083" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.compiler.option.debug.level"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.1766318638" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize"/>
+								<inputType id="it.baeyens.avreclipse.compiler.winavr.input.1305406654" name="C Source Files" superClass="it.baeyens.avreclipse.compiler.winavr.input"/>
+							</tool>
+							<tool id="it.baeyens.avreclipse.tool.cppcompiler.lib.debug.739021666" name="AVR C++ Compiler" superClass="it.baeyens.avreclipse.tool.cppcompiler.lib.debug">
+								<option id="it.baeyens.avreclipse.cppcompiler.option.debug.level.1694792289" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.cppcompiler.option.debug.level"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.1603936389" name="Optimization Level" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize"/>
+								<inputType id="it.baeyens.avreclipse.cppcompiler.input.687948490" superClass="it.baeyens.avreclipse.cppcompiler.input"/>
+							</tool>
+							<tool id="it.baeyens.avreclipse.tool.linker.winavr.base.809993050" name="AVR C Linker" superClass="it.baeyens.avreclipse.tool.linker.winavr.base"/>
+							<tool id="it.baeyens.avreclipse.tool.cpplinker.base.2017475505" name="AVR C++ Linker" superClass="it.baeyens.avreclipse.tool.cpplinker.base"/>
+							<tool id="it.baeyens.avreclipse.tool.archiver.winavr.lib.debug.2122662310" name="AVR Archiver" superClass="it.baeyens.avreclipse.tool.archiver.winavr.lib.debug"/>
+							<tool id="it.baeyens.avreclipse.tool.objdump.winavr.lib.debug.1058378437" name="AVR Create Extended Listing" superClass="it.baeyens.avreclipse.tool.objdump.winavr.lib.debug"/>
+							<tool id="it.baeyens.avreclipse.tool.size.winavr.lib.debug.1298374983" name="Print Size" superClass="it.baeyens.avreclipse.tool.size.winavr.lib.debug"/>
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+		<cconfiguration id="it.baeyens.avreclipse.configuration.lib.release.1149767983">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="it.baeyens.avreclipse.configuration.lib.release.1149767983" moduleId="org.eclipse.cdt.core.settings" name="Release">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
+					<extension id="org.eclipse.cdt.core.MakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactExtension="a" artifactName="${ProjName}" buildArtefactType="it.baeyens.avreclipse.buildArtefactType.staticLib" buildProperties="org.eclipse.cdt.build.core.buildType=org.eclipse.cdt.build.core.buildType.release,org.eclipse.cdt.build.core.buildArtefactType=it.baeyens.avreclipse.buildArtefactType.staticLib" cleanCommand="rm -rf" description="" id="it.baeyens.avreclipse.configuration.lib.release.1149767983" name="Release" parent="it.baeyens.avreclipse.configuration.lib.release">
+					<folderInfo id="it.baeyens.avreclipse.configuration.lib.release.1149767983." name="/" resourcePath="">
+						<toolChain id="it.baeyens.avreclipse.toolchain.winavr.lib.release.975563441" name="AVR-GCC Toolchain" superClass="it.baeyens.avreclipse.toolchain.winavr.lib.release">
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.release.988610135" name="Generate Extended Listing (Source + generated Assembler)" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.release"/>
+							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.release.1927732181" name="Print Size" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.release"/>
+							<targetPlatform id="it.baeyens.avreclipse.targetplatform.winavr.lib.release.1016525225" name="AVR Cross-Target" superClass="it.baeyens.avreclipse.targetplatform.winavr.lib.release"/>
+							<builder buildPath="${workspace_loc:/avrlib1.0/Release}" id="it.baeyens.avreclipse.target.builder.winavr.lib.release.7204241" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.lib.release"/>
+							<tool id="it.baeyens.avreclipse.tool.assembler.winavr.lib.release.1110480901" name="AVR Assembler" superClass="it.baeyens.avreclipse.tool.assembler.winavr.lib.release">
+								<option id="it.baeyens.avreclipse.assembler.option.debug.level.800906403" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level" value="it.baeyens.avreclipse.assembler.option.debug.level.none" valueType="enumerated"/>
+								<inputType id="it.baeyens.avreclipse.tool.assembler.input.27136635" superClass="it.baeyens.avreclipse.tool.assembler.input"/>
+							</tool>
+							<tool id="it.baeyens.avreclipse.tool.compiler.winavr.lib.release.229534201" name="AVR Compiler" superClass="it.baeyens.avreclipse.tool.compiler.winavr.lib.release">
+								<option id="it.baeyens.avreclipse.compiler.option.debug.level.417617847" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.compiler.option.debug.level" value="it.baeyens.avreclipse.compiler.option.debug.level.none" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.compiler.option.optimize.298187338" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize" value="it.baeyens.avreclipse.compiler.optimize.size" valueType="enumerated"/>
+								<inputType id="it.baeyens.avreclipse.compiler.winavr.input.314372627" name="C Source Files" superClass="it.baeyens.avreclipse.compiler.winavr.input"/>
+							</tool>
+							<tool id="it.baeyens.avreclipse.tool.cppcompiler.lib.release.1608126314" name="AVR C++ Compiler" superClass="it.baeyens.avreclipse.tool.cppcompiler.lib.release">
+								<option id="it.baeyens.avreclipse.cppcompiler.option.debug.level.1963403019" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.cppcompiler.option.debug.level" value="it.baeyens.avreclipse.cppcompiler.option.debug.level.none" valueType="enumerated"/>
+								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.1305956596" name="Optimization Level" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize" value="it.baeyens.avreclipse.cppcompiler.optimize.size" valueType="enumerated"/>
+								<inputType id="it.baeyens.avreclipse.cppcompiler.input.851281330" superClass="it.baeyens.avreclipse.cppcompiler.input"/>
+							</tool>
+							<tool id="it.baeyens.avreclipse.tool.linker.winavr.base.354148595" name="AVR C Linker" superClass="it.baeyens.avreclipse.tool.linker.winavr.base"/>
+							<tool id="it.baeyens.avreclipse.tool.cpplinker.base.578376623" name="AVR C++ Linker" superClass="it.baeyens.avreclipse.tool.cpplinker.base"/>
+							<tool id="it.baeyens.avreclipse.tool.archiver.winavr.lib.release.285778236" name="AVR Archiver" superClass="it.baeyens.avreclipse.tool.archiver.winavr.lib.release"/>
+							<tool id="it.baeyens.avreclipse.tool.objdump.winavr.lib.release.1755988344" name="AVR Create Extended Listing" superClass="it.baeyens.avreclipse.tool.objdump.winavr.lib.release"/>
+							<tool id="it.baeyens.avreclipse.tool.size.winavr.lib.release.1396768136" name="Print Size" superClass="it.baeyens.avreclipse.tool.size.winavr.lib.release"/>
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="avrlib1.0.it.baeyens.avreclipse.project.winavr.staticlib.2083934309" name="AVR Cross Target Static Library" projectType="it.baeyens.avreclipse.project.winavr.staticlib"/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.release.1149767983;it.baeyens.avreclipse.configuration.lib.release.1149767983.">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.release.1149767983;it.baeyens.avreclipse.configuration.lib.release.1149767983.;it.baeyens.avreclipse.tool.cppcompiler.lib.release.1608126314;it.baeyens.avreclipse.cppcompiler.input.851281330">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="it.baeyens.avreclipse.configuration.lib.release.1149767983;it.baeyens.avreclipse.configuration.lib.release.1149767983.;it.baeyens.avreclipse.tool.compiler.winavr.lib.release.229534201;it.baeyens.avreclipse.compiler.winavr.input.314372627">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="it.baeyens.avreclipse.core.AVRGCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+</cproject>
