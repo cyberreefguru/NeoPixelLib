@@ -20,7 +20,7 @@
 							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.debug.1985848976" name="Generate Extended Listing (Source + generated Assembler)" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.debug"/>
 							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.debug.815026182" name="Print Size" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.debug"/>
 							<targetPlatform id="it.baeyens.avreclipse.targetplatform.winavr.lib.debug.337635996" name="AVR Cross-Target" superClass="it.baeyens.avreclipse.targetplatform.winavr.lib.debug"/>
-							<builder buildPath="${workspace_loc:/avrlib1.0/Debug}" id="it.baeyens.avreclipse.target.builder.winavr.lib.debug.954548774" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.lib.debug"/>
+							<builder buildPath="${workspace_loc:/AvrLib10/Debug}" id="it.baeyens.avreclipse.target.builder.winavr.lib.debug.954548774" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.lib.debug"/>
 							<tool id="it.baeyens.avreclipse.tool.assembler.winavr.lib.debug.1056219524" name="AVR Assembler" superClass="it.baeyens.avreclipse.tool.assembler.winavr.lib.debug">
 								<option id="it.baeyens.avreclipse.assembler.option.debug.level.1605408370" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level"/>
 								<inputType id="it.baeyens.avreclipse.tool.assembler.input.2035599004" superClass="it.baeyens.avreclipse.tool.assembler.input"/>
@@ -69,7 +69,7 @@
 							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.release.988610135" name="Generate Extended Listing (Source + generated Assembler)" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.objdump.lib.release"/>
 							<option id="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.release.1927732181" name="Print Size" superClass="it.baeyens.avreclipse.toolchain.options.toolchain.size.lib.release"/>
 							<targetPlatform id="it.baeyens.avreclipse.targetplatform.winavr.lib.release.1016525225" name="AVR Cross-Target" superClass="it.baeyens.avreclipse.targetplatform.winavr.lib.release"/>
-							<builder buildPath="${workspace_loc:/avrlib1.0/Release}" id="it.baeyens.avreclipse.target.builder.winavr.lib.release.7204241" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.lib.release"/>
+							<builder buildPath="${workspace_loc:/AvrLib10/Release}" id="it.baeyens.avreclipse.target.builder.winavr.lib.release.7204241" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="AVR GNU Make Builder" superClass="it.baeyens.avreclipse.target.builder.winavr.lib.release"/>
 							<tool id="it.baeyens.avreclipse.tool.assembler.winavr.lib.release.1110480901" name="AVR Assembler" superClass="it.baeyens.avreclipse.tool.assembler.winavr.lib.release">
 								<option id="it.baeyens.avreclipse.assembler.option.debug.level.800906403" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.assembler.option.debug.level" value="it.baeyens.avreclipse.assembler.option.debug.level.none" valueType="enumerated"/>
 								<inputType id="it.baeyens.avreclipse.tool.assembler.input.27136635" superClass="it.baeyens.avreclipse.tool.assembler.input"/>
@@ -103,7 +103,7 @@
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="avrlib1.0.it.baeyens.avreclipse.project.winavr.staticlib.2083934309" name="AVR Cross Target Static Library" projectType="it.baeyens.avreclipse.project.winavr.staticlib"/>
+		<project id="AvrLib10.it.baeyens.avreclipse.project.winavr.staticlib.2083934309" name="AVR Cross Target Static Library" projectType="it.baeyens.avreclipse.project.winavr.staticlib"/>
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
