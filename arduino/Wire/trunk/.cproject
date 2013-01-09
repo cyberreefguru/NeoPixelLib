@@ -80,6 +80,7 @@
 								<option id="it.baeyens.avreclipse.compiler.option.debug.level.956388301" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.compiler.option.debug.level" value="it.baeyens.avreclipse.compiler.option.debug.level.none" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.compiler.option.optimize.1801971603" name="Optimization Level" superClass="it.baeyens.avreclipse.compiler.option.optimize" value="it.baeyens.avreclipse.compiler.optimize.size" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.compiler.option.incpath.1491041743" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.compiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/avr-4/include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/AvrLib10}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/utility}&quot;"/>
 								</option>
@@ -89,6 +90,7 @@
 								<option id="it.baeyens.avreclipse.cppcompiler.option.debug.level.1429968841" name="Generate Debugging Info" superClass="it.baeyens.avreclipse.cppcompiler.option.debug.level" value="it.baeyens.avreclipse.cppcompiler.option.debug.level.none" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.optimize.1436078852" name="Optimization Level" superClass="it.baeyens.avreclipse.cppcompiler.option.optimize" value="it.baeyens.avreclipse.cppcompiler.optimize.size" valueType="enumerated"/>
 								<option id="it.baeyens.avreclipse.cppcompiler.option.incpath.1705790251" name="Include Paths (-I)" superClass="it.baeyens.avreclipse.cppcompiler.option.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="/Applications/Arduino.app/Contents/Resources/Java/hardware/tools/avr/avr-4/include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/AvrLib10}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/utility}&quot;"/>
 								</option>
