@@ -10,8 +10,7 @@
 #include "Arduino.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
-
-
+#include <EEPROM.h>
 
 //end of add your includes here
 #ifdef __cplusplus

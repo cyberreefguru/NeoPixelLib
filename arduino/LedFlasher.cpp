@@ -74,6 +74,9 @@
 #define UP		1
 #define DOWN	0
 
+#define CONFIG_ADDRESS		0x20 // address where last config is saved
+#define CONFIG_UNSET		255 // value of config if unset
+
 
 //TODO will likely need an IFDEF here for HW specific things
 uint8_t output_pins[NUM_OUTPUTS] = {3,5,6,9,10,11};
@@ -82,6 +85,8 @@ uint8_t max_output_value[NUM_OUTPUTS] = {255,255,255,255,120,120};
 uint8_t input_pins[NUM_INPUTS] = {2}; // leonardo INT1 = pin 2
 
 volatile uint8_t mode = MODE_FIRST;
+volatile uint8_t modeChanged = false;
+
 volatile unsigned long interruptTime = 0;
 uint8_t counter = 0;
 
@@ -95,7 +100,8 @@ void fade_beacon(uint8_t pin, uint16_t time, uint8_t fadeDirection);
 
 void error();
 
-void changeMode();
+void changeMode(); // changes the mode
+void changeModeISR(); // receives change mode interrupt
 
 void writeOutput(uint8_t pinIndex, uint8_t outputValue);
 
@@ -109,7 +115,10 @@ void setup()
 
 #ifdef __DEBUG
 	Serial.begin(115200);
+	while (!Serial); // needed for Leonardo only
+	Serial.println( "SETUP" );
 #endif
+
 
 	for(i=0; i<NUM_OUTPUTS; i++)
 	{
@@ -122,34 +131,24 @@ void setup()
 	}
 
 	// Interrupt comes from INT1; exact pin is HW specific
-	attachInterrupt(INTERRUPT_SOURCE, changeMode, RISING);
+	noInterrupts();
+	attachInterrupt(INTERRUPT_SOURCE, changeModeISR, RISING);
+	interrupts();
 
 	// Set up which mode we start with
-	// TODO: pull from flash memory
-	mode = MODE_FIRST;
+	mode = EEPROM.read(CONFIG_ADDRESS);
+#ifdef __DEBUG
+	Serial.print("Mode EE: ");
+	Serial.println( mode, HEX );
+#endif
+
+	if( mode < 1 || mode > MODE_LAST )
+	{
+		mode = MODE_FIRST;
+	}
 
 } // end setup
 
-
-/**
- * ISR for changing current operating mode
- */
-void changeMode()
-{
-	if( interruptTime > millis() )
-	{
-		return;
-	}
-
-	mode++;
-	if(mode > MODE_LAST)
-	{
-		mode=MODE_FIRST;
-	}
-
-	interruptTime = millis()+500;
-
-} // end changeMode
 
 /**
  * Typical arduino loop.  Loops through different modes and executes the one selected.
@@ -158,6 +157,11 @@ void changeMode()
 void loop()
 {
 	uint8_t i;
+
+	if( modeChanged == true )
+	{
+		changeMode();
+	}
 
 	switch(mode)
 	{
@@ -317,6 +321,37 @@ void loop()
 	}
 
 } // end loop
+
+
+/**
+ * ISR for changing current operating mode
+ */
+void changeModeISR()
+{
+	if( interruptTime > millis() )
+	{
+		return;
+	}
+	modeChanged = true;
+	interruptTime = millis()+500;
+
+} // end changeMode
+
+/**
+ * Changes the current operating mode
+ */
+void changeMode()
+{
+	mode++;
+	if(mode > MODE_LAST)
+	{
+		mode=MODE_FIRST;
+	}
+
+	// Save mode setting
+	EEPROM.write( CONFIG_ADDRESS, mode );
+	modeChanged = false;
+}
 
 /**
  * Routine to signal something went wrong
