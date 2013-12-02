@@ -45,13 +45,14 @@ boolean HighSideDriver::initialize(void)
 	if (clr != -1)
 	{
 		pinMode(clr, OUTPUT);
+		digitalWrite(clr, LOW);
 		digitalWrite(clr, HIGH);
 	}
 
 	if (oe != -1)
 	{
 		pinMode(oe, OUTPUT);
-		digitalWrite(oe, HIGH);
+		digitalWrite(oe, LOW);
 	}
 
 	return true;
@@ -75,10 +76,9 @@ void HighSideDriver::setValue(uint8_t chan, uint8_t value)
  */
 void HighSideDriver::write(void)
 {
-
 	int8_t i;
 
-	setOutputEnable( false );
+//	setOutputEnable( false );
 	digitalWrite(latch, LOW);
 	for(i=(numdrivers-1); i>=0; i--)
 	{
@@ -86,7 +86,7 @@ void HighSideDriver::write(void)
 	}
 	digitalWrite(latch, HIGH);
 	digitalWrite(latch, LOW);
-	setOutputEnable( true );
+//	setOutputEnable( true );
 
 } // end write
 

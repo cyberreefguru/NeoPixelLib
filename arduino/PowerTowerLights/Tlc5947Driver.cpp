@@ -30,21 +30,6 @@ Tlc5947Driver::Tlc5947Driver()
 {
 }
 
-//Tlc5947Driver::Tlc5947Driver(uint8_t n, uint8_t c, uint8_t d, uint8_t l, uint8_t b, uint8_t o)
-//{
-//	numdrivers = n;
-//	clk = c;
-//	dat = d;
-//	lat = l;
-//	blank = b;
-//	oe = o;
-//
-//	pwmbuffer = 0;
-//	maxIntensity = MAX_INTENSITY;
-//	totalChannels = CHANNELS_PER_DRIVER*n;
-//
-//}
-
 /**
  * Initializes the chip.
  *
@@ -90,10 +75,12 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 		oeMask = digitalPinToBitMask( o );
 	}
 
+	// Calculate data port values
 	clockPort = portOutputRegister( digitalPinToPort( c ) );
 	latchPort = portOutputRegister( digitalPinToPort( l ) );
 	dataPort = portOutputRegister( digitalPinToPort( d ) );
 
+	// Calculate data mask values
 	clockMask = digitalPinToBitMask( c );
 	latchMask = digitalPinToBitMask( l );
 	dataMask = digitalPinToBitMask( d );
@@ -115,9 +102,9 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
  */
 void Tlc5947Driver::write(void)
 {
-	// ensure latch is low
-	*latchPort &= ~latchMask;
-	*clockPort &= ~clockMask;
+	// ensure latch and clock are low
+	*latchPort &= ~latchMask; // low
+	*clockPort &= ~clockMask; // low
 
 	// 24 channels per TLC5974
 	for (int8_t c = totalChannels - 1; c >= 0; c--)
@@ -141,14 +128,10 @@ void Tlc5947Driver::write(void)
 	} // end channel
 
 	// Latch data into chip
+	*blankPort |= blankMask; // high
 	*latchPort |= latchMask; // high
 	*latchPort &= ~latchMask; // low
-
-	//	if (val == LOW) {
-	//		*out &= ~bit;
-	//	} else {
-	//		*out |= bit;
-	//	}
+	*blankPort &= ~blankMask; // low
 
 
 } // end write

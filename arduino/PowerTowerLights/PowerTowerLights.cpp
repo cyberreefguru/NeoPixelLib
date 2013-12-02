@@ -1,9 +1,9 @@
 // Do not remove the include below
 #include "PowerTowerLights.h"
 
-
 Tlc5947Driver tlc = Tlc5947Driver();
-HighSideDriver hsd = HighSideDriver(1, COL_CLOCK, COL_DATA, COL_LATCH, COL_CLEAR, COL_OE);
+HighSideDriver hsd = HighSideDriver(1, COL_CLOCK, COL_DATA, COL_LATCH,
+		COL_CLEAR, COL_OE);
 
 void lsTest();
 void hsTest();
@@ -11,6 +11,9 @@ void ramp(uint8_t led);
 void flash();
 
 #define WAIT 50
+
+void LEDscan(float degreeoffset);
+
 
 //The setup function is called once at startup of the sketch
 void setup()
@@ -37,18 +40,27 @@ void setup()
 void loop()
 {
 	uint8_t i;
+	float offset = 0;
 
 	hsd.setValue(0, 0x1f); // turn on all columns
 	hsd.write();
 	tlc.setBlank(false);
 	tlc.clear();
 
-//	for(i=0; i<5; i++)
-//	{
-//		ramp(i);
-//		delay(300);
-//	}
+	while(1)
+	{
+	for (offset = 0; offset < 360; offset += 0.5) {
+	    LEDscan(offset);
+	    delay(2);
+	  }
+	}
 
+
+	for (i = 0; i < 5; i++)
+	{
+		ramp(i);
+		delay(300);
+	}
 
 //	Serial.println("turning all on");
 	for (i = 0; i < 5; i++)
@@ -75,14 +87,13 @@ void loop()
 	}
 
 	//	Serial.println("flashing");
-	for(i=0; i<4; i++)
+	for (i = 0; i < 4; i++)
 	{
 		tlc.setAll(0);
 		delay(WAIT);
 		tlc.setAll(MAX_INTENSITY);
 		delay(WAIT);
 	}
-
 
 //	Serial.println("turning 1e");
 	hsd.setValue(0, 0x1e);
@@ -116,13 +127,13 @@ void loop()
 void lsTest()
 {
 
-	for(uint16_t i=0; i<8; i++)
+	for (uint16_t i = 0; i < 8; i++)
 	{
 		ramp(i);
 		delay(300);
 	}
 
-	for(uint16_t i=0; i<8; i++)
+	for (uint16_t i = 0; i < 8; i++)
 	{
 		tlc.setIntensity(i, 0);
 		tlc.write();
@@ -182,11 +193,37 @@ void flash()
 void ramp(uint8_t led)
 {
 	uint16_t i;
+	int initial = 0;
+	int final = 0;
 
-	for(uint16_t i=0; i<4096; i++)
+	for (uint16_t i = 0; i < 4096; i++)
 	{
 		tlc.setIntensity(led, i);
+//		initial = micros();
 		tlc.write();
+//		final = micros();
+//		Serial.print("write time: ");
+//		Serial.println( (final-initial) );
 	}
+}
+
+// Sample function to draw a scanning pattern with fading
+void LEDscan(float degreeoffset)
+{
+
+	float brightnessfactor = 0;
+
+	float scanindex = (1.0 + sin(degreeoffset * 3.14159 / 180.0)) * (float)2.0;
+
+	for (uint8_t LEDindex = 0; LEDindex < 5; LEDindex++)
+	{
+
+		brightnessfactor = exp(
+				0.0 - fabs(scanindex - ((float) LEDindex + 0.5)) * 1.3);
+
+		tlc.setIntensity(LEDindex, (uint16_t)(4095 * brightnessfactor) );
+	}
+
+	tlc.write();
 }
 
