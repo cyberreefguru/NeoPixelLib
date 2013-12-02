@@ -26,32 +26,31 @@
 
 #include "Tlc5947Driver.h"
 
-Tlc5947Driver::Tlc5947Driver(uint8_t n, uint8_t c, uint8_t d, uint8_t l)
+Tlc5947Driver::Tlc5947Driver()
 {
-	Tlc5947Driver(n, c, d, l, -1, -1);
 }
 
-Tlc5947Driver::Tlc5947Driver(uint8_t n, uint8_t c, uint8_t d, uint8_t l, uint8_t b, uint8_t o)
-{
-	numdrivers = n;
-	clk = c;
-	dat = d;
-	lat = l;
-	blank = b;
-	oe = o;
-
-	pwmbuffer = 0;
-	maxIntensity = MAX_INTENSITY;
-	totalChannels = CHANNELS_PER_DRIVER*n;
-
-}
+//Tlc5947Driver::Tlc5947Driver(uint8_t n, uint8_t c, uint8_t d, uint8_t l, uint8_t b, uint8_t o)
+//{
+//	numdrivers = n;
+//	clk = c;
+//	dat = d;
+//	lat = l;
+//	blank = b;
+//	oe = o;
+//
+//	pwmbuffer = 0;
+//	maxIntensity = MAX_INTENSITY;
+//	totalChannels = CHANNELS_PER_DRIVER*n;
+//
+//}
 
 /**
  * Initializes the chip.
  *
  * NOTE: must be called before using driver
  */
-boolean Tlc5947Driver::initialize()
+boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, uint8_t b, uint8_t o)
 {
 	// Allocate buffer to hold intensity values if buf is null
 	if( !pwmbuffer)
@@ -64,32 +63,46 @@ boolean Tlc5947Driver::initialize()
 		return false;
 	}
 
+	maxIntensity = MAX_INTENSITY;
+	totalChannels = CHANNELS_PER_DRIVER*n;
+
 	// Set up pins
-	pinMode(clk, OUTPUT);
-	pinMode(dat, OUTPUT);
-	pinMode(lat, OUTPUT);
+	pinMode(c, OUTPUT);
+	pinMode(d, OUTPUT);
+	pinMode(l, OUTPUT);
 
-	digitalWrite(clk, LOW);
-	digitalWrite(dat, LOW);
-	digitalWrite(lat, LOW);
+	digitalWrite(c, LOW);
+	digitalWrite(d, LOW);
+	digitalWrite(l, LOW);
 
-	if( blank != -1 )
+	if( b != -1 )
 	{
-		pinMode(blank, OUTPUT);
-		digitalWrite(blank, LOW);
+		pinMode(b, OUTPUT);
+		digitalWrite(b, LOW);
+		blankPort = portOutputRegister( digitalPinToPort( b ) );
+		blankMask = digitalPinToBitMask( b );
 	}
-	if( oe != -1 )
+	if( o != -1 )
 	{
-		pinMode(oe, OUTPUT);
-		digitalWrite(oe, HIGH);
+		pinMode(o, OUTPUT);
+		digitalWrite(o, HIGH);
+		oePort = portOutputRegister( digitalPinToPort( o ) );
+		oeMask = digitalPinToBitMask( o );
 	}
 
-	Serial.print("maxIntensity: ");
-	Serial.println( maxIntensity );
+	clockPort = portOutputRegister( digitalPinToPort( c ) );
+	latchPort = portOutputRegister( digitalPinToPort( l ) );
+	dataPort = portOutputRegister( digitalPinToPort( d ) );
 
-	Serial.print("totalChannels: ");
-	Serial.println( totalChannels );
+	clockMask = digitalPinToBitMask( c );
+	latchMask = digitalPinToBitMask( l );
+	dataMask = digitalPinToBitMask( d );
 
+//	Serial.print("maxIntensity: ");
+//	Serial.println( maxIntensity );
+//
+//	Serial.print("totalChannels: ");
+//	Serial.println( totalChannels );
 
 	return true;
 
@@ -103,7 +116,8 @@ boolean Tlc5947Driver::initialize()
 void Tlc5947Driver::write(void)
 {
 	// ensure latch is low
-	digitalWrite(lat, LOW);
+	*latchPort &= ~latchMask;
+	*clockPort &= ~clockMask;
 
 	// 24 channels per TLC5974
 	for (int8_t c = totalChannels - 1; c >= 0; c--)
@@ -111,28 +125,31 @@ void Tlc5947Driver::write(void)
 		// 12 bits per channel, send MSB first
 		for (int8_t b = 11; b >= 0; b--)
 		{
-			digitalWrite(clk, LOW);
-
 			if (pwmbuffer[c] & (1 << b))
 			{
-				digitalWrite(dat, HIGH);
+				*dataPort |= dataMask;
 			}
 			else
 			{
-				digitalWrite(dat, LOW);
+				*dataPort &= ~dataMask;
 			}
-
-			digitalWrite(clk, HIGH);
+			*clockPort |= clockMask; // clock high
+			*clockPort &= ~clockMask; // clock low
 
 		} // end value write
+
 	} // end channel
 
-	// Set clock low
-	digitalWrite(clk, LOW);
-
 	// Latch data into chip
-	digitalWrite(lat, HIGH);
-	digitalWrite(lat, LOW);
+	*latchPort |= latchMask; // high
+	*latchPort &= ~latchMask; // low
+
+	//	if (val == LOW) {
+	//		*out &= ~bit;
+	//	} else {
+	//		*out |= bit;
+	//	}
+
 
 } // end write
 

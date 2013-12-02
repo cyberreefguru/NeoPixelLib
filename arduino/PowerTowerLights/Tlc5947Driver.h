@@ -36,10 +36,9 @@ class Tlc5947Driver
 {
 
 public:
-	Tlc5947Driver(uint8_t n, uint8_t c, uint8_t d, uint8_t l);
-	Tlc5947Driver(uint8_t n, uint8_t c, uint8_t d, uint8_t l, uint8_t b, uint8_t o);
+	Tlc5947Driver();
 
-	boolean initialize(void);
+	boolean initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, uint8_t b, uint8_t o);
 
 	void setIntensity(uint8_t chan, uint16_t value);
 	void setAll(uint16_t value);
@@ -52,7 +51,12 @@ private:
 	uint16_t *pwmbuffer;
 
 	uint8_t numdrivers, clk, dat, lat, oe, blank;
-	uint16_t maxIntensity, totalChannels; // sacrifice memory for speed
+	// we sacrifice memory size for speed; we pre-calculate and save
+	// the port mappings and masks, then we can use port manipulation
+	// instead of digitalWrite
+	uint16_t maxIntensity, totalChannels;
+	volatile uint8_t *clockPort, *dataPort, *latchPort, *oePort, *blankPort;
+	uint8_t clockMask, dataMask, latchMask, oeMask, blankMask;
 
 };
 

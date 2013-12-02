@@ -2,7 +2,7 @@
 #include "PowerTowerLights.h"
 
 
-Tlc5947Driver tlc = Tlc5947Driver(1, ROW_CLOCK, ROW_DATA, ROW_LATCH, ROW_CLEAR, -1);
+Tlc5947Driver tlc = Tlc5947Driver();
 HighSideDriver hsd = HighSideDriver(1, COL_CLOCK, COL_DATA, COL_LATCH, COL_CLEAR, COL_OE);
 
 void lsTest();
@@ -10,18 +10,19 @@ void hsTest();
 void ramp(uint8_t led);
 void flash();
 
+#define WAIT 50
 
 //The setup function is called once at startup of the sketch
 void setup()
 {
-//	Serial.begin(115200);
+	Serial.begin(115200);
 //	Serial.println("TLC5974 test");
 //
 //	delay(10000);
 
 //	Serial.println("STARTING");
 
-	tlc.initialize();
+	tlc.initialize(1, ROW_CLOCK, ROW_DATA, ROW_LATCH, ROW_CLEAR, -1);
 	tlc.setBlank(true);
 	tlc.clear();
 
@@ -40,13 +41,21 @@ void loop()
 	hsd.setValue(0, 0x1f); // turn on all columns
 	hsd.write();
 	tlc.setBlank(false);
+	tlc.clear();
+
+//	for(i=0; i<5; i++)
+//	{
+//		ramp(i);
+//		delay(300);
+//	}
+
 
 //	Serial.println("turning all on");
 	for (i = 0; i < 5; i++)
 	{
 		tlc.setIntensity(i, 4095);
 		tlc.write();
-		delay(500);
+		delay(WAIT);
 	}
 
 //	Serial.println("turning all off");
@@ -54,7 +63,7 @@ void loop()
 	{
 		tlc.setIntensity(i, 0);
 		tlc.write();
-		delay(500);
+		delay(WAIT);
 	}
 
 //	Serial.println("turning all on");
@@ -62,43 +71,43 @@ void loop()
 	{
 		tlc.setIntensity(i, 4095);
 		tlc.write();
-		delay(500);
+		delay(WAIT);
 	}
 
 	//	Serial.println("flashing");
 	for(i=0; i<4; i++)
 	{
 		tlc.setAll(0);
-		delay(200);
+		delay(WAIT);
 		tlc.setAll(MAX_INTENSITY);
-		delay(200);
+		delay(WAIT);
 	}
 
 
 //	Serial.println("turning 1e");
 	hsd.setValue(0, 0x1e);
 	hsd.write();
-	delay(500);
+	delay(WAIT);
 
 //	Serial.println("turning 1c");
 	hsd.setValue(0, 0x1c);
 	hsd.write();
-	delay(500);
+	delay(WAIT);
 
 //	Serial.println("turning 18");
 	hsd.setValue(0, 0x18);
 	hsd.write();
-	delay(500);
+	delay(WAIT);
 
 //	Serial.println("turning 10");
 	hsd.setValue(0, 0x10);
 	hsd.write();
-	delay(500);
+	delay(WAIT);
 
 //	Serial.println("turning 00");
 	hsd.setValue(0, 0x00);
 	hsd.write();
-	delay(500);
+	delay(WAIT);
 
 	tlc.clear();
 
