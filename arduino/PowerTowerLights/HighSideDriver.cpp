@@ -7,7 +7,15 @@
 
 #include "HighSideDriver.h"
 
-HighSideDriver::HighSideDriver(uint8_t num, uint8_t clk, uint8_t d, uint8_t l, uint8_t c, uint8_t o)
+HighSideDriver::HighSideDriver()
+{
+}
+
+/**
+ * Initializes the driver
+ *
+ */
+boolean HighSideDriver::initialize(uint8_t num, uint8_t clk, uint8_t d, uint8_t l, uint8_t c, uint8_t o)
 {
 	numdrivers = num;
 	clock = clk;
@@ -19,14 +27,7 @@ HighSideDriver::HighSideDriver(uint8_t num, uint8_t clk, uint8_t d, uint8_t l, u
 
 	totalChannels = num*CHANNELS_PER_DRIVER;
 
-}
 
-/**
- * Initializes the driver
- *
- */
-boolean HighSideDriver::initialize(void)
-{
 	// Allocate buffer; 1 byte per driver
 	buffer = (uint8_t *) calloc(1, numdrivers);
 	if (!buffer)

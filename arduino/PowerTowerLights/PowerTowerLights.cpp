@@ -2,8 +2,7 @@
 #include "PowerTowerLights.h"
 
 Tlc5947Driver tlc = Tlc5947Driver();
-HighSideDriver hsd = HighSideDriver(1, COL_CLOCK, COL_DATA, COL_LATCH,
-		COL_CLEAR, COL_OE);
+HighSideDriver hsd = HighSideDriver();
 
 void lsTest();
 void hsTest();
@@ -30,7 +29,7 @@ void setup()
 	tlc.clear();
 
 	// Clear all channels
-	hsd.initialize();
+	hsd.initialize(1, COL_CLOCK, COL_DATA, COL_LATCH, COL_CLEAR, COL_OE);
 	hsd.setValue(0, 0x00);
 	hsd.write();
 
