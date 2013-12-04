@@ -50,7 +50,8 @@ public:
 private:
 	uint16_t *pwmbuffer;
 
-	uint8_t numdrivers, clk, dat, lat, oe, blank;
+//	uint8_t numdrivers, clk, dat, lat, oe, blank;
+	uint8_t numdrivers;
 	// we sacrifice memory size for speed; we pre-calculate and save
 	// the port mappings and masks, then we can use port manipulation
 	// instead of digitalWrite

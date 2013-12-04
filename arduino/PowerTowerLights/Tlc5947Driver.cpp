@@ -28,6 +28,21 @@
 
 Tlc5947Driver::Tlc5947Driver()
 {
+	pwmbuffer = 0;
+	maxIntensity = MAX_INTENSITY;
+	numdrivers = 0;
+	totalChannels = 0;
+	clockPort = 0;
+	dataPort = 0;
+	latchPort = 0;
+	oePort = 0;
+	blankPort = 0;
+
+	clockMask = 0xff;
+	dataMask = 0xff;
+	latchMask = 0xff;
+	oeMask = 0xff;
+	blankMask = 0xff;
 }
 
 /**
@@ -37,6 +52,9 @@ Tlc5947Driver::Tlc5947Driver()
  */
 boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, uint8_t b, uint8_t o)
 {
+	// initialize variables
+	totalChannels = CHANNELS_PER_DRIVER*n;
+
 	// Allocate buffer to hold intensity values if buf is null
 	if( !pwmbuffer)
 	{
@@ -47,9 +65,6 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 	{
 		return false;
 	}
-
-	maxIntensity = MAX_INTENSITY;
-	totalChannels = CHANNELS_PER_DRIVER*n;
 
 	// Set up pins
 	pinMode(c, OUTPUT);
@@ -167,9 +182,16 @@ void Tlc5947Driver::setIntensity(uint8_t chan, uint16_t value)
  */
 void Tlc5947Driver::setBlank(boolean b)
 {
-	if( blank != -1 )
+	if( blankPort != 0 )
 	{
-		digitalWrite( blank, b ); // blank TLC
+		if( b )
+		{
+			*blankPort &= ~blankMask; // low
+		}
+		else
+		{
+			*blankPort |= blankMask; // high
+		}
 	}
 }
 
@@ -181,9 +203,16 @@ void Tlc5947Driver::setBlank(boolean b)
  */
 void Tlc5947Driver::setOutputEnable(boolean b)
 {
-	if( oe != -1 )
+	if( oePort != 0 )
 	{
-		digitalWrite( oe, !b ); // oe is active low
+		if( b )
+		{
+			*oePort &= ~oeMask; // low = enabled
+		}
+		else
+		{
+			*oePort |= oeMask; // high = disabled
+		}
 	}
 }
 

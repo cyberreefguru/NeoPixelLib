@@ -28,7 +28,10 @@ public:
 
 private:
 	uint8_t *buffer;
-	uint8_t numdrivers, clock, data, latch, oe, clr, totalChannels;
+	uint8_t numdrivers, totalChannels;
+
+	volatile uint8_t *clockPort, *dataPort, *latchPort, *oePort, *clrPort;
+	uint8_t clockMask, dataMask, latchMask, oeMask, clrMask;
 
 };
 
