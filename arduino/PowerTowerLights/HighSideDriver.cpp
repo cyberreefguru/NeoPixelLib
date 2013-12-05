@@ -12,6 +12,7 @@ HighSideDriver::HighSideDriver()
 	buffer = 0;
 	numdrivers = 0;
 	totalChannels = 0;
+
 	clockPort = 0;
 	dataPort = 0;
 	latchPort = 0;
@@ -42,31 +43,6 @@ boolean HighSideDriver::initialize(uint8_t num, uint8_t clk, uint8_t d, uint8_t 
 		return false;
 	}
 
-	pinMode(clk, OUTPUT);
-	pinMode(d, OUTPUT);
-	pinMode(l, OUTPUT);
-
-	digitalWrite(clk, LOW);
-	digitalWrite(d, LOW);
-	digitalWrite(l, LOW);
-
-	if (c != -1)
-	{
-		pinMode(c, OUTPUT);
-		digitalWrite(c, LOW);
-		digitalWrite(c, HIGH);
-		clrPort = portOutputRegister( digitalPinToPort( c ) );
-		clrMask = digitalPinToBitMask( c );
-	}
-
-	if (o != -1)
-	{
-		pinMode(o, OUTPUT);
-		digitalWrite(o, LOW);
-		oePort = portOutputRegister( digitalPinToPort( o ) );
-		oeMask = digitalPinToBitMask( o );
-	}
-
 	// Calculate data port values
 	clockPort = portOutputRegister( digitalPinToPort( clk ) );
 	latchPort = portOutputRegister( digitalPinToPort( l ) );
@@ -76,6 +52,33 @@ boolean HighSideDriver::initialize(uint8_t num, uint8_t clk, uint8_t d, uint8_t 
 	clockMask = digitalPinToBitMask( clk );
 	latchMask = digitalPinToBitMask( l );
 	dataMask = digitalPinToBitMask( d );
+
+	pinMode(clk, OUTPUT);
+	pinMode(d, OUTPUT);
+	pinMode(l, OUTPUT);
+
+	*clockPort &= ~clockMask;
+	*latchPort &= ~latchMask;
+	*dataPort &= ~dataMask;
+
+	if (c != -1)
+	{
+		pinMode(c, OUTPUT);
+		clrPort = portOutputRegister( digitalPinToPort( c ) );
+		clrMask = digitalPinToBitMask( c );
+
+		*clrPort &= ~clrMask; // low = clear
+		*clrPort |= clrMask; // high = not clear
+	}
+
+	if (o != -1)
+	{
+		pinMode(o, OUTPUT);
+		oePort = portOutputRegister( digitalPinToPort( o ) );
+		oeMask = digitalPinToBitMask( o );
+
+		*oePort &= ~oeMask; // low = enabled
+	}
 
 	return true;
 
@@ -90,6 +93,18 @@ boolean HighSideDriver::initialize(uint8_t num, uint8_t clk, uint8_t d, uint8_t 
 void HighSideDriver::setValue(uint8_t chan, uint8_t value)
 {
 	buffer[chan] = value;
+}
+
+/**
+ * Sets all intensity values to 0
+ */
+void HighSideDriver::setAll(uint8_t value)
+{
+	// Clear all channels
+	for(uint8_t i=0; i<totalChannels; i++)
+	{
+		buffer[i] = value;
+	}
 }
 
 /**
@@ -115,12 +130,13 @@ void HighSideDriver::write(void)
 				*dataPort &= ~dataMask;
 			}
 
-			*clockPort |= clockMask;
-			*clockPort &= ~clockMask;
-
+			// toggle clock
+			*clockPort |= clockMask; // high
+			*clockPort &= ~clockMask; // low
 		}
 	}
 
+	// toggle latch
 	*latchPort |= latchMask; // high
 	*latchPort &= ~latchMask; // low
 
@@ -157,8 +173,11 @@ void HighSideDriver::clear()
 	if (clrPort == 0)
 		return;
 
-	*clrPort |= clrMask; // high
-	*clrPort &= ~clrMask; // low
+	setAll(0);
+
+	// no need to call write because toggling clr performs the same action
+	*clrPort &= ~clrMask; // low = clear
+	*clrPort |= clrMask; // high = not clear
 
 
 } // end clear

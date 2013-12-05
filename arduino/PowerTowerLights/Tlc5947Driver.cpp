@@ -26,12 +26,16 @@
 
 #include "Tlc5947Driver.h"
 
+/**
+ * Constructor
+ */
 Tlc5947Driver::Tlc5947Driver()
 {
 	pwmbuffer = 0;
 	maxIntensity = MAX_INTENSITY;
 	numdrivers = 0;
 	totalChannels = 0;
+
 	clockPort = 0;
 	dataPort = 0;
 	latchPort = 0;
@@ -61,6 +65,7 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 		// Must allocate 2 bytes per channel = 48 bytes/driver
 		pwmbuffer = (uint16_t *) calloc(2, totalChannels);
 	}
+
 	if (!pwmbuffer)
 	{
 		return false;
@@ -70,25 +75,6 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 	pinMode(c, OUTPUT);
 	pinMode(d, OUTPUT);
 	pinMode(l, OUTPUT);
-
-	digitalWrite(c, LOW);
-	digitalWrite(d, LOW);
-	digitalWrite(l, LOW);
-
-	if( b != -1 )
-	{
-		pinMode(b, OUTPUT);
-		digitalWrite(b, LOW);
-		blankPort = portOutputRegister( digitalPinToPort( b ) );
-		blankMask = digitalPinToBitMask( b );
-	}
-	if( o != -1 )
-	{
-		pinMode(o, OUTPUT);
-		digitalWrite(o, HIGH);
-		oePort = portOutputRegister( digitalPinToPort( o ) );
-		oeMask = digitalPinToBitMask( o );
-	}
 
 	// Calculate data port values
 	clockPort = portOutputRegister( digitalPinToPort( c ) );
@@ -100,11 +86,36 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 	latchMask = digitalPinToBitMask( l );
 	dataMask = digitalPinToBitMask( d );
 
-//	Serial.print("maxIntensity: ");
-//	Serial.println( maxIntensity );
-//
-//	Serial.print("totalChannels: ");
-//	Serial.println( totalChannels );
+	*clockPort &= ~clockMask; // low
+	*latchPort &= ~latchMask; // low
+	*dataPort &= ~dataMask; // low
+
+	if( b != -1 )
+	{
+		pinMode(b, OUTPUT);
+		blankPort = portOutputRegister( digitalPinToPort( b ) );
+		blankMask = digitalPinToBitMask( b );
+
+		*blankPort |= blankMask; // high = blank
+		*blankPort &= ~blankMask; // low = no blank
+	}
+
+	if( o != -1 )
+	{
+		pinMode(o, OUTPUT);
+		oePort = portOutputRegister( digitalPinToPort( o ) );
+		oeMask = digitalPinToBitMask( o );
+
+		*oePort &= ~oeMask; // low = enabled
+	}
+
+#ifdef __DEBUG
+	Serial.print("maxIntensity: ");
+	Serial.println( maxIntensity );
+
+	Serial.print("totalChannels: ");
+	Serial.println( totalChannels );
+#endif
 
 	return true;
 
@@ -218,14 +229,19 @@ void Tlc5947Driver::setOutputEnable(boolean b)
 
 /**
  * Sets all intensity values to 0
+ *
+ * NOTE: calls write()
  */
 void Tlc5947Driver::clear()
 {
 	setAll( 0 );
+	write();
 }
 
 /**
  * Sets all intensity values to 0
+ *
+ * NOTE: does not write the values
  */
 void Tlc5947Driver::setAll(uint16_t value)
 {
@@ -234,6 +250,4 @@ void Tlc5947Driver::setAll(uint16_t value)
 	{
 		pwmbuffer[i] = value;
 	}
-	write();
-
 }

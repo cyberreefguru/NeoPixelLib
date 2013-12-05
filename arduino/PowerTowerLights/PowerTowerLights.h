@@ -18,12 +18,21 @@
 #define ROW_OE  	-1
 #define ROW_CLEAR 	7
 
-
 #define COL_CLOCK 	8
 #define COL_DATA	9
 #define COL_LATCH	10
 #define COL_CLEAR	-1
 #define COL_OE		11
+
+#define NUM_ROW_DRIVERS 	1
+#define CHANNELS_PER_ROW 	24
+
+#define NUM_COL_DRIVERS 	1
+#define CHANNELS_PER_COL 	8
+
+#define ROWS	32
+#define COLS	8
+
 
 
 //end of add your includes here
