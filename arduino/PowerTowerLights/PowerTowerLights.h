@@ -8,8 +8,7 @@
 #define PowerTowerLights_H_
 
 #include <Arduino.h>
-#include "Tlc5947Driver.h"
-#include "HighSideDriver.h"
+#include "LedShieldDriver.h"
 
 // ROW_CLK D4, ROW_DATA D5, ROW_LATCH D6, ROW_CLEAR D7
 #define ROW_CLOCK	4

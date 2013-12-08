@@ -20,8 +20,6 @@ void error();
 
 void LEDscan(float degreeoffset);
 
-uint8_t frameBuffer[ROWS][COLS];
-
 /**
  * Standard arduino setup.  Called once
  *

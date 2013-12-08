@@ -31,7 +31,7 @@
  */
 Tlc5947Driver::Tlc5947Driver()
 {
-	pwmbuffer = 0;
+	buffer = 0;
 	maxIntensity = MAX_INTENSITY;
 	numdrivers = 0;
 	totalChannels = 0;
@@ -60,13 +60,13 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 	totalChannels = CHANNELS_PER_DRIVER*n;
 
 	// Allocate buffer to hold intensity values if buf is null
-	if( !pwmbuffer)
+	if( !buffer)
 	{
 		// Must allocate 2 bytes per channel = 48 bytes/driver
-		pwmbuffer = (uint16_t *) calloc(2, totalChannels);
+		buffer = (uint16_t *) calloc(2, totalChannels);
 	}
 
-	if (!pwmbuffer)
+	if (!buffer)
 	{
 		return false;
 	}
@@ -138,7 +138,7 @@ void Tlc5947Driver::write(void)
 		// 12 bits per channel, send MSB first
 		for (int8_t b = 11; b >= 0; b--)
 		{
-			if (pwmbuffer[c] & (1 << b))
+			if (buffer[c] & (1 << b))
 			{
 				*dataPort |= dataMask;
 			}
@@ -182,7 +182,7 @@ void Tlc5947Driver::setIntensity(uint8_t chan, uint16_t value)
 		return;
 	}
 
-	pwmbuffer[chan] = value;
+	buffer[chan] = value;
 
 } // end setIntensity
 
@@ -248,6 +248,6 @@ void Tlc5947Driver::setAll(uint16_t value)
 	// Clear all channels
 	for(uint8_t i=0; i<totalChannels; i++)
 	{
-		pwmbuffer[i] = value;
+		buffer[i] = value;
 	}
 }
