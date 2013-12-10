@@ -32,6 +32,7 @@
 #define ROWS	32
 #define COLS	8
 
+//#define __DEBUG
 
 
 //end of add your includes here

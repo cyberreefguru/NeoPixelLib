@@ -56,7 +56,12 @@ Tlc5947Driver::Tlc5947Driver()
  */
 boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, uint8_t b, uint8_t o)
 {
+#ifdef __DEBUG
+	Serial.println("tlc.initialize: BEGIN");
+#endif
+
 	// initialize variables
+	numdrivers = n;
 	totalChannels = CHANNELS_PER_DRIVER*n;
 
 	// Allocate buffer to hold intensity values if buf is null
@@ -117,6 +122,10 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 	Serial.println( totalChannels );
 #endif
 
+#ifdef __DEBUG
+	Serial.println("tlc.initialize: END");
+#endif
+
 	return true;
 
 } // end initialize
@@ -128,6 +137,10 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
  */
 void Tlc5947Driver::write(void)
 {
+#ifdef __DEBUG
+	Serial.println("write: BEGIN");
+#endif
+
 	// ensure latch and clock are low
 	*latchPort &= ~latchMask; // low
 	*clockPort &= ~clockMask; // low
@@ -159,6 +172,9 @@ void Tlc5947Driver::write(void)
 	*latchPort &= ~latchMask; // low
 	*blankPort &= ~blankMask; // low
 
+#ifdef __DEBUG
+	Serial.println("write: COMPLETE");
+#endif
 
 } // end write
 
@@ -181,8 +197,14 @@ void Tlc5947Driver::setIntensity(uint8_t chan, uint16_t value)
 	{
 		return;
 	}
-
 	buffer[chan] = value;
+
+#ifdef __DEBUG
+	Serial.print("Intensity ");
+	Serial.print( chan );
+	Serial.print( ":");
+	Serial.println( buffer[chan]);
+#endif
 
 } // end setIntensity
 
@@ -234,8 +256,16 @@ void Tlc5947Driver::setOutputEnable(boolean b)
  */
 void Tlc5947Driver::clear()
 {
+#ifdef __DEBUG
+	Serial.println("clear: BEGIN");
+#endif
+
 	setAll( 0 );
 	write();
+
+#ifdef __DEBUG
+	Serial.println("clear: END");
+#endif
 }
 
 /**
@@ -245,9 +275,43 @@ void Tlc5947Driver::clear()
  */
 void Tlc5947Driver::setAll(uint16_t value)
 {
+#ifdef __DEBUG
+	Serial.println("setAll: BEGIN");
+#endif
+
 	// Clear all channels
-	for(uint8_t i=0; i<totalChannels; i++)
+
+#ifdef __DEBUG
+	Serial.print("v=");
+	Serial.println(value);
+#endif
+
+	for(uint8_t i=0; i<24; i++)
 	{
 		buffer[i] = value;
 	}
+
+#ifdef __DEBUG
+	Serial.println("setAll: END");
+#endif
+
+}
+
+void Tlc5947Driver::printValues()
+{
+#ifdef __DEBUG
+	Serial.println("printValues:BEGIN");
+#endif
+
+	for(uint8_t i=0; i<24; i++)
+	{
+		Serial.print("buffer[");
+		Serial.print( i );
+		Serial.print( "]=");
+		Serial.print( buffer[i]);
+	}
+
+#ifdef __DEBUG
+	Serial.println("printValues:END");
+#endif
 }

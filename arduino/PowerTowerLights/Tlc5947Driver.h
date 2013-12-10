@@ -32,6 +32,8 @@
 #define CHANNELS_PER_DRIVER 24
 #define MAX_INTENSITY 4095
 
+extern int freeRam();
+
 class Tlc5947Driver
 {
 
@@ -46,10 +48,11 @@ public:
 	void setOutputEnable(boolean b);
 	void write(void);
 	void clear(void);
+	void printValues();
+
 
 private:
 	uint16_t *buffer;
-
 	uint8_t numdrivers;
 
 	// we sacrifice memory size for speed; we pre-calculate and save

@@ -28,7 +28,7 @@ public:
 	void setOutputEnable(boolean b);
 
 private:
-	uint8_t *buffer;
+	uint8_t buffer[2];
 	uint8_t numdrivers, totalChannels;
 
 	volatile uint8_t *clockPort, *dataPort, *latchPort, *oePort, *clrPort;

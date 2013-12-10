@@ -9,7 +9,6 @@
 
 HighSideDriver::HighSideDriver()
 {
-	buffer = 0;
 	numdrivers = 0;
 	totalChannels = 0;
 
@@ -36,12 +35,12 @@ boolean HighSideDriver::initialize(uint8_t num, uint8_t clk, uint8_t d, uint8_t 
 	numdrivers = num;
 	totalChannels = num*CHANNELS_PER_DRIVER;
 
-	// Allocate buffer; 1 byte per driver
-	buffer = (uint8_t *) calloc(1, totalChannels);
-	if (!buffer)
-	{
-		return false;
-	}
+//	// Allocate buffer; 1 byte per driver
+//	buffer = (uint8_t *) calloc(1, totalChannels);
+//	if (!buffer)
+//	{
+//		return false;
+//	}
 
 	// Calculate data port values
 	clockPort = portOutputRegister( digitalPinToPort( clk ) );
