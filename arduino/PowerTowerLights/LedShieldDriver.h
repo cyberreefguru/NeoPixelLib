@@ -15,6 +15,8 @@
 
 #define __DEBUG
 
+#define INDEX(row,col) (col+16*row)
+
 extern int freeRam();
 
 
@@ -43,10 +45,17 @@ public:
 
 
 private:
+
+	// Use single dimension arrays to make compilation easier
+	// access by col + 8*row (or row + 8*col)
+	uint16_t *buf1, *buf2;
+	uint16_t *frameBuf, *driveBuf;
+
 //	uint16_t buf1[48][8], buf2[48][8];
-	uint16_t buffer[2][24][8];
+//	uint16_t buffer[2][24][8];
 //	uint16_t **frameBuf, **driveBuf;
-	uint8_t rows, cols, frameIndex, driveIndex;
+	uint8_t rows, cols;
+//	uint8_t frameIndex, driveIndex;
 
 //	Tlc5947Driver lsd;
 //	HighSideDriver hsd;

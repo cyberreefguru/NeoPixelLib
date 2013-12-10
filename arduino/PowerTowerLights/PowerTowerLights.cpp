@@ -162,11 +162,11 @@ void LEDscan(float degreeoffset)
 	for (uint8_t LEDindex = 0; LEDindex < 5; LEDindex++)
 	{
 		brightnessfactor = exp(0.0 - fabs(scanindex - ((float) LEDindex + 0.5)) * 1.3);
-		driver.getLowSideDriver().setIntensity(LEDindex, (uint16_t) (4095 * brightnessfactor) );
-//		driver.setValue(LEDindex, LEDindex, (uint16_t)(4095*brightnessfactor));
+//		driver.getLowSideDriver().setIntensity(LEDindex, (uint16_t) (4095 * brightnessfactor) );
+		driver.setValue(LEDindex, LEDindex, (uint16_t)(4095*brightnessfactor));
 	}
 
-	driver.getLowSideDriver().write();
-//	driver.write();
+//	driver.getLowSideDriver().write();
+	driver.write();
 }
 

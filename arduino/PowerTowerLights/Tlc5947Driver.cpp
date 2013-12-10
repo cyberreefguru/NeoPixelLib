@@ -68,7 +68,7 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 	if( !buffer)
 	{
 		// Must allocate 2 bytes per channel = 48 bytes/driver
-		buffer = (uint16_t *) calloc(2, totalChannels);
+		buffer = (uint16_t *) calloc(totalChannels, sizeof(uint16_t));
 	}
 
 	if (!buffer)
