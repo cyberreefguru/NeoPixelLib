@@ -9,6 +9,7 @@
 
 HighSideDriver::HighSideDriver()
 {
+	buffer = 0;
 	numdrivers = 0;
 	totalChannels = 0;
 
@@ -34,13 +35,6 @@ boolean HighSideDriver::initialize(uint8_t num, uint8_t clk, uint8_t d, uint8_t 
 	// initialize variables
 	numdrivers = num;
 	totalChannels = num*CHANNELS_PER_DRIVER;
-
-//	// Allocate buffer; 1 byte per driver
-//	buffer = (uint8_t *) calloc(1, totalChannels);
-//	if (!buffer)
-//	{
-//		return false;
-//	}
 
 	// Calculate data port values
 	clockPort = portOutputRegister( digitalPinToPort( clk ) );
@@ -89,21 +83,9 @@ boolean HighSideDriver::initialize(uint8_t num, uint8_t clk, uint8_t d, uint8_t 
  *
  * NOTE: must call write to take affect
  */
-void HighSideDriver::setValue(uint8_t chan, uint8_t value)
+void HighSideDriver::setValue(uint16_t value)
 {
-	buffer[chan] = value;
-}
-
-/**
- * Sets all intensity values to 0
- */
-void HighSideDriver::setAll(uint8_t value)
-{
-	// Clear all channels
-	for(uint8_t i=0; i<totalChannels; i++)
-	{
-		buffer[i] = value;
-	}
+	buffer = value;
 }
 
 /**
@@ -120,7 +102,7 @@ void HighSideDriver::write(void)
 	{
 		for (i = 7; i >=0 ; i--)  {
 
-			if( ((buffer[j] >> i) & 0x01) == 0x01 )
+			if( ((buffer >> i) & 0x01) == 0x01 )
 			{
 				*dataPort |= dataMask;
 			}
@@ -140,6 +122,18 @@ void HighSideDriver::write(void)
 	*latchPort &= ~latchMask; // low
 
 } // end write
+
+uint16_t HighSideDriver::getValue()
+{
+	return buffer;
+}
+
+void HighSideDriver::setAll(uint8_t value)
+{
+	buffer = value;
+	buffer = buffer << 8;
+	buffer |= value;
+}
 
 /**
  * Sets output enable pin
@@ -172,7 +166,7 @@ void HighSideDriver::clear()
 	if (clrPort == 0)
 		return;
 
-	setAll(0);
+	setValue(0);
 
 	// no need to call write because toggling clr performs the same action
 	*clrPort &= ~clrMask; // low = clear

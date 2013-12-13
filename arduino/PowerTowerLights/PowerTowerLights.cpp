@@ -21,25 +21,28 @@ int freeRam () {
 }
 
 
-
+void flash()
+{
+	static boolean output = HIGH;
+	digitalWrite(13, output);
+	output = !output;
+}
 /**
  * Standard arduino setup.  Called once
  *
  */
 void setup()
 {
-
-	delay(10000);
-
-	Serial.print("free=");
-	Serial.println(freeRam());
+//	delay(10000);  // wait for leonardo to fully reset
 
 #ifdef __DEBUG
 	Serial.begin(115200);
 #endif
 
+#ifdef __DEBUG
 	Serial.print("free=");
 	Serial.println(freeRam());
+#endif
 
 #ifdef __DEBUG
 	Serial.println("Initializing shield driver");
@@ -49,8 +52,10 @@ void setup()
 		error();
 	}
 
+#ifdef __DEBUG
 	Serial.print("free=");
 	Serial.println(freeRam());
+#endif
 
 #ifdef __DEBUG
 	Serial.println("Initializing ls driver");
@@ -59,9 +64,10 @@ void setup()
 	{
 		error();
 	}
-
+#ifdef __DEBUG
 	Serial.print("free=");
 	Serial.println(freeRam());
+#endif
 
 #ifdef __DEBUG
 	Serial.println("Initializing hs driver");
@@ -70,8 +76,10 @@ void setup()
 	{
 		error();
 	}
+#ifdef __DEBUG
 	Serial.print("free=");
 	Serial.println(freeRam());
+#endif
 
 	// clear hs and ls drivers; fills buffers with zeros
 #ifdef __DEBUG
@@ -94,20 +102,10 @@ void loop()
 	uint8_t i;
 	float offset = 0;
 
+#ifdef __DEBUG
 	Serial.print("free=");
 	Serial.println(freeRam());
-
-	driver.getLowSideDriver().setAll(4095);
-	Serial.println("Printing buffer");
-	driver.getLowSideDriver().printValues();
-	Serial.println("Writing values");
-	driver.getLowSideDriver().write();
-	Serial.println("Complete");
-
-	Serial.print("free=");
-	Serial.println(freeRam());
-
-//	while(1);
+#endif
 
 #ifdef __DEBUG
 	Serial.println("Calling crossfade");

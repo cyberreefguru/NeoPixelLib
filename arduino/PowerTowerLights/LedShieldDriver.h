@@ -13,7 +13,7 @@
 #include "Tlc5947Driver.h"
 #include "HighSideDriver.h"
 
-#define __DEBUG
+//#define __DEBUG
 
 #define INDEX(row,col) (col+16*row)
 
@@ -40,8 +40,8 @@ public:
 	void setRow(uint8_t row, uint16_t value);
 	void setColumn(uint8_t col, uint16_t value);
 
-	Tlc5947Driver getLowSideDriver();
-	HighSideDriver getHighSideDriver();
+//	Tlc5947Driver getLowSideDriver();
+//	HighSideDriver getHighSideDriver();
 
 
 private:
@@ -50,16 +50,7 @@ private:
 	// access by col + 8*row (or row + 8*col)
 	uint16_t *buf1, *buf2;
 	uint16_t *frameBuf, *driveBuf;
-
-//	uint16_t buf1[48][8], buf2[48][8];
-//	uint16_t buffer[2][24][8];
-//	uint16_t **frameBuf, **driveBuf;
 	uint8_t rows, cols;
-//	uint8_t frameIndex, driveIndex;
-
-//	Tlc5947Driver lsd;
-//	HighSideDriver hsd;
-
 
 };
 

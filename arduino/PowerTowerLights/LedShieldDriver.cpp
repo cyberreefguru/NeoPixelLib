@@ -10,6 +10,8 @@
 Tlc5947Driver lsd = Tlc5947Driver();
 HighSideDriver hsd = HighSideDriver();
 
+void isr();
+
 /**
  * Constructor
  */
@@ -21,9 +23,6 @@ LedShieldDriver::LedShieldDriver()
 	cols = 0;
 	frameBuf = 0;
 	driveBuf = 0;
-//	frameIndex = 0;
-//	driveIndex = 1;
-
 }
 
 /**
@@ -59,6 +58,8 @@ boolean LedShieldDriver::initialize(uint8_t r, uint8_t c)
 	frameBuf = buf1;
 	driveBuf = buf2;
 
+	FlexiTimer2::set(1, isr );
+
 	return true;
 
 } // end initialize
@@ -80,9 +81,11 @@ boolean LedShieldDriver::initializeHighSideDriver(uint8_t num, uint8_t clk,
 #ifdef __DEBUG
 	Serial.println("Enabling columns");
 #endif
-	hsd.setValue(0, 0x1f); // turn on all columns
-	hsd.write();
+		hsd.setValue(0x00); // turn on all columns
+		hsd.write();
+		FlexiTimer2::start();
 	}
+
 	return b;
 }
 
@@ -127,23 +130,7 @@ uint16_t** LedShieldDriver::getBuffer()
 void LedShieldDriver::write()
 {
 	// update low side buffer
-//	noInterrupts();
-//	if( driveBuf == (uint16_t **)&buf1 )
-//	{
-//		driveBuf = (uint16_t **)&buf2;
-//		frameBuf = (uint16_t **)&buf1;
-//	}
-//	else
-//	{
-//		driveBuf = (uint16_t **)&buf1;
-//		frameBuf = (uint16_t **)&buf2;
-//	}
-
-//	frameIndex = frameIndex%2;
-//	driveIndex = driveIndex%2;
-
-//	interrupts();
-
+	noInterrupts();
 	if( driveBuf == buf1 )
 	{
 		frameBuf = buf1;
@@ -154,19 +141,7 @@ void LedShieldDriver::write()
 		frameBuf = buf2;
 		driveBuf = buf1;
 	}
-
-
-//	Serial.print("buf1=");
-//	Serial.print((uint32_t)&buf1, HEX);
-//	Serial.print(" ");
-//	Serial.print("buf2=");
-//	Serial.print((uint32_t)&buf2, HEX);
-//	Serial.print(" ");
-//	Serial.print("fb=");
-//	Serial.print((uint32_t)frameBuf, HEX);
-//	Serial.print(" ");
-//	Serial.print("db=");
-//	Serial.println((uint32_t)driveBuf, HEX);
+	interrupts();
 
 
 	// TEMP: simulate output as built
@@ -218,18 +193,7 @@ void LedShieldDriver::clearAll()
  */
 void LedShieldDriver::setValue(uint8_t row, uint8_t col, uint16_t value)
 {
-	// TODO make macro for index algorithm
 	frameBuf[INDEX(row,col)] = value;
-//	buffer[frameIndex][row][col] = value;
-
-//#ifdef __DEBUG
-//	Serial.print("v(");
-//	Serial.print( row );
-//	Serial.print( ",");
-//	Serial.print( col);
-//	Serial.print(")=");
-//	Serial.println( buffer[frameIndex][row][col]);
-//#endif
 }
 
 /**
@@ -240,7 +204,6 @@ void LedShieldDriver::setValue(uint8_t row, uint8_t col, uint16_t value)
 uint16_t LedShieldDriver::getValue(uint8_t row, uint8_t col)
 {
 	return frameBuf[INDEX(row,col)];
-//	return buffer[frameIndex][row][col];
 }
 
 /**
@@ -253,7 +216,6 @@ void LedShieldDriver::setRow(uint8_t row, uint16_t value)
 	for(uint8_t i=0; i<cols; i++)
 	{
 		frameBuf[INDEX(row,i)]= value;
-//		buffer[frameIndex][row][i] = value;
 	}
 }
 
@@ -267,16 +229,29 @@ void LedShieldDriver::setColumn(uint8_t col, uint16_t value)
 	for(uint8_t i=0; i<rows; i++)
 	{
 		frameBuf[INDEX(i,col)]= value;
-//		buffer[frameIndex][i][col] = value;
 	}
 }
 
-Tlc5947Driver LedShieldDriver::getLowSideDriver()
-{
-	return lsd;
-}
+//Tlc5947Driver LedShieldDriver::getLowSideDriver()
+//{
+//	return lsd;
+//}
+//
+//HighSideDriver LedShieldDriver::getHighSideDriver()
+//{
+//	return hsd;
+//}
 
-HighSideDriver LedShieldDriver::getHighSideDriver()
+void isr()
 {
-	return hsd;
+	uint16_t v = hsd.getValue();
+
+	v = v<<1;
+	if( v == 0 )
+	{
+		v = 0x01;
+	}
+
+	hsd.setValue(v);
+	hsd.write();
 }
