@@ -64,6 +64,7 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 	numdrivers = n;
 	totalChannels = CHANNELS_PER_DRIVER*n;
 
+	// TODO we can point this to the driveBuf rather than using more memory here. It will avoid the copy too.
 	// Allocate buffer to hold intensity values if buf is null
 	if( !buffer)
 	{

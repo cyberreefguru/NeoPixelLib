@@ -94,21 +94,8 @@ void loop()
 	uint8_t i;
 	float offset = 0;
 
-//#ifdef __DEBUG
-//	Serial.println("Enabling columns");
-//#endif
-//	hsd.setValue(0, 0x1f); // turn on all columns
-//	hsd.write();
-//
-//#ifdef __DEBUG
-//	Serial.println("Clearing TLC");
-//#endif
-//	tlc.setBlank(false);
-//	tlc.clear();
-
 	Serial.print("free=");
 	Serial.println(freeRam());
-
 
 	driver.getLowSideDriver().setAll(4095);
 	Serial.println("Printing buffer");
@@ -120,9 +107,7 @@ void loop()
 	Serial.print("free=");
 	Serial.println(freeRam());
 
-
 //	while(1);
-
 
 #ifdef __DEBUG
 	Serial.println("Calling crossfade");
