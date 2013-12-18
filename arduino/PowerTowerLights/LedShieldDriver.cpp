@@ -7,6 +7,8 @@
 
 #include "LedShieldDriver.h"
 
+
+
 Tlc5947Driver lsd = Tlc5947Driver();
 HighSideDriver hsd = HighSideDriver();
 
@@ -58,11 +60,32 @@ boolean LedShieldDriver::initialize(uint8_t r, uint8_t c)
 	frameBuf = buf1;
 	driveBuf = buf2;
 
-	FlexiTimer2::set(1, isr );
+	FlexiTimer2::set(1, 1.0/2880, isr ); // 500hz
 
 	return true;
 
 } // end initialize
+
+
+/**
+ * Interrupt service routine - cycle columns for driving
+ *
+ */
+void isr()
+{
+	uint16_t v = hsd.getValue();
+
+	v = v<<1;
+	if( v == 0x00 )
+	{
+		v = 0x01;
+	}
+	hsd.setValue(v);
+	hsd.write();
+}
+
+
+
 
 /**
  * Initializes the high side driver
@@ -232,6 +255,8 @@ void LedShieldDriver::setColumn(uint8_t col, uint16_t value)
 	}
 }
 
+
+
 //Tlc5947Driver LedShieldDriver::getLowSideDriver()
 //{
 //	return lsd;
@@ -242,16 +267,14 @@ void LedShieldDriver::setColumn(uint8_t col, uint16_t value)
 //	return hsd;
 //}
 
-void isr()
+void LedShieldDriver::setAll(uint16_t value)
 {
-	uint16_t v = hsd.getValue();
-
-	v = v<<1;
-	if( v == 0 )
+	for(int8_t j=0; j<cols; j++ )
 	{
-		v = 0x01;
+		for(uint8_t i=0; i<rows; i++)
+		{
+			frameBuf[INDEX(i,j)]= value;
+		}
 	}
 
-	hsd.setValue(v);
-	hsd.write();
 }

@@ -100,7 +100,6 @@ void setup()
 void loop()
 {
 	uint8_t i;
-	float offset = 0;
 
 #ifdef __DEBUG
 	Serial.print("free=");
@@ -110,6 +109,25 @@ void loop()
 #ifdef __DEBUG
 	Serial.println("Calling crossfade");
 #endif
+
+
+	driver.setAll(4095);
+	driver.write();
+	delay(1000);
+	driver.setAll(0);
+	driver.write();
+	delay(1000);
+	driver.setAll(500);
+	driver.write();
+	delay(1000);
+
+
+} // end loop
+
+void crossfade()
+{
+	float offset = 0;
+
 	while (1)
 	{
 		for (offset = 0; offset < 360; offset += 0.5)
@@ -119,7 +137,8 @@ void loop()
 		}
 	}
 
-} // end loop
+}
+
 
 /**
  * Flashes on-board LED to indicate critical failure

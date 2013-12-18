@@ -39,6 +39,8 @@ public:
 
 	void setRow(uint8_t row, uint16_t value);
 	void setColumn(uint8_t col, uint16_t value);
+	void setAll(uint16_t value);
+
 
 //	Tlc5947Driver getLowSideDriver();
 //	HighSideDriver getHighSideDriver();
