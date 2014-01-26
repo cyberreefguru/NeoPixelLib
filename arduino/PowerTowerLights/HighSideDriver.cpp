@@ -103,6 +103,7 @@ void HighSideDriver::write(void)
 		for (i = 7; i >=0 ; i--)  {
 
 			if( ((buffer >> i) & 0x01) == 0x01 )
+//			if( buffer & (1 << i) )
 			{
 				*dataPort |= dataMask;
 			}

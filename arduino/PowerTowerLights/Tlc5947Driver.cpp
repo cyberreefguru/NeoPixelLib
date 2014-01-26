@@ -31,7 +31,7 @@
  */
 Tlc5947Driver::Tlc5947Driver()
 {
-	buffer = 0;
+//	buffer = 0;
 	maxIntensity = MAX_INTENSITY;
 	numdrivers = 0;
 	totalChannels = 0;
@@ -64,18 +64,18 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 	numdrivers = n;
 	totalChannels = CHANNELS_PER_DRIVER*n;
 
-	// TODO we can point this to the driveBuf rather than using more memory here. It will avoid the copy too.
-	// Allocate buffer to hold intensity values if buf is null
-	if( !buffer)
-	{
-		// Must allocate 2 bytes per channel = 48 bytes/driver
-		buffer = (uint16_t *) calloc(totalChannels, sizeof(uint16_t));
-	}
-
-	if (!buffer)
-	{
-		return false;
-	}
+//	// TODO we can point this to the driveBuf rather than using more memory here. It will avoid the copy too.
+//	// Allocate buffer to hold intensity values if buf is null
+//	if( !buffer)
+//	{
+//		// Must allocate 2 bytes per channel = 48 bytes/driver
+//		buffer = (uint16_t *) calloc(totalChannels, sizeof(uint16_t));
+//	}
+//
+//	if (!buffer)
+//	{
+//		return false;
+//	}
 
 	// Set up pins
 	pinMode(c, OUTPUT);
@@ -153,7 +153,8 @@ void Tlc5947Driver::write(uint16_t *buf)
 		// 12 bits per channel, send MSB first
 		for (int8_t b = 11; b >= 0; b--)
 		{
-			if (buf[c] & (1 << b))
+			if( ((buf[c] >> b) & 0x01) == 0x01 )
+//			if (buf[c] & (1 << b))
 			{
 				*dataPort |= dataMask;
 			}
@@ -187,7 +188,7 @@ void Tlc5947Driver::write(uint16_t *buf)
  *
  * NOTE: Must be called to update outputs with buffer values
  */
-void Tlc5947Driver::write(void)
+void Tlc5947Driver::writeValue(uint16_t value)
 {
 #ifdef __DEBUG
 	Serial.println("write: BEGIN");
@@ -203,7 +204,7 @@ void Tlc5947Driver::write(void)
 		// 12 bits per channel, send MSB first
 		for (int8_t b = 11; b >= 0; b--)
 		{
-			if (buffer[c] & (1 << b))
+			if (value & (1 << b))
 			{
 				*dataPort |= dataMask;
 			}
@@ -230,35 +231,35 @@ void Tlc5947Driver::write(void)
 
 } // end write
 
-/**
- * Sets the intensity of a specific channel in the buffer
- *
- * NOTE: must call write() to driver output
- *
- * @chan - pwm channel to set intensity
- * @pwm - intensity value to set
- */
-void Tlc5947Driver::setIntensity(uint8_t chan, uint16_t value)
-{
-	if (value > maxIntensity)
-	{
-		value = maxIntensity;
-	}
-
-	if (chan > totalChannels)
-	{
-		return;
-	}
-	buffer[chan] = value;
-
-#ifdef __DEBUG
-	Serial.print("Intensity ");
-	Serial.print( chan );
-	Serial.print( ":");
-	Serial.println( buffer[chan]);
-#endif
-
-} // end setIntensity
+///**
+// * Sets the intensity of a specific channel in the buffer
+// *
+// * NOTE: must call write() to driver output
+// *
+// * @chan - pwm channel to set intensity
+// * @pwm - intensity value to set
+// */
+//void Tlc5947Driver::setIntensity(uint8_t chan, uint16_t value)
+//{
+//	if (value > maxIntensity)
+//	{
+//		value = maxIntensity;
+//	}
+//
+//	if (chan > totalChannels)
+//	{
+//		return;
+//	}
+//	buffer[chan] = value;
+//
+//#ifdef __DEBUG
+//	Serial.print("Intensity ");
+//	Serial.print( chan );
+//	Serial.print( ":");
+//	Serial.println( buffer[chan]);
+//#endif
+//
+//} // end setIntensity
 
 /**
  * Blanks driver
@@ -312,42 +313,42 @@ void Tlc5947Driver::clear()
 	Serial.println("clear: BEGIN");
 #endif
 
-	setAll( 0 );
-	write();
+//	setAll( 0 );
+	writeValue(0);
 
 #ifdef __DEBUG
 	Serial.println("clear: END");
 #endif
 }
 
-/**
- * Sets all intensity values to 0
- *
- * NOTE: does not write the values
- */
-void Tlc5947Driver::setAll(uint16_t value)
-{
-#ifdef __DEBUG
-	Serial.println("setAll: BEGIN");
-#endif
-
-	// Clear all channels
-
-#ifdef __DEBUG
-	Serial.print("v=");
-	Serial.println(value);
-#endif
-
-	for(uint8_t i=0; i<24; i++)
-	{
-		buffer[i] = value;
-	}
-
-#ifdef __DEBUG
-	Serial.println("setAll: END");
-#endif
-
-}
+///**
+// * Sets all intensity values to 0
+// *
+// * NOTE: does not write the values
+// */
+//void Tlc5947Driver::setAll(uint16_t value)
+//{
+//#ifdef __DEBUG
+//	Serial.println("setAll: BEGIN");
+//#endif
+//
+//	// Clear all channels
+//
+//#ifdef __DEBUG
+//	Serial.print("v=");
+//	Serial.println(value);
+//#endif
+//
+//	for(uint8_t i=0; i<24; i++)
+//	{
+//		buffer[i] = value;
+//	}
+//
+//#ifdef __DEBUG
+//	Serial.println("setAll: END");
+//#endif
+//
+//}
 
 void Tlc5947Driver::printValues()
 {
@@ -360,7 +361,7 @@ void Tlc5947Driver::printValues()
 		Serial.print("buffer[");
 		Serial.print( i );
 		Serial.print( "]=");
-		Serial.print( buffer[i]);
+//		Serial.print( buffer[i]);
 	}
 
 #ifdef __DEBUG

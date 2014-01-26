@@ -71,6 +71,16 @@ void LedShieldDriver::execInterrupt()
 	// turn rows off
 //	lsd.setBlank(true);
 
+	// Clear columns
+//	hsd.setValue(0);
+//	hsd.write();
+
+	lsd.write((uint16_t *)&driveBuf[INDEX(0,currentCol)]);
+
+	// rotate to next column
+	hsd.setValue(0x01<<currentCol);
+	hsd.write();
+
 	// increment column value
 	currentCol++;
 	if( currentCol >= cols )
@@ -78,16 +88,7 @@ void LedShieldDriver::execInterrupt()
 		currentCol = 0;
 	}
 
-	//	// copy row data into drive buffer
-//	for(uint8_t i=0; i<rows; i++)
-//	{
-//		lsd.setIntensity(i, driveBuf[INDEX(i, currentCol)]);
-//	}
-	lsd.write((uint16_t *)&driveBuf[INDEX(0,currentCol)]);
 
-	// rotate to next column
-	hsd.setValue(0x01<<currentCol);
-	hsd.write();
 
 
 	// turn rows on
@@ -145,9 +146,9 @@ boolean LedShieldDriver::initializeLowSideDriver(uint8_t num, uint8_t clk,
 #ifdef __DEBUG
 		Serial.println("Clearing TLC");
 #endif
-		lsd.setBlank(true); // blank
-		lsd.clear(); // clear buffer
-		lsd.setBlank(false); // "unblank"
+//		lsd.setBlank(true); // blank
+//		lsd.clear(); // clear buffer
+//		lsd.setBlank(false); // "unblank"
 	}
 	else
 	{

@@ -46,14 +46,14 @@ public:
 	void setAll(uint16_t value);
 	void setBlank(boolean b);
 	void setOutputEnable(boolean b);
-	void write(void);
+	void writeValue(uint16_t value);
 	void write(uint16_t *buffer);
 	void clear(void);
 	void printValues();
 
 
 private:
-	uint16_t *buffer;
+//	uint16_t *buffer;
 	uint8_t numdrivers;
 
 	// we sacrifice memory size for speed; we pre-calculate and save
