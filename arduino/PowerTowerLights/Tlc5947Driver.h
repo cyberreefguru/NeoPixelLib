@@ -47,6 +47,7 @@ public:
 	void setBlank(boolean b);
 	void setOutputEnable(boolean b);
 	void write(void);
+	void write(uint16_t *buffer);
 	void clear(void);
 	void printValues();
 

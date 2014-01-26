@@ -9,13 +9,18 @@
 #define LEDSHIELDDRIVER_H_
 
 #include <Arduino.h>
-#include "FlexiTimer2.h"
 #include "Tlc5947Driver.h"
 #include "HighSideDriver.h"
+#include "FlexiTimer2.h";
 
 //#define __DEBUG
 
-#define INDEX(row,col) (col+16*row)
+#define MAX_ROWS			24
+#define MAX_COLS			8
+#define MAX_BUFFER_SIZE		MAX_ROWS*MAX_COLS
+
+#define INDEX(row,col) (row+col*MAX_ROWS)
+
 
 extern int freeRam();
 
@@ -28,11 +33,12 @@ public:
 	boolean initializeHighSideDriver(uint8_t num, uint8_t clk, uint8_t data, uint8_t lat, uint8_t clr, uint8_t oe);
 	boolean initializeLowSideDriver(uint8_t num, uint8_t clk, uint8_t data, uint8_t lat, uint8_t clr, uint8_t oe);
 
-	uint16_t** getBuffer();
-
 	void write();
 	void clear(boolean b);
 	void clearAll();
+
+	uint8_t getRows();
+	uint8_t getColumns();
 
 	void setValue(uint8_t row, uint8_t col, uint16_t value);
 	uint16_t getValue(uint8_t row, uint8_t col);
@@ -41,10 +47,7 @@ public:
 	void setColumn(uint8_t col, uint16_t value);
 	void setAll(uint16_t value);
 
-
-//	Tlc5947Driver getLowSideDriver();
-//	HighSideDriver getHighSideDriver();
-
+	void execInterrupt();
 
 private:
 
@@ -53,6 +56,7 @@ private:
 	uint16_t *buf1, *buf2;
 	uint16_t *frameBuf, *driveBuf;
 	uint8_t rows, cols;
+	uint8_t currentCol;
 
 };
 

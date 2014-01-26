@@ -131,6 +131,57 @@ boolean Tlc5947Driver::initialize(uint8_t n, uint8_t c, uint8_t d, uint8_t l, ui
 
 } // end initialize
 
+
+/**
+ * Writes the buffer to the driver.
+ *
+ * NOTE: Must be called to update outputs with buffer values
+ */
+void Tlc5947Driver::write(uint16_t *buf)
+{
+#ifdef __DEBUG
+	Serial.println("write: BEGIN");
+#endif
+
+	// ensure latch and clock are low
+	*latchPort &= ~latchMask; // low
+	*clockPort &= ~clockMask; // low
+
+	// 24 channels per TLC5974
+	for (int8_t c = totalChannels - 1; c >= 0; c--)
+	{
+		// 12 bits per channel, send MSB first
+		for (int8_t b = 11; b >= 0; b--)
+		{
+			if (buf[c] & (1 << b))
+			{
+				*dataPort |= dataMask;
+			}
+			else
+			{
+				*dataPort &= ~dataMask;
+			}
+			*clockPort |= clockMask; // clock high
+			*clockPort &= ~clockMask; // clock low
+
+		} // end value write
+
+	} // end channel
+
+	// Latch data into chip
+	*blankPort |= blankMask; // high
+	*latchPort |= latchMask; // high
+	*latchPort &= ~latchMask; // low
+	*blankPort &= ~blankMask; // low
+
+#ifdef __DEBUG
+	Serial.println("write: COMPLETE");
+#endif
+
+} // end write
+
+
+
 /**
  * Writes the buffer to the driver.
  *

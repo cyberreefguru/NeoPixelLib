@@ -9,6 +9,7 @@
 
 #include <Arduino.h>
 #include "LedShieldDriver.h"
+#include "FlexiTimer2.h"
 
 // ROW_CLK D4, ROW_DATA D5, ROW_LATCH D6, ROW_CLEAR D7
 #define ROW_CLOCK	4
@@ -29,7 +30,7 @@
 #define NUM_COL_DRIVERS 	1
 #define CHANNELS_PER_COL 	8
 
-#define ROWS	32
+#define ROWS	24
 #define COLS	8
 
 //#define __DEBUG

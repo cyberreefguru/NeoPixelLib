@@ -12,6 +12,7 @@
 
 #define CHANNELS_PER_DRIVER 8
 
+
 class HighSideDriver
 {
 

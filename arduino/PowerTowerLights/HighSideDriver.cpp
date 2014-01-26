@@ -128,12 +128,12 @@ uint16_t HighSideDriver::getValue()
 	return buffer;
 }
 
-void HighSideDriver::setAll(uint8_t value)
-{
-	buffer = value;
-	buffer = buffer << 8;
-	buffer |= value;
-}
+//void HighSideDriver::setAll(uint8_t value)
+//{
+//	buffer = value;
+//	buffer = buffer << 8;
+//	buffer |= value;
+//}
 
 /**
  * Sets output enable pin

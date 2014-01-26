@@ -7,11 +7,13 @@
 #include "PowerTowerLights.h"
 
 LedShieldDriver driver = LedShieldDriver();
+void isr();
 
 #define WAIT 50
 
-void error();
+const int led_pin = 13;			// default to pin 13
 
+void error(uint8_t errorCode);
 void LEDscan(float degreeoffset);
 
 int freeRam () {
@@ -21,12 +23,6 @@ int freeRam () {
 }
 
 
-void flash()
-{
-	static boolean output = HIGH;
-	digitalWrite(13, output);
-	output = !output;
-}
 /**
  * Standard arduino setup.  Called once
  *
@@ -49,7 +45,7 @@ void setup()
 #endif
 	if( driver.initialize(ROWS, COLS) == false )
 	{
-		error();
+		error(10);
 	}
 
 #ifdef __DEBUG
@@ -62,7 +58,7 @@ void setup()
 #endif
 	if (driver.initializeLowSideDriver(1, ROW_CLOCK, ROW_DATA, ROW_LATCH, ROW_CLEAR, -1) == false)
 	{
-		error();
+		error(30);
 	}
 #ifdef __DEBUG
 	Serial.print("free=");
@@ -74,7 +70,7 @@ void setup()
 #endif
 	if( driver.initializeHighSideDriver(1, COL_CLOCK, COL_DATA, COL_LATCH, COL_CLEAR, COL_OE) == false)
 	{
-		error();
+		error(50);
 	}
 #ifdef __DEBUG
 	Serial.print("free=");
@@ -88,9 +84,16 @@ void setup()
 	driver.clearAll();
 
 #ifdef __DEBUG
+	Serial.println("Initializing timer");
+#endif
+	FlexiTimer2::set(2, 0.00001, isr );
+	FlexiTimer2::start();
+
+#ifdef __DEBUG
 	Serial.println("**** init complete *****");
 #endif
 
+	delay(2500);
 }
 
 /**
@@ -99,30 +102,57 @@ void setup()
  */
 void loop()
 {
-	uint8_t i;
+	uint8_t i, j;
 
 #ifdef __DEBUG
 	Serial.print("free=");
 	Serial.println(freeRam());
 #endif
 
-#ifdef __DEBUG
-	Serial.println("Calling crossfade");
-#endif
+//#ifdef __DEBUG
+//	Serial.println("Calling crossfade");
+//#endif
 
+	for(i=0; i<12; i++)
+	{
+		driver.setValue(i,7,4095);
+		driver.write();
+//		delay(1);
+	}
 
-	driver.setAll(4095);
-	driver.write();
-	delay(1000);
 	driver.setAll(0);
 	driver.write();
 	delay(1000);
-	driver.setAll(500);
-	driver.write();
-	delay(1000);
+
+//	for(i=0; i<8; i++)
+//	{
+//		for(j=0; j<6; j++)
+//		{
+//			driver.setValue(j, i, 4095);
+//			driver.write();
+//			delay(250);
+//			driver.setValue(j,i,0);
+//		}
+//	}
+
 
 
 } // end loop
+
+
+
+/**
+ * Interrupt service routine
+ *
+ */
+void isr()
+{
+	driver.execInterrupt();
+
+	static boolean output = HIGH;
+	digitalWrite(led_pin, output);
+	output = !output;
+}
 
 void crossfade()
 {
@@ -143,14 +173,18 @@ void crossfade()
 /**
  * Flashes on-board LED to indicate critical failure
  */
-void error()
+void error(uint8_t errorCode)
 {
+	uint16_t delayValue;
+
+	delayValue = errorCode*10;
+
 	while (1)
 	{
 		digitalWrite(13, HIGH);
-		delay(100);
+		delay(delayValue);
 		digitalWrite(13, LOW);
-		delay(100);
+		delay(delayValue);
 	}
 }
 

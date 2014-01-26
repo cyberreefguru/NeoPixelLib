@@ -7,12 +7,8 @@
 
 #include "LedShieldDriver.h"
 
-
-
 Tlc5947Driver lsd = Tlc5947Driver();
 HighSideDriver hsd = HighSideDriver();
-
-void isr();
 
 /**
  * Constructor
@@ -25,6 +21,7 @@ LedShieldDriver::LedShieldDriver()
 	cols = 0;
 	frameBuf = 0;
 	driveBuf = 0;
+	currentCol = 0;
 }
 
 /**
@@ -39,7 +36,7 @@ boolean LedShieldDriver::initialize(uint8_t r, uint8_t c)
 	rows = r;
 	cols = c;
 
-	buf1 = (uint16_t *) calloc(rows*cols, sizeof(uint16_t));
+	buf1 = (uint16_t *) calloc(MAX_BUFFER_SIZE, sizeof(uint16_t));
 	if( !buf1 )
 	{
 #ifdef __DEBUG
@@ -48,19 +45,17 @@ boolean LedShieldDriver::initialize(uint8_t r, uint8_t c)
 		return false;
 	}
 
-	buf2 = (uint16_t *) calloc(rows*cols, sizeof(uint16_t));
+	buf2 = (uint16_t *) calloc(MAX_BUFFER_SIZE, sizeof(uint16_t));
 	if(!buf2)
 	{
 #ifdef __DEBUG
-		Serial.print("ERROR: buf1 allocation failed: ");
+		Serial.print("ERROR: buf2 allocation failed: ");
 #endif
 		return false;
 	}
 
 	frameBuf = buf1;
 	driveBuf = buf2;
-
-	FlexiTimer2::set(1, 1.0/2880, isr ); // 500hz
 
 	return true;
 
@@ -71,17 +66,33 @@ boolean LedShieldDriver::initialize(uint8_t r, uint8_t c)
  * Interrupt service routine - cycle columns for driving
  *
  */
-void isr()
+void LedShieldDriver::execInterrupt()
 {
-	uint16_t v = hsd.getValue();
+	// turn rows off
+//	lsd.setBlank(true);
 
-	v = v<<1;
-	if( v == 0x00 )
+	// increment column value
+	currentCol++;
+	if( currentCol >= cols )
 	{
-		v = 0x01;
+		currentCol = 0;
 	}
-	hsd.setValue(v);
+
+	//	// copy row data into drive buffer
+//	for(uint8_t i=0; i<rows; i++)
+//	{
+//		lsd.setIntensity(i, driveBuf[INDEX(i, currentCol)]);
+//	}
+	lsd.write((uint16_t *)&driveBuf[INDEX(0,currentCol)]);
+
+	// rotate to next column
+	hsd.setValue(0x01<<currentCol);
 	hsd.write();
+
+
+	// turn rows on
+//	lsd.setBlank(false);
+
 }
 
 
@@ -98,15 +109,19 @@ boolean LedShieldDriver::initializeHighSideDriver(uint8_t num, uint8_t clk,
 {
 	boolean b = hsd.initialize( num, clk, data, lat, clr, oe);
 
-	// TODO: where should turning on column drivers be done? ISR?
 	if(b)
 	{
 #ifdef __DEBUG
-	Serial.println("Enabling columns");
+	Serial.println("Clearing columns");
 #endif
-		hsd.setValue(0x00); // turn on all columns
+		hsd.setValue(0x00); // turn off all columns
 		hsd.write();
-		FlexiTimer2::start();
+	}
+	else
+	{
+#ifdef __DEBUG
+	Serial.println("Error initializing");
+#endif
 	}
 
 	return b;
@@ -128,22 +143,20 @@ boolean LedShieldDriver::initializeLowSideDriver(uint8_t num, uint8_t clk,
 	{
 
 #ifdef __DEBUG
-	Serial.println("Clearing TLC");
+		Serial.println("Clearing TLC");
 #endif
-	lsd.setBlank(false);
-	lsd.clear();
+		lsd.setBlank(true); // blank
+		lsd.clear(); // clear buffer
+		lsd.setBlank(false); // "unblank"
+	}
+	else
+	{
+#ifdef __DEBUG
+		Serial.println("Error initializing TLC");
+#endif
+
 	}
 	return b;
-}
-
-/**
- * Returns the frame buffer for direct manipulation
- *
- */
-uint16_t** LedShieldDriver::getBuffer()
-{
-	return 0;
-//	return frameBuf;
 }
 
 /**
@@ -153,7 +166,7 @@ uint16_t** LedShieldDriver::getBuffer()
 void LedShieldDriver::write()
 {
 	// update low side buffer
-	noInterrupts();
+	noInterrupts(); // turn off interrupts
 	if( driveBuf == buf1 )
 	{
 		frameBuf = buf1;
@@ -164,15 +177,13 @@ void LedShieldDriver::write()
 		frameBuf = buf2;
 		driveBuf = buf1;
 	}
-	interrupts();
+	interrupts(); // turn on interrupts
 
-
-	// TEMP: simulate output as built
-	for(uint8_t i = 0; i< cols; i++)
+	// copy current drive buffer to frame buffer to ensure they are the same
+	for(uint16_t i=0; i<MAX_BUFFER_SIZE; i++)
 	{
-		lsd.setIntensity(i, driveBuf[INDEX(i,i)]); // 8 columns
+		frameBuf[i] = driveBuf[i];
 	}
-	lsd.write();
 
 }
 
@@ -255,7 +266,15 @@ void LedShieldDriver::setColumn(uint8_t col, uint16_t value)
 	}
 }
 
+uint8_t LedShieldDriver::getRows()
+{
+	return rows;
+}
 
+uint8_t LedShieldDriver::getColumns()
+{
+	return cols;
+}
 
 //Tlc5947Driver LedShieldDriver::getLowSideDriver()
 //{
