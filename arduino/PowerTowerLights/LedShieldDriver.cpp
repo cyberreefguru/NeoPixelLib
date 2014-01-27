@@ -68,17 +68,15 @@ boolean LedShieldDriver::initialize(uint8_t r, uint8_t c)
  */
 void LedShieldDriver::execInterrupt()
 {
-	// turn rows off
-//	lsd.setBlank(true);
-
 	// Clear columns
 //	hsd.setValue(0);
 //	hsd.write();
 
+	// Write row values
 	lsd.write((uint16_t *)&driveBuf[INDEX(0,currentCol)]);
 
 	// rotate to next column
-	hsd.setValue(0x01<<currentCol);
+	hsd.setValue(0x01<<currentCol); // move to next column
 	hsd.write();
 
 	// increment column value
@@ -88,11 +86,8 @@ void LedShieldDriver::execInterrupt()
 		currentCol = 0;
 	}
 
-
-
-
-	// turn rows on
-//	lsd.setBlank(false);
+// Clear timer 4 count
+//	TCNT4 = 0;
 
 }
 

@@ -96,7 +96,8 @@ void HighSideDriver::write(void)
 {
 	int8_t i, j;
 
-	*latchPort &= ~latchMask; // low
+//	*latchPort &= ~latchMask; // low
+	PORTB &= 0xBF;
 
 	for(j=(numdrivers-1); j>=0; j--)
 	{
@@ -105,22 +106,30 @@ void HighSideDriver::write(void)
 			if( ((buffer >> i) & 0x01) == 0x01 )
 //			if( buffer & (1 << i) )
 			{
-				*dataPort |= dataMask;
+				PORTB |= 0x20;
+//				*dataPort |= dataMask;
 			}
 			else
 			{
-				*dataPort &= ~dataMask;
+				PORTB &= 0xDF;
+//				*dataPort &= ~dataMask;
 			}
 
 			// toggle clock
-			*clockPort |= clockMask; // high
-			*clockPort &= ~clockMask; // low
+//			*clockPort |= clockMask; // high
+//			*clockPort &= ~clockMask; // low
+			PORTB |= 0x10;
+			PORTB &= 0xEF;
+
 		}
 	}
 
 	// toggle latch
-	*latchPort |= latchMask; // high
-	*latchPort &= ~latchMask; // low
+//	*latchPort |= latchMask; // high
+//	*latchPort &= ~latchMask; // low
+	PORTB |= 0x40;
+	PORTB &= 0xBF;
+
 
 } // end write
 

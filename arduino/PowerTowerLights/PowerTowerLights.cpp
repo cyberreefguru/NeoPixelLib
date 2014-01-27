@@ -86,7 +86,7 @@ void setup()
 #ifdef __DEBUG
 	Serial.println("Initializing timer");
 #endif
-	FlexiTimer2::set(2, 0.00001, isr );
+	FlexiTimer2::set(8, 0.0001, isr ); // 800us period
 	FlexiTimer2::start();
 
 #ifdef __DEBUG
@@ -94,6 +94,11 @@ void setup()
 #endif
 
 	delay(2500);
+
+	driver.setColumn(0, 4095);
+	driver.write();
+
+	while(1);
 }
 
 /**
@@ -113,16 +118,22 @@ void loop()
 //	Serial.println("Calling crossfade");
 //#endif
 
-	for(i=0; i<12; i++)
+	for(j=0; j<8; j++)
 	{
-		driver.setValue(i,7,4095);
+		driver.setColumn(j, 4095);
 		driver.write();
-//		delay(1);
+		delay(1000);
+		driver.setAll(0);
+		driver.write();
+//		for(i=0; i<12; i++)
+//		{
+//			driver.setValue(i,j,4095);
+//			driver.write();
+//			delay(50);
+//		}
+//		driver.setColumn(j, 0);
 	}
 
-	driver.setAll(0);
-	driver.write();
-	delay(1000);
 
 //	for(i=0; i<8; i++)
 //	{

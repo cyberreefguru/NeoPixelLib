@@ -144,8 +144,11 @@ void Tlc5947Driver::write(uint16_t *buf)
 #endif
 
 	// ensure latch and clock are low
-	*latchPort &= ~latchMask; // low
-	*clockPort &= ~clockMask; // low
+//	*latchPort &= ~latchMask; // low
+//	*clockPort &= ~clockMask; // low
+
+	PORTD &= 0x7F; // latch low
+	PORTD &= 0xEF; // clk low
 
 	// 24 channels per TLC5974
 	for (int8_t c = totalChannels - 1; c >= 0; c--)
@@ -156,24 +159,38 @@ void Tlc5947Driver::write(uint16_t *buf)
 			if( ((buf[c] >> b) & 0x01) == 0x01 )
 //			if (buf[c] & (1 << b))
 			{
-				*dataPort |= dataMask;
+				PORTC |= 0x40;
+//				*dataPort |= dataMask;
 			}
 			else
 			{
-				*dataPort &= ~dataMask;
+				PORTC &= 0xBF;
+//				*dataPort &= ~dataMask;
 			}
-			*clockPort |= clockMask; // clock high
-			*clockPort &= ~clockMask; // clock low
+//			*clockPort |= clockMask; // clock high
+//			*clockPort &= ~clockMask; // clock low
+			PORTD |= 0x10; // clk high
+			PORTD &= 0xEF; // clk low
 
 		} // end value write
 
 	} // end channel
 
 	// Latch data into chip
-	*blankPort |= blankMask; // high
-	*latchPort |= latchMask; // high
-	*latchPort &= ~latchMask; // low
-	*blankPort &= ~blankMask; // low
+//	*blankPort |= blankMask; // high
+//	*latchPort |= latchMask; // high
+//	*latchPort &= ~latchMask; // low
+//	*blankPort &= ~blankMask; // low
+
+//	PORTB &= 0x7F; // clear col
+//	PORTB |= 0x80; //
+
+	PORTE |= 0x40; // blank high
+	PORTD |= 0x80; // latch high
+	PORTD &= 0x7F; // latch low
+	PORTE &= 0xBF; // blank low
+
+
 
 #ifdef __DEBUG
 	Serial.println("write: COMPLETE");

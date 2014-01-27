@@ -56,7 +56,7 @@ private:
 	uint16_t *buf1, *buf2;
 	uint16_t *frameBuf, *driveBuf;
 	uint8_t rows, cols;
-	uint8_t currentCol;
+	volatile uint8_t currentCol;
 
 };
 
