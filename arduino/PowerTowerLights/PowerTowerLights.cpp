@@ -6,7 +6,9 @@
  */
 #include "PowerTowerLights.h"
 
-LedShieldDriver driver = LedShieldDriver();
+//LedShieldDriver driver = LedShieldDriver();
+LedShieldDriver2 driver2 = LedShieldDriver2();
+
 void isr();
 
 #define WAIT 50
@@ -43,7 +45,7 @@ void setup()
 #ifdef __DEBUG
 	Serial.println("Initializing shield driver");
 #endif
-	if( driver.initialize(ROWS, COLS) == false )
+	if( driver2.initialize(ROWS, COLS) == false )
 	{
 		error(10);
 	}
@@ -56,7 +58,7 @@ void setup()
 #ifdef __DEBUG
 	Serial.println("Initializing ls driver");
 #endif
-	if (driver.initializeLowSideDriver(1, ROW_CLOCK, ROW_DATA, ROW_LATCH, ROW_CLEAR, -1) == false)
+	if (driver2.initializeLowSideDriver(1, ROW_CLOCK, ROW_DATA, ROW_LATCH, ROW_CLEAR, -1) == false)
 	{
 		error(30);
 	}
@@ -68,7 +70,7 @@ void setup()
 #ifdef __DEBUG
 	Serial.println("Initializing hs driver");
 #endif
-	if( driver.initializeHighSideDriver(1, COL_CLOCK, COL_DATA, COL_LATCH, COL_CLEAR, COL_OE) == false)
+	if( driver2.initializeHighSideDriver(1, COL_CLOCK, COL_DATA, COL_LATCH, COL_CLEAR, COL_OE) == false)
 	{
 		error(50);
 	}
@@ -81,7 +83,7 @@ void setup()
 #ifdef __DEBUG
 	Serial.println("Clearing");
 #endif
-	driver.clearAll();
+	driver2.clearAll();
 
 #ifdef __DEBUG
 	Serial.println("Initializing timer");
@@ -95,8 +97,9 @@ void setup()
 
 	delay(2500);
 
-	driver.setColumn(0, 4095);
-	driver.write();
+	driver2.setColumn(0, 4095);
+	driver2.setColumn(2, 4095);
+	driver2.write();
 
 	while(1);
 }
@@ -120,11 +123,11 @@ void loop()
 
 	for(j=0; j<8; j++)
 	{
-		driver.setColumn(j, 4095);
-		driver.write();
+		driver2.setColumn(j, 4095);
+		driver2.write();
 		delay(1000);
-		driver.setAll(0);
-		driver.write();
+		driver2.setAll(0);
+		driver2.write();
 //		for(i=0; i<12; i++)
 //		{
 //			driver.setValue(i,j,4095);
@@ -158,7 +161,7 @@ void loop()
  */
 void isr()
 {
-	driver.execInterrupt();
+	driver2.execInterrupt();
 
 	static boolean output = HIGH;
 	digitalWrite(led_pin, output);
@@ -209,11 +212,11 @@ void LEDscan(float degreeoffset)
 	for (uint8_t LEDindex = 0; LEDindex < 5; LEDindex++)
 	{
 		brightnessfactor = exp(0.0 - fabs(scanindex - ((float) LEDindex + 0.5)) * 1.3);
-//		driver.getLowSideDriver().setIntensity(LEDindex, (uint16_t) (4095 * brightnessfactor) );
-		driver.setValue(LEDindex, LEDindex, (uint16_t)(4095*brightnessfactor));
+////		driver.getLowSideDriver().setIntensity(LEDindex, (uint16_t) (4095 * brightnessfactor) );
+//		driver.setValue(LEDindex, LEDindex, (uint16_t)(4095*brightnessfactor));
 	}
 
-//	driver.getLowSideDriver().write();
-	driver.write();
+////	driver.getLowSideDriver().write();
+//	driver.write();
 }
 
