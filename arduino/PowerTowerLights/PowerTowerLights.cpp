@@ -97,11 +97,6 @@ void setup()
 
 	delay(2500);
 
-	driver2.setColumn(0, 4095);
-	driver2.setColumn(2, 4095);
-	driver2.write();
-
-	while(1);
 }
 
 /**
@@ -110,7 +105,7 @@ void setup()
  */
 void loop()
 {
-	uint8_t i, j;
+	uint8_t i, j, k;
 
 #ifdef __DEBUG
 	Serial.print("free=");
@@ -121,33 +116,137 @@ void loop()
 //	Serial.println("Calling crossfade");
 //#endif
 
-	for(j=0; j<8; j++)
+//	for(j=0; j<8; j++)
+//	{
+//		driver2.setColumn(j, 4095);
+//		driver2.write();
+//		delay(250);
+//		driver2.setAll(0);
+//		driver2.write();
+//	}
+//
+//	for(j=0; j<12; j++)
+//	{
+//		driver2.setRow(j, 4095);
+//		driver2.write();
+//		delay(250);
+//		driver2.setAll(0);
+//		driver2.write();
+//	}
+
+	i = 175;
+	while( i !=0 )
 	{
-		driver2.setColumn(j, 4095);
-		driver2.write();
-		delay(1000);
-		driver2.setAll(0);
-		driver2.write();
-//		for(i=0; i<12; i++)
-//		{
-//			driver.setValue(i,j,4095);
-//			driver.write();
-//			delay(50);
-//		}
-//		driver.setColumn(j, 0);
+		for(j=0; j<12; j++)
+		{
+			driver2.setRow(j, 4095);
+			driver2.write();
+			delay(i);
+			driver2.setAll(0);
+			driver2.write();
+		}
+		i = i-25;
+	}
+	for(i=0; i<5; i++)
+	{
+		for(j=0; j<12; j++)
+		{
+			driver2.setRow(j, 4095);
+			driver2.write();
+			delay(25);
+			driver2.setAll(0);
+			driver2.write();
+		}
+	}
+
+	for(i=0; i<7; i++)
+	{
+		for(j=0; j<12; j++)
+		{
+			driver2.setRow(j, 4095);
+			driver2.setRow(11-j, 4095);
+			driver2.write();
+			delay(75);
+			driver2.setAll(0);
+			driver2.write();
+		}
+	}
+
+	for(i=0; i<7; i++)
+	{
+		for(j=0; j<8; j++)
+		{
+			driver2.setColumn(j, 4095);
+			driver2.setColumn(7-j, 4095);
+			driver2.write();
+			delay(75);
+			driver2.setAll(0);
+			driver2.write();
+		}
 	}
 
 
-//	for(i=0; i<8; i++)
-//	{
-//		for(j=0; j<6; j++)
-//		{
-//			driver.setValue(j, i, 4095);
-//			driver.write();
-//			delay(250);
-//			driver.setValue(j,i,0);
-//		}
-//	}
+	for(i=0; i<8; i++)
+	{
+		k = 0;
+		j = 0;
+		while( k < 12 )
+		{
+			for(j=11; j>=0; j--)
+			{
+				driver2.setValue(j, i, 4095);
+				driver2.write();
+				delay(50);
+				if( (j-k) == 0 )
+				{
+					break;
+				}
+				driver2.setValue(j, i, 0);
+				driver2.write();
+			}
+			k++;
+		}
+	}
+	driver2.setAll(0);
+	driver2.write();
+
+
+	k = 0;
+	while( k < 12 )
+	{
+		for(j=11; j>=0; j--)
+		{
+			driver2.setRow(j, 4095);
+			driver2.write();
+			delay(50);
+			if( (j-k) == 0 )
+			{
+				break;
+			}
+			driver2.setRow(j, 0);
+			driver2.write();
+		}
+		k++;
+	}
+	driver2.setAll(0);
+	driver2.write();
+
+	k = 12*8;
+
+	while( k > 0 )
+	{
+		j = random(0, 12*8);
+		i = j/12; // column
+		j = j%12; // row
+
+		if( driver2.getValue(j, i) == 0 )
+		{
+			driver2.setValue(j, i, 4095);
+			driver2.write();
+			k--;
+			delay(25);
+		}
+	}
 
 
 
