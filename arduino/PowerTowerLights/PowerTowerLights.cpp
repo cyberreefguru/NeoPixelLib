@@ -17,6 +17,7 @@ const int led_pin = 13;			// default to pin 13
 
 void error(uint8_t errorCode);
 void LEDscan(float degreeoffset);
+void crossfade();
 
 int freeRam () {
   extern int __heap_start, *__brkval;
@@ -112,27 +113,7 @@ void loop()
 	Serial.println(freeRam());
 #endif
 
-//#ifdef __DEBUG
-//	Serial.println("Calling crossfade");
-//#endif
-
-//	for(j=0; j<8; j++)
-//	{
-//		driver2.setColumn(j, 4095);
-//		driver2.write();
-//		delay(250);
-//		driver2.setAll(0);
-//		driver2.write();
-//	}
-//
-//	for(j=0; j<12; j++)
-//	{
-//		driver2.setRow(j, 4095);
-//		driver2.write();
-//		delay(250);
-//		driver2.setAll(0);
-//		driver2.write();
-//	}
+	//crossfade();
 
 	i = 175;
 	while( i !=0 )
@@ -262,9 +243,9 @@ void isr()
 {
 	driver2.execInterrupt();
 
-	static boolean output = HIGH;
-	digitalWrite(led_pin, output);
-	output = !output;
+//	static boolean output = HIGH;
+//	digitalWrite(led_pin, output);
+//	output = !output;
 }
 
 void crossfade()
@@ -306,16 +287,17 @@ void LEDscan(float degreeoffset)
 {
 
 	float brightnessfactor = 0;
-	float scanindex = (1.0 + sin(degreeoffset * 3.14159 / 180.0)) * (float) 2.0;
+	float scanindex = (1.0 + sin(degreeoffset * 3.14159 / 180.0)) * (float) 6.0;
 
-	for (uint8_t LEDindex = 0; LEDindex < 5; LEDindex++)
+	for (uint8_t LEDindex = 0; LEDindex < 12; LEDindex++)
 	{
 		brightnessfactor = exp(0.0 - fabs(scanindex - ((float) LEDindex + 0.5)) * 1.3);
 ////		driver.getLowSideDriver().setIntensity(LEDindex, (uint16_t) (4095 * brightnessfactor) );
-//		driver.setValue(LEDindex, LEDindex, (uint16_t)(4095*brightnessfactor));
+//		driver2.setValue(LEDindex, LEDindex, (uint16_t)(4095*brightnessfactor));
+		driver2.setRow(LEDindex, (uint16_t)(4095*brightnessfactor));
 	}
 
 ////	driver.getLowSideDriver().write();
-//	driver.write();
+	driver2.write();
 }
 
