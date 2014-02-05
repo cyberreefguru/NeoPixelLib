@@ -21,38 +21,6 @@ LedShieldDriver2::LedShieldDriver2()
 	currentCol = 0;
 
 	hsBuffer = 0;
-//	hsNumDrivers = 0;
-//	hsTotalChannels = 0;
-
-//	hsClockPort = 0;
-//	hsDataPort = 0;
-//	hsLatchPort = 0;
-//	hsOePort = 0;
-//	hsClrPort = 0;
-//
-//	hsClockMask = 0xff;
-//	hsDataMask = 0xff;
-//	hsLatchMask = 0xff;
-//	hsOeMask = 0xff;
-//	hsClrMask = 0xff;
-//
-
-
-//	lsMaxIntensity = MAX_INTENSITY;
-//	lsNumDrivers = 0;
-//	lsTotalChannels = 0;
-
-//	lsClockPort = 0;
-//	lsDataPort = 0;
-//	lsLatchPort = 0;
-//	lsOePort = 0;
-//	lsBlankPort = 0;
-//
-//	lsClockMask = 0xff;
-//	lsDataMask = 0xff;
-//	lsLatchMask = 0xff;
-//	lsOeMask = 0xff;
-//	lsBlankMask = 0xff;
 
 }
 
@@ -73,9 +41,6 @@ boolean LedShieldDriver2::initialize(uint8_t r, uint8_t c)
 	colDrivers = c/COLS_PER_DRIVER;
 
 	// Initialize high side variables (595)
-//	hsNumDrivers = num;
-//	hsTotalChannels = num*HS_CHANNELS_PER_DRIVER;
-
 	pinMode(COL_CLOCK, OUTPUT);
 	pinMode(COL_DATA, OUTPUT);
 	pinMode(COL_LATCH, OUTPUT);
@@ -87,9 +52,6 @@ boolean LedShieldDriver2::initialize(uint8_t r, uint8_t c)
 	COL_OUTPUT_DISABLED;
 
 	// Initialize low side variables (TLC)
-//	lsNumDrivers = n;
-//	lsTotalChannels = LS_CHANNELS_PER_DRIVER*n;
-
 	pinMode(ROW_CLOCK, OUTPUT);
 	pinMode(ROW_DATA, OUTPUT);
 	pinMode(ROW_LATCH, OUTPUT);
@@ -100,8 +62,7 @@ boolean LedShieldDriver2::initialize(uint8_t r, uint8_t c)
 	ROW_LATCH_LOW;
 	ROW_CLEAR_ENABLED;
 
-
-
+	// Reserve memory
 	buf1 = (uint16_t *) calloc(MAX_BUFFER_SIZE, sizeof(uint16_t));
 	if( !buf1 )
 	{
@@ -122,7 +83,6 @@ boolean LedShieldDriver2::initialize(uint8_t r, uint8_t c)
 } // end initialize
 
 
-
 /**
  * Interrupt service routine - cycle columns for driving
  *
@@ -140,11 +100,6 @@ void LedShieldDriver2::execInterrupt()
 	COL_CLOCK_LOW;
 	COL_LATCH_LOW;
 
-//	PORTD &= 0x7F; // rlatch low
-//	PORTD &= 0xEF; // rclk low
-//	PORTB &= 0xEF; // cclk low
-//	PORTB &= 0xBF; // clatch low
-
 	// 24 channels per TLC5974
 	for (int8_t c = rows - 1; c >= 0; c--)
 	{
@@ -154,22 +109,18 @@ void LedShieldDriver2::execInterrupt()
 			if( ((buf[c] >> b) & 0x01) == 0x01 )
 			{
 				ROW_DATA_HIGH;
-//				PORTC |= 0x40; // rdata high
 			}
 			else
 			{
 				ROW_DATA_LOW;
-//				PORTC &= 0xBF; // rdata low
 			}
 			// toggle clock
 			ROW_CLOCK_HIGH;
 			ROW_CLOCK_LOW;
-//			PORTD |= 0x10; // rclk high
-//			PORTD &= 0xEF; // rclk low
 
-		} // end value write
+		} // end row value write
 
-	} // end channel
+	} // end row write
 
 	// rotate to next column
 	hsBuffer = 0x01<<currentCol; // move to next column
@@ -181,46 +132,31 @@ void LedShieldDriver2::execInterrupt()
 			if( ((hsBuffer >> i) & 0x01) == 0x01 )
 			{
 				COL_DATA_HIGH;
-//				PORTB |= 0x20; // cdata high
 			}
 			else
 			{
 				COL_DATA_LOW;
-//				PORTB &= 0xDF; // cdata low
 			}
 
 			// toggle clock
 			COL_CLOCK_HIGH;
 			COL_CLOCK_LOW;
-//			PORTB |= 0x10; // cclk high
-//			PORTB &= 0xEF; // cclk low
-
 		}
 	}
 
 	// Clear row and column
 	ROW_CLEAR_ENABLED;
 	COL_OUTPUT_DISABLED;
-//	PORTE |= 0x40; // rblank high = blank
-//	PORTB |= 0x80; // coe high = off
 
 	// Latch data into row
 	ROW_LATCH_HIGH;
 	ROW_LATCH_LOW;
 	ROW_CLEAR_DISABLED;
 
-//	PORTD |= 0x80; // rlatch high
-//	PORTD &= 0x7F; // rlatch low
-//	PORTE &= 0xBF; // rblank low = unblank
-
 	// Latch data into col
 	COL_LATCH_HIGH;
 	COL_LATCH_LOW;
 	COL_OUTPUT_ENABLED;
-//
-//	PORTB |= 0x40; // high
-//	PORTB &= 0xBF; // low
-//	PORTB &= 0x7E; // coe low = on
 
 	// increment column value
 	currentCol++;
@@ -259,38 +195,25 @@ void LedShieldDriver2::write()
 
 }
 
-///**
-// * Clears all drivers
-// *
-// * true = clear; disables high and low side drives
-// * false = unclear; return last pattern driven
-// *
-// * NOTE: this function does NOT change the underlying data buffers
-// */
-//void LedShieldDriver2::clear(boolean b)
-//{
-//	if( b )
-//	{
-//		setHsOutputEnable(false);
-//		setLsBlank(true);
-//	}
-//	else
-//	{
-//		setHsOutputEnable(true);
-//		setLsBlank(false);
-//	}
-//}
-//
-///**
-// * Clears the values driven
-// *
-// * NOTE: This function clears all underlying data buffers
-// */
-//void LedShieldDriver2::clearAll()
-//{
-//	lsClear();
-//	hsClear();
-//}
+/**
+ * Blanks the display by clearing row driver
+ *
+ * NOTE: Does not change the underlying data buffers
+ */
+void LedShieldDriver2::blank()
+{
+	ROW_CLEAR_ENABLED;
+	ROW_CLEAR_DISABLED;
+}
+
+/**
+ * Clears the display by clearing memory and writing new values
+ */
+void LedShieldDriver2::clear()
+{
+	setAll(0);
+	write();
+}
 
 /**
  * Sets the specified value
@@ -360,314 +283,3 @@ void LedShieldDriver2::setAll(uint16_t value)
 	}
 
 }
-
-
-///**
-// * Initializes the driver
-// *
-// */
-//boolean LedShieldDriver2::initializeHighSideDriver(uint8_t num, uint8_t clk, uint8_t d, uint8_t l, uint8_t c, uint8_t o)
-//{
-//	// initialize variables
-//	hsNumDrivers = num;
-//	hsTotalChannels = num*HS_CHANNELS_PER_DRIVER;
-//
-//	// Calculate data port values
-//	hsClockPort = portOutputRegister( digitalPinToPort( clk ) );
-//	hsLatchPort = portOutputRegister( digitalPinToPort( l ) );
-//	hsDataPort = portOutputRegister( digitalPinToPort( d ) );
-//
-//	// Calculate data mask values
-//	hsClockMask = digitalPinToBitMask( clk );
-//	hsLatchMask = digitalPinToBitMask( l );
-//	hsDataMask = digitalPinToBitMask( d );
-//
-//	*hsClockPort &= ~hsClockMask;
-//	*hsLatchPort &= ~hsLatchMask;
-//	*hsDataPort &= ~hsDataMask;
-//
-//	if (c != -1)
-//	{
-//		pinMode(c, OUTPUT);
-//		hsClrPort = portOutputRegister( digitalPinToPort( c ) );
-//		hsClrMask = digitalPinToBitMask( c );
-//
-//		*hsClrPort &= ~hsClrMask; // low = clear
-//		*hsClrPort |= hsClrMask; // high = not clear
-//	}
-//
-//	if (o != -1)
-//	{
-//		pinMode(o, OUTPUT);
-//		hsOePort = portOutputRegister( digitalPinToPort( o ) );
-//		hsOeMask = digitalPinToBitMask( o );
-//
-//		*hsOePort &= ~hsOeMask; // low = enabled
-//	}
-//
-//	return true;
-//
-//} // end initialize
-
-///**
-// * Writes value of buffer to shift register
-// *
-// */
-//void LedShieldDriver2::hsWrite(void)
-//{
-//	int8_t i, j;
-//
-//	PORTB &= 0xBF; // low
-//
-//	for(j=(hsNumDrivers-1); j>=0; j--)
-//	{
-//		for (i = 7; i >=0 ; i--)  {
-//
-//			if( ((hsBuffer >> i) & 0x01) == 0x01 )
-//			{
-//				PORTB |= 0x20; // high
-//			}
-//			else
-//			{
-//				PORTB &= 0xDF; // low
-//			}
-//
-//			// toggle clock
-//			PORTB |= 0x10; // high
-//			PORTB &= 0xEF; // low
-//
-//		}
-//	}
-//
-//	// toggle latch
-//	PORTB |= 0x40; // high
-//	PORTB &= 0xBF; // low
-//
-//
-//} // end write
-//
-///**
-// * Sets output enable pin
-// *
-// * true = outputs on
-// * false = outputs off
-// *
-// */
-//void LedShieldDriver2::setHsOutputEnable(boolean b)
-//{
-////	if (hsOePort == 0)
-////		return;
-////
-//	if( b )
-//	{
-//		COL_OUTPUT_ENABLED;
-////		*hsOePort &= ~hsOeMask; // low = on
-//	}
-//	else
-//	{
-//		COL_OUTPUT_DISABLED;
-////		*hsOePort |= hsOeMask; // high = off
-//	}
-//}
-//
-///**
-// * Toggles clr pin to clear shift register
-// *
-// */
-//void LedShieldDriver2::hsClear()
-//{
-//	return;
-//
-//} // end clear
-//
-//
-
-
-///**
-// * Initializes the chip.
-// *
-// * NOTE: must be called before using driver
-// */
-//boolean LedShieldDriver2::initializeLowSideDriver(uint8_t n, uint8_t c, uint8_t d, uint8_t l, uint8_t b, uint8_t o)
-//{
-//	// initialize variables
-//	lsNumDrivers = n;
-//	lsTotalChannels = LS_CHANNELS_PER_DRIVER*n;
-//
-//	// Set up pins
-//	pinMode(c, OUTPUT);
-//	pinMode(d, OUTPUT);
-//	pinMode(l, OUTPUT);
-//
-//	// Calculate data port values
-//	lsClockPort = portOutputRegister( digitalPinToPort( c ) );
-//	lsLatchPort = portOutputRegister( digitalPinToPort( l ) );
-//	lsDataPort = portOutputRegister( digitalPinToPort( d ) );
-//
-//	// Calculate data mask values
-//	lsClockMask = digitalPinToBitMask( c );
-//	lsLatchMask = digitalPinToBitMask( l );
-//	lsDataMask = digitalPinToBitMask( d );
-//
-//	*lsClockPort &= ~lsClockMask; // low
-//	*lsLatchPort &= ~lsLatchMask; // low
-//	*lsDataPort &= ~lsDataMask; // low
-//
-//	if( b != -1 )
-//	{
-//		pinMode(b, OUTPUT);
-//		lsBlankPort = portOutputRegister( digitalPinToPort( b ) );
-//		lsBlankMask = digitalPinToBitMask( b );
-//
-//		*lsBlankPort |= lsBlankMask; // high = blank
-//		*lsBlankPort &= ~lsBlankMask; // low = no blank
-//	}
-//
-//	if( o != -1 )
-//	{
-//		pinMode(o, OUTPUT);
-//		lsOePort = portOutputRegister( digitalPinToPort( o ) );
-//		lsOeMask = digitalPinToBitMask( o );
-//
-//		*lsOePort &= ~lsOeMask; // low = enabled
-//	}
-//
-//	return true;
-//
-//} // end initialize
-
-
-///**
-// * Writes the buffer to the driver.
-// *
-// * NOTE: Must be called to update outputs with buffer values
-// */
-//void LedShieldDriver2::lsWrite(uint16_t *buf)
-//{
-//	// ensure latch and clock are low
-//	PORTD &= 0x7F; // latch low
-//	PORTD &= 0xEF; // clk low
-//
-//	// 24 channels per TLC5974
-//	for (int8_t c = lsTotalChannels - 1; c >= 0; c--)
-//	{
-//		// 12 bits per channel, send MSB first
-//		for (int8_t b = 11; b >= 0; b--)
-//		{
-//			if( ((buf[c] >> b) & 0x01) == 0x01 )
-//			{
-//				PORTC |= 0x40;
-//			}
-//			else
-//			{
-//				PORTC &= 0xBF;
-//			}
-//			// toggle clock
-//			PORTD |= 0x10; // clk high
-//			PORTD &= 0xEF; // clk low
-//
-//		} // end value write
-//
-//	} // end channel
-//
-//	// Latch data into chip
-//	PORTE |= 0x40; // blank high
-//	PORTD |= 0x80; // latch high
-//	PORTD &= 0x7F; // latch low
-//	PORTE &= 0xBF; // blank low
-//
-//} // end write
-
-
-//
-///**
-// * Writes the buffer to the driver.
-// *
-// * NOTE: Must be called to update outputs with buffer values
-// */
-//void LedShieldDriver2::lsWriteValue(uint16_t value)
-//{
-//	// ensure latch and clock are low
-//	*lsLatchPort &= ~lsLatchMask; // low
-//	*lsClockPort &= ~lsClockMask; // low
-//
-//	// 24 channels per TLC5974
-//	for (int8_t c = lsTotalChannels - 1; c >= 0; c--)
-//	{
-//		// 12 bits per channel, send MSB first
-//		for (int8_t b = 11; b >= 0; b--)
-//		{
-//			if (value & (1 << b))
-//			{
-//				*lsDataPort |= lsDataMask;
-//			}
-//			else
-//			{
-//				*lsDataPort &= ~lsDataMask;
-//			}
-//			*lsClockPort |= lsClockMask; // clock high
-//			*lsClockPort &= ~lsClockMask; // clock low
-//
-//		} // end value write
-//
-//	} // end channel
-//
-//	// Latch data into chip
-//	*lsBlankPort |= lsBlankMask; // high
-//	*lsLatchPort |= lsLatchMask; // high
-//	*lsLatchPort &= ~lsLatchMask; // low
-//	*lsBlankPort &= ~lsBlankMask; // low
-//
-//} // end write
-
-///**
-// * Blanks driver
-// *
-// * true = output blanked; false = outputs driven
-// */
-//void LedShieldDriver2::setLsBlank(boolean b)
-//{
-//	if( lsBlankPort != 0 )
-//	{
-//		if( b )
-//		{
-//			*lsBlankPort &= ~lsBlankMask; // low
-//		}
-//		else
-//		{
-//			*lsBlankPort |= lsBlankMask; // high
-//		}
-//	}
-//}
-//
-///**
-// * Enables outputs.
-// *
-// * true = enabled; false = disabled
-// *
-// */
-//void LedShieldDriver2::setLsOutputEnable(boolean b)
-//{
-//	if( lsOePort != 0 )
-//	{
-//		if( b )
-//		{
-//			*lsOePort &= ~lsOeMask; // low = enabled
-//		}
-//		else
-//		{
-//			*lsOePort |= lsOeMask; // high = disabled
-//		}
-//	}
-//}
-
-///**
-// * Sets all intensity values to 0
-// *
-// * NOTE: calls write()
-// */
-//void LedShieldDriver2::lsClear()
-//{
-//	lsWriteValue(0);
-//}
-

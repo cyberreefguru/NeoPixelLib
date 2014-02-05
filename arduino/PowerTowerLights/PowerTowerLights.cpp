@@ -56,36 +56,6 @@ void setup()
 	Serial.println(freeRam());
 #endif
 
-//#ifdef __DEBUG
-//	Serial.println("Initializing ls driver");
-//#endif
-//	if (driver2.initializeLowSideDriver(1, ROW_CLOCK, ROW_DATA, ROW_LATCH, ROW_CLEAR, -1) == false)
-//	{
-//		error(30);
-//	}
-//#ifdef __DEBUG
-//	Serial.print("free=");
-//	Serial.println(freeRam());
-//#endif
-//
-//#ifdef __DEBUG
-//	Serial.println("Initializing hs driver");
-//#endif
-//	if( driver2.initializeHighSideDriver(1, COL_CLOCK, COL_DATA, COL_LATCH, COL_CLEAR, COL_OE) == false)
-//	{
-//		error(50);
-//	}
-//#ifdef __DEBUG
-//	Serial.print("free=");
-//	Serial.println(freeRam());
-//#endif
-//
-//	// clear hs and ls drivers; fills buffers with zeros
-//#ifdef __DEBUG
-//	Serial.println("Clearing");
-//#endif
-//	driver2.clearAll();
-
 #ifdef __DEBUG
 	Serial.println("Initializing timer");
 #endif
@@ -107,6 +77,7 @@ void setup()
 void loop()
 {
 	uint8_t i, j, k;
+	int8_t z;
 
 #ifdef __DEBUG
 	Serial.print("free=");
@@ -114,6 +85,33 @@ void loop()
 #endif
 
 	//crossfade();
+
+	// rotate 0->n
+	for(i=0; i<5; i++)
+	{
+		for(j=0; j<8; j++)
+		{
+			driver2.setColumn(j, 4095);
+			driver2.write();
+			delay(100);
+			driver2.setColumn(j, 0);
+			driver2.write();
+		}
+	}
+
+	// rotate n->0
+	for(i=0; i<5; i++)
+	{
+		for(z=7; z>=0; z--)
+		{
+			driver2.setColumn(z, 4095);
+			driver2.write();
+			delay(100);
+			driver2.setColumn(z, 0);
+			driver2.write();
+		}
+	}
+
 
 	i = 175;
 	while( i !=0 )
@@ -285,19 +283,14 @@ void error(uint8_t errorCode)
 // Sample function to draw a scanning pattern with fading
 void LEDscan(float degreeoffset)
 {
-
 	float brightnessfactor = 0;
 	float scanindex = (1.0 + sin(degreeoffset * 3.14159 / 180.0)) * (float) 6.0;
 
 	for (uint8_t LEDindex = 0; LEDindex < 12; LEDindex++)
 	{
 		brightnessfactor = exp(0.0 - fabs(scanindex - ((float) LEDindex + 0.5)) * 1.3);
-////		driver.getLowSideDriver().setIntensity(LEDindex, (uint16_t) (4095 * brightnessfactor) );
-//		driver2.setValue(LEDindex, LEDindex, (uint16_t)(4095*brightnessfactor));
 		driver2.setRow(LEDindex, (uint16_t)(4095*brightnessfactor));
 	}
-
-////	driver.getLowSideDriver().write();
 	driver2.write();
 }
 
