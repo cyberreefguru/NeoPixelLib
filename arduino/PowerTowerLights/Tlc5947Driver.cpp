@@ -185,10 +185,10 @@ void Tlc5947Driver::write(uint16_t *buf)
 //	PORTB &= 0x7F; // clear col
 //	PORTB |= 0x80; //
 
-	PORTE |= 0x40; // blank high
-	PORTD |= 0x80; // latch high
-	PORTD &= 0x7F; // latch low
-	PORTE &= 0xBF; // blank low
+//	PORTE |= 0x40; // blank high
+//	PORTD |= 0x80; // latch high
+//	PORTD &= 0x7F; // latch low
+//	PORTE &= 0xBF; // blank low
 
 
 

@@ -16,33 +16,51 @@
 #define MAX_COLS				8
 #define MAX_BUFFER_SIZE			MAX_ROWS*MAX_COLS
 
-#define COLS_PER_DRIVER 	8
-#define ROWS_PER_DRIVER 	24
+#define COLS_PER_DRIVER 		8
+#define ROWS_PER_DRIVER 		24
 #define MAX_INTENSITY 			4095
 
 #define INDEX(row,col) (row+col*MAX_ROWS)
 
+// VERSION 1.0
+// ROW_CLK = D4		COL_CLK = D8
+// ROW_DATA = D5	COL_DATA = D9
+// ROW_LATCH = D6	COL_LATCH = D10
+// ROW_CLEAR = D7	COL_CLEAR = D11
+
 #if defined (__AVR_ATmega168__) || defined (__AVR_ATmega328P__) // Uno
 
-#define ROW_CLK_HIGH		PORTD |= 0x10
-#define ROW_CLK_LOW			PORTD &= 0xEF
-#define ROW_DATA_HIGH		PORTC |= 0x40
-#define ROW_DATA_LOW		PORTC &= 0xBF
-#define ROW_LATCH_HIGH		PORTD |= 0x80
-#define ROW_LATCH_LOW		PORTD &= 0x7F
-#define ROW_CLEAR_ENABLE	PORTE |= 0x40
-#define ROW_CLEAR_DISABLE	PORTE &= 0xBF
+#define ROW_CLOCK	4
+#define ROW_DATA	5
+#define ROW_LATCH	6
+#define ROW_OE  	-1
+#define ROW_CLEAR 	7
 
-#define COL_CLK_HIGH		PORTB |= 0x10
-#define COL_CLK_LOW			PORTB &= 0xEF
-#define COL_DATA_HIGH		PORTB |= 0x20
-#define COL_DATA_LOW		PORTB &= 0xDF
-#define COL_LATCH_HIGH		PORTB |= 0x40
-#define COL_LATCH_LOW		PORTB &= 0xBF
-#define COL_CLEAR_ENABLE	nop
-#define COL_CLEAR_DISABLE	nop
-#define COL_OE_ENABLE		PORTB |= 0x80
-#define COL_OE_DISABLE		PORTB &= 0x7E
+#define COL_CLOCK 	8
+#define COL_DATA	9
+#define COL_LATCH	10
+#define COL_CLEAR	-1
+#define COL_OE		11
+
+#define ROW_CLOCK_HIGH			PORTD |= _BV(4)
+#define ROW_CLOCK_LOW			PORTD &= ~_BV(4)
+#define ROW_DATA_HIGH			PORTD |= _BV(5)
+#define ROW_DATA_LOW			PORTD &= ~_BV(5)
+#define ROW_LATCH_HIGH			PORTD |= _BV(6)
+#define ROW_LATCH_LOW			PORTD &= ~_BV(6)
+#define ROW_CLEAR_ENABLED		PORTD |= _BV(7)
+#define ROW_CLEAR_DISABLED		PORTD &= ~_BV(7)
+
+#define COL_CLOCK_HIGH			PORTB |= _BV(0)
+#define COL_CLOCK_LOW			PORTB &= ~_BV(0)
+#define COL_DATA_HIGH			PORTB |= _BV(1)
+#define COL_DATA_LOW			PORTB &= ~_BV(1)
+#define COL_LATCH_HIGH			PORTB |= _BV(2)
+#define COL_LATCH_LOW			PORTB &= ~_BV(2)
+#define COL_CLEAR_ENABLED		nop
+#define COL_CLEAR_DISABLED		nop
+#define COL_OUTPUT_ENABLED		PORTB &= !_BV(3) // active low
+#define COL_OUTPUT_DISABLED		PORTB |= _BV(3) // active low
 
 #elif defined (__AVR_ATmega32U4__) // Leonardo
 
@@ -59,25 +77,25 @@
 #define COL_CLEAR	-1
 #define COL_OE		11
 
-#define ROW_CLOCK_HIGH		PORTD |= 0x10
-#define ROW_CLOCK_LOW		PORTD &= 0xEF
-#define ROW_DATA_HIGH		PORTC |= 0x40
-#define ROW_DATA_LOW		PORTC &= 0xBF
-#define ROW_LATCH_HIGH		PORTD |= 0x80
-#define ROW_LATCH_LOW		PORTD &= 0x7F
-#define ROW_CLEAR_ENABLED	PORTE |= 0x40
-#define ROW_CLEAR_DISABLED	PORTE &= 0xBF
+#define ROW_CLOCK_HIGH		PORTD |= _BV(4)
+#define ROW_CLOCK_LOW		PORTD &= ~_BV(4)
+#define ROW_DATA_HIGH		PORTC |= _BV(6)
+#define ROW_DATA_LOW		PORTC &= ~_BV(6)
+#define ROW_LATCH_HIGH		PORTD |= _BV(7)
+#define ROW_LATCH_LOW		PORTD &= ~_BV(7)
+#define ROW_CLEAR_ENABLED	PORTE |= _BV(6)
+#define ROW_CLEAR_DISABLED	PORTE &= ~_BV(6)
 
-#define COL_CLOCK_HIGH		PORTB |= 0x10
-#define COL_CLOCK_LOW		PORTB &= 0xEF
-#define COL_DATA_HIGH		PORTB |= 0x20
-#define COL_DATA_LOW		PORTB &= 0xDF
-#define COL_LATCH_HIGH		PORTB |= 0x40
-#define COL_LATCH_LOW		PORTB &= 0xBF
+#define COL_CLOCK_HIGH		PORTB |= _BV(4)
+#define COL_CLOCK_LOW		PORTB &= ~_BV(4)
+#define COL_DATA_HIGH		PORTB |= _BV(5)
+#define COL_DATA_LOW		PORTB &= ~_BV(5)
+#define COL_LATCH_HIGH		PORTB |= _BV(6)
+#define COL_LATCH_LOW		PORTB &= ~_BV(6)
 #define COL_CLEAR_ENABLED	nop
 #define COL_CLEAR_DISABLED	nop
-#define COL_OUTPUT_ENABLED	PORTB &= 0x7E // active low
-#define COL_OUTPUT_DISABLED	PORTB |= 0x80 // active low
+#define COL_OUTPUT_ENABLED	PORTB &= ~_BV(7) // active low
+#define COL_OUTPUT_DISABLED	PORTB |= _BV(7) // active low
 
 #else
 #error Unsupported CPU type

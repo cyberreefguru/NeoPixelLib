@@ -241,9 +241,9 @@ void isr()
 {
 	driver2.execInterrupt();
 
-//	static boolean output = HIGH;
-//	digitalWrite(led_pin, output);
-//	output = !output;
+	static boolean output = HIGH;
+	digitalWrite(led_pin, output);
+	output = !output;
 }
 
 void crossfade()
