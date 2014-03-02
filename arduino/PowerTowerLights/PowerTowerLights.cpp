@@ -6,8 +6,7 @@
  */
 #include "PowerTowerLights.h"
 
-//LedShieldDriver driver = LedShieldDriver();
-LedShieldDriver2 driver2 = LedShieldDriver2();
+LedShieldDriver2 driver = LedShieldDriver2();
 
 void isr();
 
@@ -32,7 +31,9 @@ int freeRam () {
  */
 void setup()
 {
-//	delay(10000);  // wait for leonardo to fully reset
+#if defined (__AVR_ATmega32U4__) // Leonardo
+	delay(10000);  // wait for leonardo to fully reset
+#endif
 
 #ifdef __DEBUG
 	Serial.begin(115200);
@@ -46,7 +47,7 @@ void setup()
 #ifdef __DEBUG
 	Serial.println("Initializing shield driver");
 #endif
-	if( driver2.initialize(ROWS, COLS) == false )
+	if( driver.initialize(ROWS, COLS) == false )
 	{
 		error(10);
 	}
@@ -65,8 +66,6 @@ void setup()
 #ifdef __DEBUG
 	Serial.println("**** init complete *****");
 #endif
-
-	delay(2500);
 
 }
 
@@ -91,11 +90,11 @@ void loop()
 	{
 		for(j=0; j<8; j++)
 		{
-			driver2.setColumn(j, 4095);
-			driver2.write();
+			driver.setColumn(j, 4095);
+			driver.write();
 			delay(100);
-			driver2.setColumn(j, 0);
-			driver2.write();
+			driver.setColumn(j, 0);
+			driver.write();
 		}
 	}
 
@@ -104,11 +103,11 @@ void loop()
 	{
 		for(z=7; z>=0; z--)
 		{
-			driver2.setColumn(z, 4095);
-			driver2.write();
+			driver.setColumn(z, 4095);
+			driver.write();
 			delay(100);
-			driver2.setColumn(z, 0);
-			driver2.write();
+			driver.setColumn(z, 0);
+			driver.write();
 		}
 	}
 
@@ -118,11 +117,11 @@ void loop()
 	{
 		for(j=0; j<12; j++)
 		{
-			driver2.setRow(j, 4095);
-			driver2.write();
+			driver.setRow(j, 4095);
+			driver.write();
 			delay(i);
-			driver2.setAll(0);
-			driver2.write();
+			driver.setAll(0);
+			driver.write();
 		}
 		i = i-25;
 	}
@@ -130,11 +129,11 @@ void loop()
 	{
 		for(j=0; j<12; j++)
 		{
-			driver2.setRow(j, 4095);
-			driver2.write();
+			driver.setRow(j, 4095);
+			driver.write();
 			delay(25);
-			driver2.setAll(0);
-			driver2.write();
+			driver.setAll(0);
+			driver.write();
 		}
 	}
 
@@ -142,12 +141,12 @@ void loop()
 	{
 		for(j=0; j<12; j++)
 		{
-			driver2.setRow(j, 4095);
-			driver2.setRow(11-j, 4095);
-			driver2.write();
+			driver.setRow(j, 4095);
+			driver.setRow(11-j, 4095);
+			driver.write();
 			delay(75);
-			driver2.setAll(0);
-			driver2.write();
+			driver.setAll(0);
+			driver.write();
 		}
 	}
 
@@ -155,12 +154,12 @@ void loop()
 	{
 		for(j=0; j<8; j++)
 		{
-			driver2.setColumn(j, 4095);
-			driver2.setColumn(7-j, 4095);
-			driver2.write();
+			driver.setColumn(j, 4095);
+			driver.setColumn(7-j, 4095);
+			driver.write();
 			delay(75);
-			driver2.setAll(0);
-			driver2.write();
+			driver.setAll(0);
+			driver.write();
 		}
 	}
 
@@ -173,21 +172,21 @@ void loop()
 		{
 			for(j=11; j>=0; j--)
 			{
-				driver2.setValue(j, i, 4095);
-				driver2.write();
+				driver.setValue(j, i, 4095);
+				driver.write();
 				delay(50);
 				if( (j-k) == 0 )
 				{
 					break;
 				}
-				driver2.setValue(j, i, 0);
-				driver2.write();
+				driver.setValue(j, i, 0);
+				driver.write();
 			}
 			k++;
 		}
 	}
-	driver2.setAll(0);
-	driver2.write();
+	driver.setAll(0);
+	driver.write();
 
 
 	k = 0;
@@ -195,20 +194,20 @@ void loop()
 	{
 		for(j=11; j>=0; j--)
 		{
-			driver2.setRow(j, 4095);
-			driver2.write();
+			driver.setRow(j, 4095);
+			driver.write();
 			delay(50);
 			if( (j-k) == 0 )
 			{
 				break;
 			}
-			driver2.setRow(j, 0);
-			driver2.write();
+			driver.setRow(j, 0);
+			driver.write();
 		}
 		k++;
 	}
-	driver2.setAll(0);
-	driver2.write();
+	driver.setAll(0);
+	driver.write();
 
 	k = 12*8;
 
@@ -218,10 +217,10 @@ void loop()
 		i = j/12; // column
 		j = j%12; // row
 
-		if( driver2.getValue(j, i) == 0 )
+		if( driver.getValue(j, i) == 0 )
 		{
-			driver2.setValue(j, i, 4095);
-			driver2.write();
+			driver.setValue(j, i, 4095);
+			driver.write();
 			k--;
 			delay(25);
 		}
@@ -239,11 +238,11 @@ void loop()
  */
 void isr()
 {
-	driver2.execInterrupt();
+	driver.execInterrupt();
 
-	static boolean output = HIGH;
-	digitalWrite(led_pin, output);
-	output = !output;
+//	static boolean output = HIGH;
+//	digitalWrite(led_pin, output);
+//	output = !output;
 }
 
 void crossfade()
@@ -289,8 +288,8 @@ void LEDscan(float degreeoffset)
 	for (uint8_t LEDindex = 0; LEDindex < 12; LEDindex++)
 	{
 		brightnessfactor = exp(0.0 - fabs(scanindex - ((float) LEDindex + 0.5)) * 1.3);
-		driver2.setRow(LEDindex, (uint16_t)(4095*brightnessfactor));
+		driver.setRow(LEDindex, (uint16_t)(4095*brightnessfactor));
 	}
-	driver2.write();
+	driver.write();
 }
 
