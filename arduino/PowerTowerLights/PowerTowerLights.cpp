@@ -76,7 +76,9 @@ void setup()
 void loop()
 {
 	uint8_t i, j, k;
-	int8_t z;
+	int8_t z, w;
+	uint16_t total, q;
+
 
 #ifdef __DEBUG
 	Serial.print("free=");
@@ -84,6 +86,97 @@ void loop()
 #endif
 
 	//crossfade();
+	driver.clear();
+
+
+//	for(i=0; i<10; i++)
+//	{
+//		for(j=0; j<8; j+2)
+//		{
+//			driver.setColumn(j, 4095);
+//			driver.setColumn(j+1, 4095);
+//			driver.write();
+//			delay(100);
+//			driver.setColumn(j, 0);
+//			driver.setColumn(j+1, 0);
+//		}
+//	}
+
+
+
+
+	driver.clear();
+
+	//
+	k = 0x03;
+	for(i=0; i<32; i++)
+	{
+		for(j=0; j<8; j++)
+		{
+			if( k & (0x01<<j) )
+			{
+				driver.setColumn(j, 4095);
+			}
+			else
+			{
+				driver.setColumn(j, 0);
+			}
+		}
+		driver.write();
+		delay(150);
+		if( k & 0x80 )
+		{
+			k = k << 0x01;
+			k |= 0x01;
+		}
+		else
+		{
+			k = k << 0x01;
+		}
+	}
+
+	driver.clear();
+
+	// bottom up
+	for(i=0; i<12; i++)
+	{
+		for(j=0; j<8; j++)
+		{
+			driver.setValue(i, j, 4095);
+			driver.write();
+			delay(75);
+			driver.setValue(i,j,0);
+			driver.write();
+		}
+	}
+
+
+
+	// bottom up
+	for(i=0; i<12; i++)
+	{
+		for(j=0; j<8; j++)
+		{
+			driver.setValue(i, j, 4095);
+			driver.write();
+			delay(50);
+		}
+	}
+
+	driver.clear();
+
+	// up down
+	for(z=11; z>=0; z--)
+	{
+		for(w=7; w>=0; w--)
+		{
+			driver.setValue(z, w, 4095);
+			driver.write();
+			delay(50);
+		}
+	}
+
+
 
 	// rotate 0->n
 	for(i=0; i<5; i++)

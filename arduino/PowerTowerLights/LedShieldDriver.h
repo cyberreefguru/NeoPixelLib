@@ -116,6 +116,7 @@ public:
 	uint8_t getRows();
 	uint8_t getColumns();
 
+	void setIndexedValue(uint16_t index, uint16_t value);
 	void setValue(uint8_t row, uint8_t col, uint16_t value);
 	uint16_t getValue(uint8_t row, uint8_t col);
 

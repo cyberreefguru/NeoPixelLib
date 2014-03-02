@@ -220,6 +220,18 @@ void LedShieldDriver::clear()
  *
  * NOTE: this routine does NOT check the row/col values; don't do anything stupid
  */
+void LedShieldDriver::setIndexedValue(uint16_t index, uint16_t value)
+{
+	frameBuf[index] = value;
+}
+
+
+
+/**
+ * Sets the specified value
+ *
+ * NOTE: this routine does NOT check the row/col values; don't do anything stupid
+ */
 void LedShieldDriver::setValue(uint8_t row, uint8_t col, uint16_t value)
 {
 	frameBuf[INDEX(row,col)] = value;
