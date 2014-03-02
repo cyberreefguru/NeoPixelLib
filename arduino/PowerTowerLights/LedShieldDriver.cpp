@@ -5,9 +5,9 @@
  *      Author: tsasala
  */
 
-#include "LedShieldDriver2.h"
+#include "LedShieldDriver.h"
 
-LedShieldDriver2::LedShieldDriver2()
+LedShieldDriver::LedShieldDriver()
 {
 	buf1 = 0;
 	buf2 = 0;
@@ -31,7 +31,7 @@ LedShieldDriver2::LedShieldDriver2()
  * NOTE: Must call initialize, initializeHighSideDriver, and initializeLowSideDriver
  *       for this class to work properly
  */
-boolean LedShieldDriver2::initialize(uint8_t r, uint8_t c)
+boolean LedShieldDriver::initialize(uint8_t r, uint8_t c)
 {
 	boolean b = false;
 	rows = r;
@@ -87,7 +87,7 @@ boolean LedShieldDriver2::initialize(uint8_t r, uint8_t c)
  * Interrupt service routine - cycle columns for driving
  *
  */
-void LedShieldDriver2::execInterrupt()
+void LedShieldDriver::execInterrupt()
 {
 	int8_t i, j;
 	uint16_t *buf = 0;
@@ -171,7 +171,7 @@ void LedShieldDriver2::execInterrupt()
  * Writes the frame buffer to the drivers
  *
  */
-void LedShieldDriver2::write()
+void LedShieldDriver::write()
 {
 	// update low side buffer
 	noInterrupts(); // turn off interrupts
@@ -200,7 +200,7 @@ void LedShieldDriver2::write()
  *
  * NOTE: Does not change the underlying data buffers
  */
-void LedShieldDriver2::blank()
+void LedShieldDriver::blank()
 {
 	ROW_CLEAR_ENABLED;
 	ROW_CLEAR_DISABLED;
@@ -209,7 +209,7 @@ void LedShieldDriver2::blank()
 /**
  * Clears the display by clearing memory and writing new values
  */
-void LedShieldDriver2::clear()
+void LedShieldDriver::clear()
 {
 	setAll(0);
 	write();
@@ -220,7 +220,7 @@ void LedShieldDriver2::clear()
  *
  * NOTE: this routine does NOT check the row/col values; don't do anything stupid
  */
-void LedShieldDriver2::setValue(uint8_t row, uint8_t col, uint16_t value)
+void LedShieldDriver::setValue(uint8_t row, uint8_t col, uint16_t value)
 {
 	frameBuf[INDEX(row,col)] = value;
 }
@@ -230,7 +230,7 @@ void LedShieldDriver2::setValue(uint8_t row, uint8_t col, uint16_t value)
  *
  * NOTE: this routine does NOT check the row/col values; don't do anything stupid
  */
-uint16_t LedShieldDriver2::getValue(uint8_t row, uint8_t col)
+uint16_t LedShieldDriver::getValue(uint8_t row, uint8_t col)
 {
 	return frameBuf[INDEX(row,col)];
 }
@@ -240,7 +240,7 @@ uint16_t LedShieldDriver2::getValue(uint8_t row, uint8_t col)
  *
  * NOTE: this routine does NOT check the row value; don't do anything stupid
  */
-void LedShieldDriver2::setRow(uint8_t row, uint16_t value)
+void LedShieldDriver::setRow(uint8_t row, uint16_t value)
 {
 	for(uint8_t i=0; i<cols; i++)
 	{
@@ -253,7 +253,7 @@ void LedShieldDriver2::setRow(uint8_t row, uint16_t value)
  *
  * NOTE: this routine does NOT check the col value; don't do anything stupid
  */
-void LedShieldDriver2::setColumn(uint8_t col, uint16_t value)
+void LedShieldDriver::setColumn(uint8_t col, uint16_t value)
 {
 	for(uint8_t i=0; i<rows; i++)
 	{
@@ -261,18 +261,18 @@ void LedShieldDriver2::setColumn(uint8_t col, uint16_t value)
 	}
 }
 
-uint8_t LedShieldDriver2::getRows()
+uint8_t LedShieldDriver::getRows()
 {
 	return rows;
 }
 
-uint8_t LedShieldDriver2::getColumns()
+uint8_t LedShieldDriver::getColumns()
 {
 	return cols;
 }
 
 
-void LedShieldDriver2::setAll(uint16_t value)
+void LedShieldDriver::setAll(uint16_t value)
 {
 	for(int8_t j=0; j<cols; j++ )
 	{

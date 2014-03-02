@@ -6,7 +6,7 @@
  */
 #include "PowerTowerLights.h"
 
-LedShieldDriver2 driver = LedShieldDriver2();
+LedShieldDriver driver = LedShieldDriver();
 
 void isr();
 

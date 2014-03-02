@@ -1,12 +1,12 @@
 /*
- * LedShieldDriver2.h
+ * LedShieldDriver.h
  *
  *  Created on: Jan 27, 2014
  *      Author: tsasala
  */
 
-#ifndef LEDSHIELDDRIVER2_H_
-#define LEDSHIELDDRIVER2_H_
+#ifndef LEDSHIELDDRIVER_H_
+#define LEDSHIELDDRIVER_H_
 
 
 #include <Arduino.h>
@@ -102,10 +102,10 @@
 #endif
 
 
-class LedShieldDriver2
+class LedShieldDriver
 {
 public:
-	LedShieldDriver2();
+	LedShieldDriver();
 
 	boolean initialize(uint8_t rows, uint8_t cols);
 
@@ -140,4 +140,4 @@ private:
 
 };
 
-#endif /* LEDSHIELDDRIVER2_H_ */
+#endif /* LEDSHIELDDRIVER_H_ */
