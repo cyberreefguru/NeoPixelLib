@@ -6,7 +6,7 @@
  */
 #include "PowerTowerLights.h"
 
-LedShieldDriver driver = LedShieldDriver();
+LedShieldDriverScaled driver = LedShieldDriverScaled();
 
 void isr();
 
@@ -60,7 +60,7 @@ void setup()
 #ifdef __DEBUG
 	Serial.println("Initializing timer");
 #endif
-	FlexiTimer2::set(8, 0.0001, isr ); // 800us period
+	FlexiTimer2::set(4, 0.0001, isr ); // 400us period
 	FlexiTimer2::start();
 
 #ifdef __DEBUG
@@ -88,6 +88,36 @@ void loop()
 	//crossfade();
 	driver.clear();
 
+//	for(i=0; i<48; i++)
+//	{
+//		driver.setRow(i, 255);
+//		driver.write();
+//		delay(250);
+//		driver.clear();
+//		delay(250);
+//	}
+//	while(1);
+//
+//
+//	driver.setRow(0, 255);
+//	driver.write();
+//	while(1);
+//
+//
+//	driver.setColumn(7, 255);
+//	driver.write();
+//	while(1);
+
+//
+//	for(i=0; i<8; i++)
+//	{
+//		driver.setColumn(i, 255);
+//		driver.write();
+//		delay(250);
+//	}
+//
+//	while(1);
+
 
 //	for(i=0; i<10; i++)
 //	{
@@ -108,82 +138,82 @@ void loop()
 	driver.clear();
 
 	//
-	k = 0x03;
-	for(i=0; i<32; i++)
-	{
-		for(j=0; j<8; j++)
-		{
-			if( k & (0x01<<j) )
-			{
-				driver.setColumn(j, 4095);
-			}
-			else
-			{
-				driver.setColumn(j, 0);
-			}
-		}
-		driver.write();
-		delay(150);
-		if( k & 0x80 )
-		{
-			k = k << 0x01;
-			k |= 0x01;
-		}
-		else
-		{
-			k = k << 0x01;
-		}
-	}
+//	k = 0x03;
+//	for(i=0; i<32; i++)
+//	{
+//		for(j=0; j<8; j++)
+//		{
+//			if( k & (0x01<<j) )
+//			{
+//				driver.setColumn(j, 4095);
+//			}
+//			else
+//			{
+//				driver.setColumn(j, 0);
+//			}
+//		}
+//		driver.write();
+//		delay(150);
+//		if( k & 0x80 )
+//		{
+//			k = k << 0x01;
+//			k |= 0x01;
+//		}
+//		else
+//		{
+//			k = k << 0x01;
+//		}
+//	}
+//
+//	driver.clear();
 
-	driver.clear();
-
-	// bottom up
-	for(i=0; i<12; i++)
-	{
-		for(j=0; j<8; j++)
-		{
-			driver.setValue(i, j, 4095);
-			driver.write();
-			delay(75);
-			driver.setValue(i,j,0);
-			driver.write();
-		}
-	}
-
-
-
-	// bottom up
-	for(i=0; i<12; i++)
-	{
-		for(j=0; j<8; j++)
-		{
-			driver.setValue(i, j, 4095);
-			driver.write();
-			delay(50);
-		}
-	}
-
-	driver.clear();
-
-	// up down
-	for(z=11; z>=0; z--)
-	{
-		for(w=7; w>=0; w--)
-		{
-			driver.setValue(z, w, 4095);
-			driver.write();
-			delay(50);
-		}
-	}
+//	// bottom up
+//	for(i=0; i<ROWS; i++)
+//	{
+//		for(j=0; j<COLS; j++)
+//		{
+//			driver.setValue(i, j, MAX_VALUE);
+//			driver.write();
+//			delay(75);
+//			driver.setValue(i,j,0);
+//			driver.write();
+//		}
+//	}
+//
+//
+//
+//	// bottom up
+//	for(i=0; i<ROWS; i++)
+//	{
+//		for(j=0; j<COLS; j++)
+//		{
+//			driver.setValue(i, j, MAX_VALUE);
+//			driver.write();
+//			delay(50);
+//		}
+//	}
+//
+//	driver.clear();
+//
+//	// up down
+//	for(z=(ROWS-1); z>=0; z--)
+//	{
+//		for(w=(COLS-1); w>=0; w--)
+//		{
+//			driver.setValue(z, w, MAX_VALUE);
+//			driver.write();
+//			delay(50);
+//		}
+//	}
 
 
 
 	// rotate 0->n
 	for(i=0; i<5; i++)
 	{
-		for(j=0; j<8; j++)
+		for(j=0; j<COLS; j++)
 		{
-			driver.setColumn(j, 4095);
+			driver.setColumn(j, MAX_VALUE);
 			driver.write();
 			delay(100);
 			driver.setColumn(j, 0);
@@ -194,9 +224,9 @@ void loop()
 	// rotate n->0
 	for(i=0; i<5; i++)
 	{
-		for(z=7; z>=0; z--)
+		for(z=(COLS-1); z>=0; z--)
 		{
-			driver.setColumn(z, 4095);
+			driver.setColumn(z, MAX_VALUE);
 			driver.write();
 			delay(100);
 			driver.setColumn(z, 0);
@@ -205,12 +235,12 @@ void loop()
 	}
 
 
-	i = 175;
+	i = 125;
 	while( i !=0 )
 	{
-		for(j=0; j<12; j++)
+		for(j=0; j<ROWS; j++)
 		{
-			driver.setRow(j, 4095);
+			driver.setRow(j, MAX_VALUE);
 			driver.write();
 			delay(i);
 			driver.setAll(0);
@@ -220,9 +250,9 @@ void loop()
 	}
 	for(i=0; i<5; i++)
 	{
-		for(j=0; j<12; j++)
+		for(j=0; j<ROWS; j++)
 		{
-			driver.setRow(j, 4095);
+			driver.setRow(j, MAX_VALUE);
 			driver.write();
 			delay(25);
 			driver.setAll(0);
@@ -232,10 +262,10 @@ void loop()
 
 	for(i=0; i<7; i++)
 	{
-		for(j=0; j<12; j++)
+		for(j=0; j<ROWS; j++)
 		{
-			driver.setRow(j, 4095);
-			driver.setRow(11-j, 4095);
+			driver.setRow(j, MAX_VALUE);
+			driver.setRow(COLS-1-j, MAX_VALUE);
 			driver.write();
 			delay(75);
 			driver.setAll(0);
@@ -245,10 +275,10 @@ void loop()
 
 	for(i=0; i<7; i++)
 	{
-		for(j=0; j<8; j++)
+		for(j=0; j<COLS; j++)
 		{
-			driver.setColumn(j, 4095);
-			driver.setColumn(7-j, 4095);
+			driver.setColumn(j, MAX_VALUE);
+			driver.setColumn(COLS-1-j, MAX_VALUE);
 			driver.write();
 			delay(75);
 			driver.setAll(0);
@@ -257,39 +287,39 @@ void loop()
 	}
 
 
-	for(i=0; i<8; i++)
-	{
-		k = 0;
-		j = 0;
-		while( k < 12 )
-		{
-			for(j=11; j>=0; j--)
-			{
-				driver.setValue(j, i, 4095);
-				driver.write();
-				delay(50);
-				if( (j-k) == 0 )
-				{
-					break;
-				}
-				driver.setValue(j, i, 0);
-				driver.write();
-			}
-			k++;
-		}
-	}
-	driver.setAll(0);
-	driver.write();
+//	for(i=0; i<8; i++)
+//	{
+//		k = 0;
+//		j = 0;
+//		while( k < ROWS )
+//		{
+//			for(j=(ROWS-1); j>=0; j--)
+//			{
+//				driver.setValue(j, i, MAX_VALUE);
+//				driver.write();
+//				delay(50);
+//				if( (j-k) == 0 )
+//				{
+//					break;
+//				}
+//				driver.setValue(j, i, 0);
+//				driver.write();
+//			}
+//			k++;
+//		}
+//	}
+//	driver.setAll(0);
+//	driver.write();
 
 
 	k = 0;
-	while( k < 12 )
+	while( k < ROWS )
 	{
-		for(j=11; j>=0; j--)
+		for(j=(ROWS-1); j>=0; j--)
 		{
-			driver.setRow(j, 4095);
+			driver.setRow(j, MAX_VALUE);
 			driver.write();
-			delay(50);
+			delay(25);
 			if( (j-k) == 0 )
 			{
 				break;
@@ -302,17 +332,17 @@ void loop()
 	driver.setAll(0);
 	driver.write();
 
-	k = 12*8;
+	k = ROWS*COLS;
 
 	while( k > 0 )
 	{
-		j = random(0, 12*8);
-		i = j/12; // column
-		j = j%12; // row
+		j = random(0, ROWS*COLS);
+		i = j/ROWS; // column
+		j = j%ROWS; // row
 
 		if( driver.getValue(j, i) == 0 )
 		{
-			driver.setValue(j, i, 4095);
+			driver.setValue(j, i, MAX_VALUE);
 			driver.write();
 			k--;
 			delay(25);

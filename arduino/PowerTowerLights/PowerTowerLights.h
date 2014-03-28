@@ -8,13 +8,14 @@
 #define PowerTowerLights_H_
 
 #include <Arduino.h>
-//#include "LedShieldDriver.h"
-#include "LedShieldDriver.h"
+#include "LedShieldDriverScaled.h"
 #include "FlexiTimer2.h"
 
 
-#define ROWS	24
+#define ROWS	48
 #define COLS	8
+
+#define MAX_VALUE		255
 
 //#define __DEBUG
 
