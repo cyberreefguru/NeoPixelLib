@@ -12,7 +12,7 @@
 #include "FlexiTimer2.h"
 
 
-#define ROWS	48
+#define ROWS	42
 #define COLS	8
 
 #define MAX_VALUE		255

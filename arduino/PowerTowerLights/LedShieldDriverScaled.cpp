@@ -324,3 +324,58 @@ void LedShieldDriverScaled::setAll(uint8_t value)
 	}
 
 }
+
+void LedShieldDriverScaled::rotate(uint8_t direction, uint8_t rotateAmount)
+{
+	uint16_t i;
+	uint8_t j, k;
+
+	if( direction == DIRECTION_LEFT)
+	{
+		for(k=0; k<rotateAmount; k++)
+		{
+			j = frameBuf[0];
+			for (i = 0; i < (MAX_BUFFER_SIZE-1); i++)
+			{
+				frameBuf[i] = frameBuf[i+i];
+			}
+			frameBuf[i] = j;
+		}
+	}
+	else if( direction == DIRECTION_RIGHT)
+	{
+
+	}
+}
+
+void LedShieldDriverScaled::rotateRow(uint8_t direction, uint8_t rotateAmount)
+{
+	int8_t z;
+	uint8_t i, j, k;
+
+	if( direction == DIRECTION_LEFT)
+	{
+		for(k=0; k<rotateAmount; k++)
+		{
+			j = getValue(0, 0);
+			for (i = 0; i < (rows-1); i++)
+			{
+				setRow(i, getValue(i+1,0) );
+			}
+			setRow(i, j);
+		}
+	}
+	else if( direction == DIRECTION_RIGHT)
+	{
+		for(k=0; k<rotateAmount; k++)
+		{
+			j = getValue((rows-1), 0);
+			for(z=(rows-1); z>= 0; z--)
+			{
+				setRow(z, getValue(z-1,0) );
+			}
+			setRow(z, j);
+		}
+
+	}
+}

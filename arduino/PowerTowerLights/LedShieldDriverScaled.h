@@ -12,6 +12,9 @@
 #include <Arduino.h>
 
 
+#define DIRECTION_LEFT 			0
+#define DIRECTION_RIGHT			1
+
 #define MAX_ROWS				48
 #define MAX_COLS				8
 #define MAX_BUFFER_SIZE			MAX_ROWS*MAX_COLS
@@ -125,6 +128,9 @@ public:
 	void setAll(uint8_t value);
 
 	void execInterrupt();
+
+	void rotate(uint8_t direction, uint8_t rotateAmount);
+	void rotateRow(uint8_t direction, uint8_t rotateAmount);
 
 
 private:
