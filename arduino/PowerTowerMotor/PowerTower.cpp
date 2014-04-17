@@ -18,6 +18,7 @@ void moveToBottom(uint8_t speed);
 //The setup function is called once at startup of the sketch
 void setup()
 {
+	uint8_t home = false;
 
 #ifdef __DEBUG
 	// Initialize hardware serial port
@@ -63,7 +64,27 @@ void setup()
 	// if craddle not at bottom, error out
 	if( shield.getInputValue(BOTTOM_SENSOR) == true )
 	{
-		error(0x1);
+		shield.moveTimed( UP, 0, 200, 200);
+		moveToBottom(60);
+
+		if( shield.getInputValue(BOTTOM_SENSOR) == true )
+		{
+			error(0x01);
+		}
+//		for(uint8_t i=0; i<20; i++)
+//		{
+//			shield.moveTimed(DOWN, 0, 60, 10);
+//			delay(100);
+//			if( shield.getInputValue(BOTTOM_SENSOR) == false )
+//			{
+//				home = true;
+//				break;
+//			}
+//		}
+//		if( home == false )
+//		{
+//			error(0x1);
+//		}
 	}
 
 
@@ -79,25 +100,45 @@ void loop()
 
 	delay(2000);
 
-	moveToTop(225);
+	moveToTop(230);
 
-	delay(5000);
+	delay(3500);
 
 	// down
-	shield.moveTimed(DOWN, 0, 100, 400);
+	shield.moveTimed(DOWN, 0, 120, 550);
+	delay(1250);
 
-	delay(750);
-	shield.moveTimed(UP, 0, 250, 250);
-	delay(100);
-	shield.moveTimed(DOWN, 0, 125, 250);
-	delay(100);
-	shield.moveTimed(UP, 0, 250, 400);
-	delay(100);
-	moveToTop(225);
+	// up
+	shield.moveTimed(UP, 0, 255, 400);
+	delay(500);
+
+	// down
+	shield.moveTimed(DOWN, 0, 150, 400);
+	delay(500);
+
+
+	shield.moveTimed(UP, 0, 255, 400);
 	delay(1500);
-	shield.moveTimed(DOWN, 0, 125, 700);
+
+	// down
+	shield.moveTimed(DOWN, 0, 150, 500);
+	delay(250);
+
+	shield.moveTimed(UP, 0, 255, 750);
+	delay(250);
+
+	// down
+	shield.moveTimed(DOWN, 0, 150, 500);
 	delay(1000);
-	moveToBottom(50);
+
+
+	moveToTop(255);
+	delay(1500);
+
+	shield.moveTimed(DOWN, 0, 150, 700);
+	delay(1000);
+
+	moveToBottom(40);
 
 	while(1);
 }
