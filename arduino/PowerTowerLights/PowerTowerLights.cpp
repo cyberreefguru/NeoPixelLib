@@ -163,8 +163,6 @@ void loop()
 	}
 
 
-
-
 	//
 	// BREAK
 	//
@@ -474,8 +472,9 @@ void loop()
 	driver.setAll(MAX_VALUE);
 	driver.write();
 
+	delay(5000);
 
-	while(1);
+//	while(1);
 
 
 
