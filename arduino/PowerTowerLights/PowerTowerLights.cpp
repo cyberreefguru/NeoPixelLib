@@ -32,7 +32,7 @@ int freeRam () {
 void setup()
 {
 #if defined (__AVR_ATmega32U4__) // Leonardo
-	delay(10000);  // wait for leonardo to fully reset
+	delay(5000);  // wait for leonardo to fully reset
 #endif
 
 #ifdef __DEBUG
@@ -528,10 +528,10 @@ void loop()
 //		}
 //	}
 
-
-
-
-	driver.clear();
+//
+//
+//
+//	driver.clear();
 
 	//
 //	k = 0x03;
@@ -604,48 +604,48 @@ void loop()
 
 
 
-
-
-
-	// each row on then off, 5 times, from bottom to top
-	for(i=0; i<5; i++)
-	{
-		for(j=0; j<ROWS; j++)
-		{
-			driver.setRow(j, MAX_VALUE);
-			driver.write();
-			delay(25);
-			driver.setAll(0);
-			driver.write();
-		}
-	}
-
-	// each row on then off, 7 times, from top to bottom
-	for(i=0; i<7; i++)
-	{
-		for(j=0; j<ROWS; j++)
-		{
-			driver.setRow(j, MAX_VALUE);
-			driver.setRow(COLS-1-j, MAX_VALUE);
-			driver.write();
-			delay(75);
-			driver.setAll(0);
-			driver.write();
-		}
-	}
-
-	for(i=0; i<7; i++)
-	{
-		for(j=0; j<COLS; j++)
-		{
-			driver.setColumn(j, MAX_VALUE);
-			driver.setColumn(COLS-1-j, MAX_VALUE);
-			driver.write();
-			delay(75);
-			driver.setAll(0);
-			driver.write();
-		}
-	}
+//
+//
+//
+//	// each row on then off, 5 times, from bottom to top
+//	for(i=0; i<5; i++)
+//	{
+//		for(j=0; j<ROWS; j++)
+//		{
+//			driver.setRow(j, MAX_VALUE);
+//			driver.write();
+//			delay(25);
+//			driver.setAll(0);
+//			driver.write();
+//		}
+//	}
+//
+//	// each row on then off, 7 times, from top to bottom
+//	for(i=0; i<7; i++)
+//	{
+//		for(j=0; j<ROWS; j++)
+//		{
+//			driver.setRow(j, MAX_VALUE);
+//			driver.setRow(COLS-1-j, MAX_VALUE);
+//			driver.write();
+//			delay(75);
+//			driver.setAll(0);
+//			driver.write();
+//		}
+//	}
+//
+//	for(i=0; i<7; i++)
+//	{
+//		for(j=0; j<COLS; j++)
+//		{
+//			driver.setColumn(j, MAX_VALUE);
+//			driver.setColumn(COLS-1-j, MAX_VALUE);
+//			driver.write();
+//			delay(75);
+//			driver.setAll(0);
+//			driver.write();
+//		}
+//	}
 
 
 //	for(i=0; i<8; i++)
@@ -673,45 +673,45 @@ void loop()
 //	driver.write();
 
 
-	k = 0;
-	while( k < ROWS )
-	{
-		for(j=(ROWS-1); j>=0; j--)
-		{
-			driver.setRow(j, MAX_VALUE);
-			driver.write();
-			delay(25);
-			if( (j-k) == 0 )
-			{
-				break;
-			}
-			driver.setRow(j, 0);
-			driver.write();
-		}
-		k++;
-	}
-
-
-
-	driver.setAll(0);
-	driver.write();
-
-	k = ROWS*COLS;
-
-	while( k > 0 )
-	{
-		j = random(0, ROWS*COLS);
-		i = j/ROWS; // column
-		j = j%ROWS; // row
-
-		if( driver.getValue(j, i) == 0 )
-		{
-			driver.setValue(j, i, MAX_VALUE);
-			driver.write();
-			k--;
-			delay(25);
-		}
-	}
+//	k = 0;
+//	while( k < ROWS )
+//	{
+//		for(j=(ROWS-1); j>=0; j--)
+//		{
+//			driver.setRow(j, MAX_VALUE);
+//			driver.write();
+//			delay(25);
+//			if( (j-k) == 0 )
+//			{
+//				break;
+//			}
+//			driver.setRow(j, 0);
+//			driver.write();
+//		}
+//		k++;
+//	}
+//
+//
+//
+//	driver.setAll(0);
+//	driver.write();
+//
+//	k = ROWS*COLS;
+//
+//	while( k > 0 )
+//	{
+//		j = random(0, ROWS*COLS);
+//		i = j/ROWS; // column
+//		j = j%ROWS; // row
+//
+//		if( driver.getValue(j, i) == 0 )
+//		{
+//			driver.setValue(j, i, MAX_VALUE);
+//			driver.write();
+//			k--;
+//			delay(25);
+//		}
+//	}
 
 
 
