@@ -8,12 +8,12 @@
 #include "PowerTower.h"
 
 MotorShield shield;
+InterBoardComm comm;
 
 void sample();
 void error(uint8_t code);
 void moveToTop(uint8_t speed);
 void moveToBottom(uint8_t speed);
-
 
 //The setup function is called once at startup of the sketch
 void setup()
@@ -52,13 +52,17 @@ void setup()
 		delay(100);
 	}
 
+	// Initialize communication
+	comm.initialize( MASTER_ADDRESS );
+
 	// Initialize timer (1ms interval)
 	FlexiTimer2::set(1, sample);
 
 	// Start the timer
 	FlexiTimer2::start();
 
-	// pause
+	// pause - let timer start and gather some data before
+	// trying to use the sensor data
 	delay(250);
 
 	// if craddle not at bottom, error out
@@ -71,21 +75,9 @@ void setup()
 		{
 			error(0x01);
 		}
-//		for(uint8_t i=0; i<20; i++)
-//		{
-//			shield.moveTimed(DOWN, 0, 60, 10);
-//			delay(100);
-//			if( shield.getInputValue(BOTTOM_SENSOR) == false )
-//			{
-//				home = true;
-//				break;
-//			}
-//		}
-//		if( home == false )
-//		{
-//			error(0x1);
-//		}
 	}
+
+//	comm.waitForResponse(TOWER_LIGHT_ADDRESS, RESPONSE_RESET_COMPLETE, 1, buffer);
 
 
 #ifdef __DEBUG
@@ -97,7 +89,6 @@ void setup()
 // The loop function is called in an endless loop
 void loop()
 {
-
 	delay(2000);
 
 	moveToTop(230);
@@ -140,7 +131,8 @@ void loop()
 
 	moveToBottom(40);
 
-	while(1);
+	delay(10000); // wait 10 seconds
+
 }
 
 /**
@@ -179,7 +171,7 @@ void error(uint8_t code)
 	uint8_t led[4];
 	for(uint8_t i=0; i<NUM_LEDS; i++)
 	{
-		if( led[i] && (0x1<<i))
+		if( code && (0x1<<i))
 		{
 			led[i] = ON;
 		}

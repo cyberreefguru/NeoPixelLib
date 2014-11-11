@@ -8,11 +8,15 @@
 #ifndef POWERTOWER_H_
 #define POWERTOWER_H_
 
-#include "MotorShield.h"
 #include <FlexiTimer2.h>
+#include <InterBoardComm.h>
+#include "MotorShield.h"
 
 #define BOTTOM_SENSOR	0
 #define TOP_SENSOR		1
+
+uint8_t buffer[8];
+
 
 class PowerTower
 {
