@@ -7,12 +7,11 @@
 #include "PowerTowerLights.h"
 
 LedShieldDriverScaled driver = LedShieldDriverScaled();
+InterBoardComm comm;
 
 void isr();
 
 #define WAIT 50
-
-const int led_pin = 13;			// default to pin 13
 
 void error(uint8_t errorCode);
 void LEDscan(float degreeoffset);
@@ -32,7 +31,7 @@ int freeRam () {
 void setup()
 {
 #if defined (__AVR_ATmega32U4__) // Leonardo
-	delay(5000);  // wait for leonardo to fully reset
+	delay(2000);  // wait for leonardo to fully reset
 #endif
 
 #ifdef __DEBUG
@@ -52,6 +51,9 @@ void setup()
 		error(10);
 	}
 
+	comm.initialize( TOWER_LIGHT_ADDRESS );
+
+
 #ifdef __DEBUG
 	Serial.print("free=");
 	Serial.println(freeRam());
@@ -66,6 +68,9 @@ void setup()
 #ifdef __DEBUG
 	Serial.println("**** init complete *****");
 #endif
+
+	buffer[0] = TOWER_LIGHT_ADDRESS;
+	comm.sendResponse( MASTER_ADDRESS, RESPONSE_RESET_COMPLETE, 1, buffer);
 
 }
 

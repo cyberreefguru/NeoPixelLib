@@ -8,9 +8,9 @@
 #define PowerTowerLights_H_
 
 #include <Arduino.h>
+#include <InterBoardComm.h>
 #include "LedShieldDriverScaled.h"
 #include "FlexiTimer2.h"
-
 
 #define ROWS	42
 #define COLS	8
@@ -18,6 +18,8 @@
 #define MAX_VALUE		255
 
 //#define __DEBUG
+
+uint8_t buffer[8];
 
 
 //end of add your includes here
