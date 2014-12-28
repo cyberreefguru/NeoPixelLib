@@ -18,7 +18,7 @@ void isr();
 void error(uint8_t errorCode);
 
 void setLetter(uint8_t (*letter)[2], uint8_t len, uint8_t value);
-void sequenceLetter(uint8_t (*letter)[2], uint8_t len, uint8_t value, uint16_t delayTime);
+void sequenceLetter(uint8_t (*letter)[2], uint8_t len, uint8_t value, uint16_t delayTime, uint8_t clearBetween);
 
 
 /**
@@ -81,95 +81,125 @@ void loop()
 	// Turn all off
 	driver.setAll(0);
 	driver.write();
-	PORTB &= ~_BV(5);
+
+	sequenceLetter((uint8_t (*)[2])&LETTER_P1[0][0], LETTER_P_SIZE, 255, 75, true);
+	sequenceLetter((uint8_t (*)[2])&LETTER_O1[0][0], LETTER_O_SIZE, 255, 75, true);
+	sequenceLetter((uint8_t (*)[2])&LETTER_W1[0][0], LETTER_W_SIZE, 255, 75, true);
+	sequenceLetter((uint8_t (*)[2])&LETTER_E1[0][0], LETTER_E_SIZE, 255, 75, true);
+	sequenceLetter((uint8_t (*)[2])&LETTER_R1[0][0], LETTER_R_SIZE, 255, 75, true);
+	sequenceLetter((uint8_t (*)[2])&LETTER_T1[0][0], LETTER_T_SIZE, 255, 75, true);
+	sequenceLetter((uint8_t (*)[2])&LETTER_O2[0][0], LETTER_O_SIZE, 255, 75, true);
+	sequenceLetter((uint8_t (*)[2])&LETTER_W2[0][0], LETTER_W_SIZE, 255, 75, true);
+	sequenceLetter((uint8_t (*)[2])&LETTER_E2[0][0], LETTER_E_SIZE, 255, 75, true);
+	sequenceLetter((uint8_t (*)[2])&LETTER_R2[0][0], LETTER_R_SIZE, 255, 75, true);
+
+	driver.setAll(0);
+	driver.write();
+
 
 	setLetter( (uint8_t (*)[2])&LETTER_P1[0][0], LETTER_P_SIZE, 255);
-	delay(1000);
+	delay(300);
 	setLetter( (uint8_t (*)[2])&LETTER_O1[0][0], LETTER_O_SIZE, 255);
-	delay(1000);
+	delay(300);
 	setLetter( (uint8_t (*)[2])&LETTER_W1[0][0], LETTER_W_SIZE, 255);
-	delay(1000);
+	delay(300);
 	setLetter( (uint8_t (*)[2])&LETTER_E1[0][0], LETTER_E_SIZE, 255);
-	delay(1000);
+	delay(300);
 	setLetter( (uint8_t (*)[2])&LETTER_R1[0][0], LETTER_R_SIZE, 255);
-	delay(1000);
+	delay(300);
 
 	setLetter( (uint8_t (*)[2])&LETTER_T1[0][0], LETTER_T_SIZE, 255);
-	delay(1000);
+	delay(300);
 	setLetter( (uint8_t (*)[2])&LETTER_O2[0][0], LETTER_O_SIZE, 255);
-	delay(1000);
+	delay(300);
 	setLetter( (uint8_t (*)[2])&LETTER_W2[0][0], LETTER_W_SIZE, 255);
-	delay(1000);
+	delay(300);
 	setLetter( (uint8_t (*)[2])&LETTER_E2[0][0], LETTER_E_SIZE, 255);
-	delay(1000);
+	delay(300);
 	setLetter( (uint8_t (*)[2])&LETTER_R2[0][0], LETTER_R_SIZE, 255);
-	delay(1000);
+	delay(300);
+
+	for(i=0; i<7; i++)
+	{
+		driver.setAll(0);
+		driver.write();
+		delay(250);
+		driver.setAll(255);
+		driver.write();
+		delay(250);
+	}
+
+	for(i=0; i<7; i++)
+	{
+		driver.setAll(0);
+		driver.write();
+
+		setLetter( (uint8_t (*)[2])&LETTER_P1[0][0], LETTER_P_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_O1[0][0], LETTER_O_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_W1[0][0], LETTER_W_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_E1[0][0], LETTER_E_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_R1[0][0], LETTER_R_SIZE, 255);
+		delay(350);
+
+		driver.setAll(0);
+		driver.write();
+
+		setLetter( (uint8_t (*)[2])&LETTER_T1[0][0], LETTER_T_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_O2[0][0], LETTER_O_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_W2[0][0], LETTER_W_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_E2[0][0], LETTER_E_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_R2[0][0], LETTER_R_SIZE, 255);
+		delay(350);
+	}
+
+	driver.setAll(0);
+	driver.write();
+
+	sequenceLetter((uint8_t (*)[2])&LETTER_P1[0][0], LETTER_P_SIZE, 255, 75, false);
+	sequenceLetter((uint8_t (*)[2])&LETTER_O1[0][0], LETTER_O_SIZE, 255, 75, false);
+	sequenceLetter((uint8_t (*)[2])&LETTER_W1[0][0], LETTER_W_SIZE, 255, 75, false);
+	sequenceLetter((uint8_t (*)[2])&LETTER_E1[0][0], LETTER_E_SIZE, 255, 75, false);
+	sequenceLetter((uint8_t (*)[2])&LETTER_R1[0][0], LETTER_R_SIZE, 255, 75, false);
+	sequenceLetter((uint8_t (*)[2])&LETTER_T1[0][0], LETTER_T_SIZE, 255, 75, false);
+	sequenceLetter((uint8_t (*)[2])&LETTER_O2[0][0], LETTER_O_SIZE, 255, 75, false);
+	sequenceLetter((uint8_t (*)[2])&LETTER_W2[0][0], LETTER_W_SIZE, 255, 75, false);
+	sequenceLetter((uint8_t (*)[2])&LETTER_E2[0][0], LETTER_E_SIZE, 255, 75, false);
+	sequenceLetter((uint8_t (*)[2])&LETTER_R2[0][0], LETTER_R_SIZE, 255, 75, false);
 
 
+	for(i=0; i<7; i++)
+	{
+		driver.setAll(0);
+		driver.write();
+		delay(175);
+		driver.setAll(255);
+		driver.write();
+		delay(175);
+	}
 
-//	// Turn all off
-//	driver.setAll(0);
-//	driver.write();
-//	delay(1000);
+	driver.setAll(0);
+	driver.write();
 
-//	for(i=8; i<16; i++)
-//	{
-//		driver.setValue(i,0,0);
-//		driver.write();
-//		delay(1000);
-//	}
-//
-//	delay(1000);
-
-
-
-
-//	for(i=0; i<5; i++)
-//	{
-//		driver.setColumn(i, 255);
-//		driver.write();
-//		delay(2000);
-//		driver.setAll(0);
-//		driver.write();
-//	}
-//
-//
-//	for(i=0; i<16; i++)
-//	{
-//		driver.setRow(i, 255);
-//		driver.write();
-//		delay(2000);
-//		driver.setAll(0);
-//		driver.write();
-//	}
-
-//	for(j=0; j<5; j++)
-//	{
-//		for(i=0; i<8; i++)
-//		{
-//			driver.setValue(i,j,255);
-//			driver.write();
-//			delay(100);
-//		}
-//	}
-//
-//	for(j=0; j<5; j++)
-//	{
-//		for(i=8; i<16; i++)
-//		{
-//			driver.setValue(i,j,255);
-//			driver.write();
-//			delay(100);
-//		}
-//	}
-
-//	delay(1000);
-//
-//	// Turn all off
-//	driver.setAll(0);
-//	driver.write();
-//	PORTB &= ~_BV(5);
-//	delay(1000);
+	for(i=0; i<5; i++)
+	{
+		setLetter( (uint8_t (*)[2])&LETTER_P1[0][0], LETTER_P_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_T1[0][0], LETTER_T_SIZE, 255);
+		delay(200);
+		setLetter( (uint8_t (*)[2])&LETTER_O1[0][0], LETTER_O_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_O2[0][0], LETTER_O_SIZE, 255);
+		delay(200);
+		setLetter( (uint8_t (*)[2])&LETTER_W1[0][0], LETTER_W_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_W2[0][0], LETTER_W_SIZE, 255);
+		delay(200);
+		setLetter( (uint8_t (*)[2])&LETTER_E1[0][0], LETTER_E_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_E2[0][0], LETTER_E_SIZE, 255);
+		delay(200);
+		setLetter( (uint8_t (*)[2])&LETTER_R1[0][0], LETTER_R_SIZE, 255);
+		setLetter( (uint8_t (*)[2])&LETTER_R2[0][0], LETTER_R_SIZE, 255);
+		delay(200);
+		driver.setAll(0);
+		driver.write();
+	}
 
 
 } // end loop
@@ -185,7 +215,7 @@ void setLetter(uint8_t (*letter)[2], uint8_t len, uint8_t value)
 	driver.write();
 }
 
-void sequenceLetter(uint8_t (*letter)[2], uint8_t len, uint8_t value, uint16_t delayTime)
+void sequenceLetter(uint8_t (*letter)[2], uint8_t len, uint8_t value, uint16_t delayTime, uint8_t clearBetween)
 {
 	uint8_t i,j;
 
@@ -194,8 +224,12 @@ void sequenceLetter(uint8_t (*letter)[2], uint8_t len, uint8_t value, uint16_t d
 		driver.setValue( letter[i][0], letter[i][1], value);
 		driver.write();
 		delay(delayTime);
+		if( clearBetween == true)
+		{
+			driver.setAll(0);
+			driver.write();
+		}
 	}
-
 }
 
 
