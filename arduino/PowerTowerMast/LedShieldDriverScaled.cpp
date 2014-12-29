@@ -79,6 +79,14 @@ boolean LedShieldDriverScaled::initialize(uint8_t r, uint8_t c)
 	frameBuf = buf1;
 	driveBuf = buf2;
 
+	// TODO: fix code to support all 16 columns
+	// code is currently only enabled for 8 columns
+	// return error just in case the user does not know this
+	if( c > 8 )
+	{
+		return false;
+	}
+
 	return true;
 
 } // end initialize
@@ -93,6 +101,7 @@ void LedShieldDriverScaled::execInterrupt()
 	int8_t i, j;
 	uint8_t *buf = 0;
 
+	// set buffer pointer to drive buffer, first row, current column
 	buf = (uint8_t *)&driveBuf[INDEX(0,currentCol)];
 
 	// ensure latch and clock are low
@@ -104,6 +113,8 @@ void LedShieldDriverScaled::execInterrupt()
 	// 24 channels per TLC5974
 	for (int8_t c = rows - 1; c >= 0; c--)
 	{
+		// TODO: put code here to send PWM values rather than 1 or 0
+
 		// send either full "off" or full "on" to driver
 		if( buf[c] == 0 )
 		{
@@ -134,10 +145,12 @@ void LedShieldDriverScaled::execInterrupt()
 
 	// rotate to next column
 	// NOTE: board has 16 columns but we are driving 2 at a time, so only effectively 8
-	hsBuffer = (0x0101)<<currentCol; // move to next column; (0x0001 x 16 for full 16 columns)
+	// NOTE: if you need all 16 columns, you need to modify this code
+	// TODO: fix code to support all 16 columns; change 0x0101 to 0x0001
+	hsBuffer = (0x0101)<<currentCol; // shifts base value currentCol times; (0x0001 x 16 for full 16 columns)
 
-	for (i = 7; i >=0 ; i--)  { // TODO: NOTE - PRETTY SURE THIS SHOULD BE 7 NOT 15
-
+	for (i = 7; i >=0 ; i--) // TODO: change the 7 to 15
+	{
 		if( ((hsBuffer >> i) & 0x01) == 0x01 )
 		{
 			COL_DATA_HIGH;
@@ -154,6 +167,8 @@ void LedShieldDriverScaled::execInterrupt()
 
 	// Clear row and column
 	ROW_CLEAR_ENABLED;
+
+	// TODO: test if COL_CLEAR work here
 	COL_OUTPUT_DISABLED;
 
 	// Latch data into row
@@ -164,6 +179,7 @@ void LedShieldDriverScaled::execInterrupt()
 	// Latch data into col
 	COL_LATCH_HIGH;
 	COL_LATCH_LOW;
+	// TODO: test if COL_CLEAR work here
 	COL_OUTPUT_ENABLED;
 
 	// increment column value
