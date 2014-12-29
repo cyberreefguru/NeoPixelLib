@@ -21,7 +21,8 @@ LedShieldDriverScaled::LedShieldDriverScaled()
 	currentCol = 0;
 
 	hsBuffer = 0;
-
+	colMask = 0;
+	colDrive = 0;
 }
 
 
@@ -79,10 +80,18 @@ boolean LedShieldDriverScaled::initialize(uint8_t r, uint8_t c)
 	frameBuf = buf1;
 	driveBuf = buf2;
 
-	// TODO: fix code to support all 16 columns
-	// code is currently only enabled for 8 columns
-	// return error just in case the user does not know this
-	if( c > 8 )
+	// If # cols 1-8, set drive to 7
+	if( c <= (COLS_PER_DRIVER) )
+	{
+		colDrive = 7;
+		colMask = 0x0001;
+	}
+	else if( c <= (COLS_PER_DRIVER*2) )
+	{
+		colDrive = 15;
+		colMask = 0x0001;
+	}
+	else
 	{
 		return false;
 	}
@@ -143,13 +152,10 @@ void LedShieldDriverScaled::execInterrupt()
 
 	} // end row write
 
-	// rotate to next column
-	// NOTE: board has 16 columns but we are driving 2 at a time, so only effectively 8
-	// NOTE: if you need all 16 columns, you need to modify this code
-	// TODO: fix code to support all 16 columns; change 0x0101 to 0x0001
-	hsBuffer = (0x0101)<<currentCol; // shifts base value currentCol times; (0x0001 x 16 for full 16 columns)
+	// rotate to next column; shifts colMask currentCol times (e.g., 0x0001 x 16 for full 16 columns)
+	hsBuffer = (colMask)<<currentCol;
 
-	for (i = 7; i >=0 ; i--) // TODO: change the 7 to 15
+	for (i = colDrive; i >=0 ; i--)
 	{
 		if( ((hsBuffer >> i) & 0x01) == 0x01 )
 		{

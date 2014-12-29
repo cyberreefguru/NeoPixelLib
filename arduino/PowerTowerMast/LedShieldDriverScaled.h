@@ -14,7 +14,7 @@
 #define DIRECTION_RIGHT			1
 
 #define MAX_ROWS				48
-#define MAX_COLS				8
+#define MAX_COLS				8 // TODO: fix max cols if we have memory
 #define MAX_BUFFER_SIZE			MAX_ROWS*MAX_COLS
 
 #define COLS_PER_DRIVER 		8
@@ -106,6 +106,8 @@ private:
 	uint8_t rows, cols;
 	uint8_t rowDrivers, colDrivers;
 	uint16_t hsBuffer;
+	uint8_t colMask;
+	uint8_t colDrive;
 
 	volatile uint8_t currentCol;
 
