@@ -123,7 +123,7 @@ void LedShieldDriverScaled::execInterrupt()
 	for (int8_t c = rows - 1; c >= 0; c--)
 	{
 		// TODO: put code here to send PWM values rather than 1 or 0
-
+		// 12 bits per channel, send MSB first
 		// send either full "off" or full "on" to driver
 		if( buf[c] == 0 )
 		{
