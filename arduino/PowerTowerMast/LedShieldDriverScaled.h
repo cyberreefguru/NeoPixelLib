@@ -13,13 +13,15 @@
 #define DIRECTION_LEFT 			0
 #define DIRECTION_RIGHT			1
 
-#define MAX_ROWS				48
+#define MAX_ROWS				24
 #define MAX_COLS				8 // TODO: fix max cols if we have memory
 #define MAX_BUFFER_SIZE			MAX_ROWS*MAX_COLS
 
 #define COLS_PER_DRIVER 		8
 #define ROWS_PER_DRIVER 		24
-#define MAX_INTENSITY 			4095
+
+#define BRIGHTNESS_TYPE			uint16_t
+#define MAX_BRIGHTNESS 			4095
 
 #define INDEX(row,col) (row+col*MAX_ROWS)
 
@@ -83,13 +85,13 @@ public:
 	uint8_t getRows();
 	uint8_t getColumns();
 
-	void setIndexedValue(uint16_t index, uint8_t value);
-	void setValue(uint8_t row, uint8_t col, uint8_t value);
-	uint8_t getValue(uint8_t row, uint8_t col);
+	void setIndexedValue(uint16_t index, BRIGHTNESS_TYPE value);
+	void setValue(uint8_t row, uint8_t col, BRIGHTNESS_TYPE value);
+	BRIGHTNESS_TYPE getValue(uint8_t row, uint8_t col);
 
-	void setRow(uint8_t row, uint8_t value);
-	void setColumn(uint8_t col, uint8_t value);
-	void setAll(uint8_t value);
+	void setRow(uint8_t row, BRIGHTNESS_TYPE value);
+	void setColumn(uint8_t col, BRIGHTNESS_TYPE value);
+	void setAll(BRIGHTNESS_TYPE value);
 
 	void execInterrupt();
 
@@ -101,8 +103,8 @@ private:
 
 	// Use single dimension arrays to make compilation easier
 	// access by col + 8*row (or row + 8*col)
-	uint8_t *buf1, *buf2;
-	uint8_t *frameBuf, *driveBuf;
+	BRIGHTNESS_TYPE *buf1, *buf2;
+	BRIGHTNESS_TYPE *frameBuf, *driveBuf;
 	uint8_t rows, cols;
 	uint8_t rowDrivers, colDrivers;
 	uint16_t hsBuffer;

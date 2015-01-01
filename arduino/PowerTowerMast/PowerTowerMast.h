@@ -14,12 +14,12 @@
 
 #define ROWS	16
 #define COLS	8
-
-#define MAX_VALUE		255
+//
+//#define MAX_VALUE		255
 
 //#define __DEBUG
 
-uint8_t buffer[8];
+//uint8_t buffer[8];
 
 
 //end of add your includes here
