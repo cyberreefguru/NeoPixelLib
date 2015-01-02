@@ -401,3 +401,51 @@ void LedShieldDriverScaled::rotateRow(uint8_t direction, uint8_t rotateAmount)
 
 	}
 }
+
+
+void LedShieldDriverScaled::randomize(uint8_t rows, uint8_t cols, uint8_t on, uint16_t delayTime, uint16_t brightness)
+{
+	uint16_t i,j, q, total;
+
+	if( on == true )
+	{
+		// set all off
+		setAll(0);
+	}
+	else
+	{
+		// set all on
+		setAll(MAX_BRIGHTNESS);
+	}
+
+	total = rows*cols;
+	while( total > 0 )
+	{
+		q = random(0, rows*cols); // don't use 'total' here since it changes in the loop
+		i = q/rows; // column
+		j = q%rows; // row
+
+		if( on == true )
+		{
+			if( getValue(j, i) != brightness )
+			{
+				setValue(j, i, brightness);
+				write();
+				total--;
+				delay(delayTime);
+			}
+		}
+		else
+		{
+			if( getValue(j, i) != 0 )
+			{
+				setValue(j, i, 0);
+				write();
+				total--;
+				delay(delayTime);
+			}
+		}
+
+	} // end while
+
+} // end random

@@ -27,6 +27,16 @@ uint8_t LETTER_W2[LETTER_W_SIZE][2] = { {14,4}, {11,4}, {9,4}, {13,4}, {10,4}, {
 uint8_t LETTER_E2[LETTER_E_SIZE][2] = { {15,3}, {12,3}, {14,3}, {8,3}, {13,3}, {11,3}, {9,3} };
 uint8_t LETTER_R2[LETTER_R_SIZE][2] = { {12,1}, {8,1}, {9,1}, {10,1}, {11,1}, {13,1}, {14,1}, {15,1} };
 
+#define NUM_LETTERS		10
+
+uint16_t LETTERS[NUM_LETTERS] = { (uint16_t)&LETTER_P1[0][0], (uint16_t)&LETTER_O1[0][0], (uint16_t)&LETTER_W1[0][0],
+		(uint16_t)&LETTER_E1[0][0], (uint16_t)&LETTER_R1[0][0], (uint16_t)&LETTER_T1[0][0],
+		(uint16_t)&LETTER_O2[0][0], (uint16_t)&LETTER_W2[0][0], (uint16_t)&LETTER_E2[0][0],
+		(uint16_t)&LETTER_R2[0][0]};
+
+uint8_t LETTER_SIZE[NUM_LETTERS] = {LETTER_P_SIZE, LETTER_O_SIZE, LETTER_W_SIZE, LETTER_E_SIZE, LETTER_R_SIZE,
+		LETTER_T_SIZE, LETTER_O_SIZE, LETTER_W_SIZE, LETTER_E_SIZE, LETTER_R_SIZE};
+
 
 
 #endif /* LETTERWIRING_H_ */

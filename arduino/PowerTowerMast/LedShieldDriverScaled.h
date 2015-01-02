@@ -97,6 +97,7 @@ public:
 
 	void rotate(uint8_t direction, uint8_t rotateAmount);
 	void rotateRow(uint8_t direction, uint8_t rotateAmount);
+	void randomize(uint8_t rows, uint8_t cols, uint8_t on, uint16_t delayTime, uint16_t brightness);
 
 
 private:
