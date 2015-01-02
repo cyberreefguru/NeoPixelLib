@@ -13,15 +13,15 @@ void isr();
 
 #define WAIT 50
 
-//#define MAX_LETTER_SIZE	(LETTER_P_SIZE + LETTER_O_SIZE + LETTER_W_SIZE + LETTER_E_SIZE + LETTER_R_SIZE + LETTER_T_SIZE)
-
 void error(uint8_t errorCode);
 
 void rotateLetters( uint8_t direction, uint16_t onTime, uint16_t offTime, uint8_t repeat, BRIGHTNESS_TYPE onBrightness, BRIGHTNESS_TYPE offBrightness);
 
 void setLetter(uint8_t index, BRIGHTNESS_TYPE value, uint8_t drive);
 void sequenceLetter(uint8_t index, BRIGHTNESS_TYPE value, uint16_t delayTime, uint8_t clearBetween);
+void ghostSequenceLetter(BRIGHTNESS_TYPE value, uint16_t delayTime);
 
+uint8_t SEGMENT_CACHE[NUM_SEGMENTS][2];
 
 /**
  * Standard arduino setup.  Called once
@@ -36,10 +36,10 @@ void setup()
 	Serial.begin(115200);
 #endif
 
-#ifdef __DEBUG
-	Serial.print("free=");
-	Serial.println(freeRam());
-#endif
+//#ifdef __DEBUG
+//	Serial.print("free=");
+//	Serial.println(freeRam());
+//#endif
 
 #ifdef __DEBUG
 	Serial.println("Initializing shield driver");
@@ -49,10 +49,10 @@ void setup()
 		error(10);
 	}
 
-#ifdef __DEBUG
-	Serial.print("free=");
-	Serial.println(freeRam());
-#endif
+//#ifdef __DEBUG
+//	Serial.print("free=");
+//	Serial.println(freeRam());
+//#endif
 
 #ifdef __DEBUG
 	Serial.println("Initializing timer");
@@ -77,7 +77,6 @@ void loop()
 	// Turn all off
 	driver.setAll(0);
 	driver.write();
-	delay(750);
 
 	// random on
 	driver.randomize(ROWS, COLS, true, 10, MAX_BRIGHTNESS);
@@ -112,11 +111,11 @@ void loop()
 //	delay(750);
 
 
-	// Sets each letter OFF in sequence
-	// turn all off
+	// turn all on
 	driver.setAll(MAX_BRIGHTNESS);
 	driver.write();
 
+	// turn off in sequence
 	for(j=0; j<NUM_LETTERS; j++)
 	{
 		setLetter( j, 0, true);
@@ -134,12 +133,16 @@ void loop()
 		delay(250);
 	}
 
+	driver.setAll(0);
+	driver.write();
+
+	ghostSequenceLetter(MAX_BRIGHTNESS, 75);
+
+	delay(500);
+
 	// Sets POWER on, then off; sets TOWER on, then off
 	for(i=0; i<7; i++)
 	{
-//		driver.setAll(0);
-//		driver.write();
-
 		setLetter( 0, MAX_BRIGHTNESS, true);
 		setLetter( 1, MAX_BRIGHTNESS, true);
 		setLetter( 2, MAX_BRIGHTNESS, true);
@@ -152,22 +155,7 @@ void loop()
 		setLetter( 8, MAX_BRIGHTNESS/10, true);
 		setLetter( 9, MAX_BRIGHTNESS/10, true);
 
-//		setLetter( (uint8_t (*)[2])&LETTER_P1[0][0], LETTER_P_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_O1[0][0], LETTER_O_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_W1[0][0], LETTER_W_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_E1[0][0], LETTER_E_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_R1[0][0], LETTER_R_SIZE, MAX_BRIGHTNESS);
-
-//		setLetter( (uint8_t (*)[2])&LETTER_T1[0][0], LETTER_T_SIZE, MAX_BRIGHTNESS/10);
-//		setLetter( (uint8_t (*)[2])&LETTER_O2[0][0], LETTER_O_SIZE, MAX_BRIGHTNESS/10);
-//		setLetter( (uint8_t (*)[2])&LETTER_W2[0][0], LETTER_W_SIZE, MAX_BRIGHTNESS/10);
-//		setLetter( (uint8_t (*)[2])&LETTER_E2[0][0], LETTER_E_SIZE, MAX_BRIGHTNESS/10);
-//		setLetter( (uint8_t (*)[2])&LETTER_R2[0][0], LETTER_R_SIZE, MAX_BRIGHTNESS/10);
-
 		delay(350);
-
-//		driver.setAll(0);
-//		driver.write();
 
 		setLetter( 0, MAX_BRIGHTNESS/10, true);
 		setLetter( 1, MAX_BRIGHTNESS/10, true);
@@ -181,17 +169,6 @@ void loop()
 		setLetter( 8, MAX_BRIGHTNESS, true);
 		setLetter( 9, MAX_BRIGHTNESS, true);
 
-//		setLetter( (uint8_t (*)[2])&LETTER_P1[0][0], LETTER_P_SIZE, MAX_BRIGHTNESS/10);
-//		setLetter( (uint8_t (*)[2])&LETTER_O1[0][0], LETTER_O_SIZE, MAX_BRIGHTNESS/10);
-//		setLetter( (uint8_t (*)[2])&LETTER_W1[0][0], LETTER_W_SIZE, MAX_BRIGHTNESS/10);
-//		setLetter( (uint8_t (*)[2])&LETTER_E1[0][0], LETTER_E_SIZE, MAX_BRIGHTNESS/10);
-//		setLetter( (uint8_t (*)[2])&LETTER_R1[0][0], LETTER_R_SIZE, MAX_BRIGHTNESS/10);
-//
-//		setLetter( (uint8_t (*)[2])&LETTER_T1[0][0], LETTER_T_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_O2[0][0], LETTER_O_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_W2[0][0], LETTER_W_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_E2[0][0], LETTER_E_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_R2[0][0], LETTER_R_SIZE, MAX_BRIGHTNESS);
 		delay(350);
 	}
 
@@ -227,26 +204,8 @@ void loop()
 		{
 			setLetter( j, MAX_BRIGHTNESS, true);
 			setLetter( j+(NUM_LETTERS/2), MAX_BRIGHTNESS, true);
-
-//			setLetter( (uint8_t (*)[2])LETTERS[j], LETTER_SIZE[j], MAX_BRIGHTNESS );
-//			setLetter( (uint8_t (*)[2])LETTERS[j+(NUM_LETTERS/2)], LETTER_SIZE[j+(NUM_LETTERS/2)], MAX_BRIGHTNESS );
 			delay(200);
 		}
-//		setLetter( (uint8_t (*)[2])&LETTER_P1[0][0], LETTER_P_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_T1[0][0], LETTER_T_SIZE, MAX_BRIGHTNESS);
-//		delay(200);
-//		setLetter( (uint8_t (*)[2])&LETTER_O1[0][0], LETTER_O_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_O2[0][0], LETTER_O_SIZE, MAX_BRIGHTNESS);
-//		delay(200);
-//		setLetter( (uint8_t (*)[2])&LETTER_W1[0][0], LETTER_W_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_W2[0][0], LETTER_W_SIZE, MAX_BRIGHTNESS);
-//		delay(200);
-//		setLetter( (uint8_t (*)[2])&LETTER_E1[0][0], LETTER_E_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_E2[0][0], LETTER_E_SIZE, MAX_BRIGHTNESS);
-//		delay(200);
-//		setLetter( (uint8_t (*)[2])&LETTER_R1[0][0], LETTER_R_SIZE, MAX_BRIGHTNESS);
-//		setLetter( (uint8_t (*)[2])&LETTER_R2[0][0], LETTER_R_SIZE, MAX_BRIGHTNESS);
-//		delay(200);
 		driver.setAll(0);
 		driver.write();
 		delay(200);
@@ -306,6 +265,48 @@ void sequenceLetter(uint8_t index, BRIGHTNESS_TYPE value, uint16_t delayTime, ui
 			driver.setAll(0);
 			driver.write();
 		}
+	}
+}
+
+void ghostSequenceLetter(BRIGHTNESS_TYPE value, uint16_t delayTime)
+{
+	uint8_t index, i, j;
+	uint8_t (*letter)[2];
+
+	driver.setAll(0);
+
+	// Build flat array of letter segment values
+	index = 0;
+	for(i=0; i<NUM_LETTERS; i++)
+	{
+		letter = (uint8_t (*)[2])LETTERS[i];
+		for(j=0; j< LETTER_SIZE[i]; j++)
+		{
+			SEGMENT_CACHE[index][0] = letter[j][0];
+			SEGMENT_CACHE[index++][1] = letter[j][1];
+		}
+	}
+
+	for(i=0; i<(index+3); i++)
+	{
+		if( (i >= 0) && (i < index) )
+		{
+			driver.setValue( SEGMENT_CACHE[i][0], SEGMENT_CACHE[i][1], value);
+		}
+		if( (i>0) && (i< index+1) )
+		{
+			driver.setValue( SEGMENT_CACHE[i-1][0], SEGMENT_CACHE[i-1][1], value/5);
+		}
+		if( (i>1) && (i < index+2) )
+		{
+			driver.setValue( SEGMENT_CACHE[i-2][0], SEGMENT_CACHE[i-2][1], value/10);
+		}
+		if( (i>2) && (i < NUM_SEGMENTS+3) )
+		{
+			driver.setValue( SEGMENT_CACHE[i-3][0], SEGMENT_CACHE[i-3][1], 0);
+		}
+		driver.write();
+		delay(delayTime);
 	}
 }
 
