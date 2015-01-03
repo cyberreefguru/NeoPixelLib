@@ -20,8 +20,8 @@
 #define COLS_PER_DRIVER 		8
 #define ROWS_PER_DRIVER 		24
 
-#define BRIGHTNESS_TYPE			uint16_t
-#define MAX_BRIGHTNESS 			4095
+#define INTENSITY_TYPE			uint16_t
+#define MAX_INTENSITY 			4095
 
 #define INDEX(row,col) (row+col*MAX_ROWS)
 
@@ -85,13 +85,13 @@ public:
 	uint8_t getRows();
 	uint8_t getColumns();
 
-	void setIndexedValue(uint16_t index, BRIGHTNESS_TYPE value);
-	void setValue(uint8_t row, uint8_t col, BRIGHTNESS_TYPE value);
-	BRIGHTNESS_TYPE getValue(uint8_t row, uint8_t col);
+	void setIndexedValue(uint16_t index, INTENSITY_TYPE value);
+	void setValue(uint8_t row, uint8_t col, INTENSITY_TYPE value);
+	INTENSITY_TYPE getValue(uint8_t row, uint8_t col);
 
-	void setRow(uint8_t row, BRIGHTNESS_TYPE value);
-	void setColumn(uint8_t col, BRIGHTNESS_TYPE value);
-	void setAll(BRIGHTNESS_TYPE value);
+	void setRow(uint8_t row, INTENSITY_TYPE value);
+	void setColumn(uint8_t col, INTENSITY_TYPE value);
+	void setAll(INTENSITY_TYPE value);
 
 	void execInterrupt();
 
@@ -104,8 +104,8 @@ private:
 
 	// Use single dimension arrays to make compilation easier
 	// access by col + 8*row (or row + 8*col)
-	BRIGHTNESS_TYPE *buf1, *buf2;
-	BRIGHTNESS_TYPE *frameBuf, *driveBuf;
+	INTENSITY_TYPE *buf1, *buf2;
+	INTENSITY_TYPE *frameBuf, *driveBuf;
 	uint8_t rows, cols;
 	uint8_t rowDrivers, colDrivers;
 	uint16_t hsBuffer;

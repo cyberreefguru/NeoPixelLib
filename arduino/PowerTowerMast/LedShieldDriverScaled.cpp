@@ -65,13 +65,13 @@ boolean LedShieldDriverScaled::initialize(uint8_t r, uint8_t c)
 	ROW_CLEAR_ENABLED;
 
 	// Reserve memory
-	buf1 = (BRIGHTNESS_TYPE *) calloc(MAX_BUFFER_SIZE, sizeof(BRIGHTNESS_TYPE));
+	buf1 = (INTENSITY_TYPE *) calloc(MAX_BUFFER_SIZE, sizeof(INTENSITY_TYPE));
 	if( !buf1 )
 	{
 		return false;
 	}
 
-	buf2 = (BRIGHTNESS_TYPE *) calloc(MAX_BUFFER_SIZE, sizeof(BRIGHTNESS_TYPE));
+	buf2 = (INTENSITY_TYPE *) calloc(MAX_BUFFER_SIZE, sizeof(INTENSITY_TYPE));
 	if(!buf2)
 	{
 		return false;
@@ -108,10 +108,10 @@ boolean LedShieldDriverScaled::initialize(uint8_t r, uint8_t c)
 void LedShieldDriverScaled::execInterrupt()
 {
 	int8_t i, j;
-	BRIGHTNESS_TYPE *buf = 0;
+	INTENSITY_TYPE *buf = 0;
 
 	// set buffer pointer to drive buffer, first row, current column
-	buf = (BRIGHTNESS_TYPE *)&driveBuf[INDEX(0,currentCol)];
+	buf = (INTENSITY_TYPE *)&driveBuf[INDEX(0,currentCol)];
 
 	// ensure latch and clock are low
 	ROW_LATCH_LOW;
@@ -271,7 +271,7 @@ void LedShieldDriverScaled::clear()
  *
  * NOTE: this routine does NOT check the row/col values; don't do anything stupid
  */
-void LedShieldDriverScaled::setIndexedValue(uint16_t index, BRIGHTNESS_TYPE value)
+void LedShieldDriverScaled::setIndexedValue(uint16_t index, INTENSITY_TYPE value)
 {
 	frameBuf[index] = value;
 }
@@ -283,7 +283,7 @@ void LedShieldDriverScaled::setIndexedValue(uint16_t index, BRIGHTNESS_TYPE valu
  *
  * NOTE: this routine does NOT check the row/col values; don't do anything stupid
  */
-void LedShieldDriverScaled::setValue(uint8_t row, uint8_t col, BRIGHTNESS_TYPE value)
+void LedShieldDriverScaled::setValue(uint8_t row, uint8_t col, INTENSITY_TYPE value)
 {
 	frameBuf[INDEX(row,col)] = value;
 }
@@ -293,7 +293,7 @@ void LedShieldDriverScaled::setValue(uint8_t row, uint8_t col, BRIGHTNESS_TYPE v
  *
  * NOTE: this routine does NOT check the row/col values; don't do anything stupid
  */
-BRIGHTNESS_TYPE LedShieldDriverScaled::getValue(uint8_t row, uint8_t col)
+INTENSITY_TYPE LedShieldDriverScaled::getValue(uint8_t row, uint8_t col)
 {
 	return frameBuf[INDEX(row,col)];
 }
@@ -303,7 +303,7 @@ BRIGHTNESS_TYPE LedShieldDriverScaled::getValue(uint8_t row, uint8_t col)
  *
  * NOTE: this routine does NOT check the row value; don't do anything stupid
  */
-void LedShieldDriverScaled::setRow(uint8_t row, BRIGHTNESS_TYPE value)
+void LedShieldDriverScaled::setRow(uint8_t row, INTENSITY_TYPE value)
 {
 	for(uint8_t i=0; i<cols; i++)
 	{
@@ -316,7 +316,7 @@ void LedShieldDriverScaled::setRow(uint8_t row, BRIGHTNESS_TYPE value)
  *
  * NOTE: this routine does NOT check the col value; don't do anything stupid
  */
-void LedShieldDriverScaled::setColumn(uint8_t col, BRIGHTNESS_TYPE value)
+void LedShieldDriverScaled::setColumn(uint8_t col, INTENSITY_TYPE value)
 {
 	for(uint8_t i=0; i<rows; i++)
 	{
@@ -335,7 +335,7 @@ uint8_t LedShieldDriverScaled::getColumns()
 }
 
 
-void LedShieldDriverScaled::setAll(BRIGHTNESS_TYPE value)
+void LedShieldDriverScaled::setAll(INTENSITY_TYPE value)
 {
 	for(int8_t j=0; j<cols; j++ )
 	{
@@ -415,7 +415,7 @@ void LedShieldDriverScaled::randomize(uint8_t rows, uint8_t cols, uint8_t on, ui
 	else
 	{
 		// set all on
-		setAll(MAX_BRIGHTNESS);
+		setAll(MAX_INTENSITY);
 	}
 
 	total = rows*cols;
