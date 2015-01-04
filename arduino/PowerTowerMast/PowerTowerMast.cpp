@@ -75,15 +75,22 @@ void loop()
 	driver.setAll(0);
 	driver.write();
 
-
-
 	// random on
 	driver.randomize(ROWS, COLS, true, 10, MAX_INTENSITY);
 	delay(1000);
 
 	// rotate letters - light through dark
-	rotateLetters(0, 150, 0, 3, MAX_INTENSITY, 0);
-//	delay(500);
+	rotateLetters(DIRECTION_RIGHT, 150, 0, 1, MAX_INTENSITY, 0);
+	rotateLetters(DIRECTION_RIGHT, 125, 0, 1, MAX_INTENSITY, 0);
+	rotateLetters(DIRECTION_RIGHT, 100, 0, 1, MAX_INTENSITY, 0);
+	rotateLetters(DIRECTION_RIGHT, 75, 0, 1, MAX_INTENSITY, 0);
+	rotateLetters(DIRECTION_RIGHT, 50, 0, 1, MAX_INTENSITY, 0);
+	// rotate letters - light through dark
+	rotateLetters(DIRECTION_LEFT, 50, 0, 1, MAX_INTENSITY, 0);
+	rotateLetters(DIRECTION_LEFT, 75, 0, 1, MAX_INTENSITY, 0);
+	rotateLetters(DIRECTION_LEFT, 100, 0, 1, MAX_INTENSITY, 0);
+	rotateLetters(DIRECTION_LEFT, 125, 0, 1, MAX_INTENSITY, 0);
+	rotateLetters(DIRECTION_LEFT, 150, 0, 1, MAX_INTENSITY, 0);
 
 	// set all on
 	driver.setAll(MAX_INTENSITY);
@@ -92,11 +99,6 @@ void loop()
 
 	// Random off
 	driver.randomize(ROWS, COLS, false, 10, 0);
-	delay(1000);
-
-	// rotate letters - dark through light
-	rotateLetters(0, 150, 0, 3, 0, MAX_INTENSITY);
-	delay(750);
 
 //	// Turn all off
 //	driver.setAll(0);
@@ -107,12 +109,14 @@ void loop()
 //	{
 //		sequenceLetter( i, LETTER_SIZE[i], MAX_INTENSITY, 75, true);
 //	}
-//	delay(750);
 
+	delay(500);
 
 	// turn all on
 	driver.setAll(MAX_INTENSITY);
 	driver.write();
+
+	delay(1000);
 
 	// turn off in sequence
 	for(j=0; j<NUM_LETTERS; j++)
@@ -132,8 +136,23 @@ void loop()
 		delay(250);
 	}
 
+	// rotate letters - dark through light
+	rotateLetters(DIRECTION_RIGHT, 150, 0, 1, 0, MAX_INTENSITY);
+	rotateLetters(DIRECTION_RIGHT, 125, 0, 1, 0, MAX_INTENSITY);
+	rotateLetters(DIRECTION_RIGHT, 100, 0, 1, 0, MAX_INTENSITY);
+	rotateLetters(DIRECTION_RIGHT, 75, 0, 1, 0, MAX_INTENSITY);
+	rotateLetters(DIRECTION_RIGHT, 50, 0, 1, 0, MAX_INTENSITY);
+	rotateLetters(DIRECTION_LEFT, 50, 0, 1, 0, MAX_INTENSITY);
+	rotateLetters(DIRECTION_LEFT, 75, 0, 1, 0, MAX_INTENSITY);
+	rotateLetters(DIRECTION_LEFT, 100, 0, 1, 0, MAX_INTENSITY);
+	rotateLetters(DIRECTION_LEFT, 125, 0, 1, 0, MAX_INTENSITY);
+	rotateLetters(DIRECTION_LEFT, 150, 0, 1, 0, MAX_INTENSITY);
+
+	delay(750);
+
 	driver.setAll(0);
 	driver.write();
+	delay(750);
 
 	ghostSequenceLetter(MAX_INTENSITY, 75);
 
@@ -225,15 +244,14 @@ void loop()
  */
 void rotateLetters( uint8_t direction, uint16_t onTime, uint16_t offTime, uint8_t repeat, INTENSITY_TYPE onBrightness, INTENSITY_TYPE offBrightness)
 {
-	uint8_t i, j;
+	int8_t i, j;
 
-	// TODO: use direction value
 	driver.setAll(offBrightness);
 	for(i=0; i<repeat; i++)
 	{
 		if( direction == DIRECTION_LEFT )
 		{
-			for(j=(NUM_LETTERS-1); j<=0; j--)
+			for(j=(NUM_LETTERS-1); j>=0; j--)
 			{
 				setLetter( j, onBrightness, true);
 				delay(onTime);
