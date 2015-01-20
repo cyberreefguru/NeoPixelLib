@@ -91,13 +91,13 @@ public:
 
 	void setRow(uint8_t row, INTENSITY_TYPE value);
 	void setColumn(uint8_t col, INTENSITY_TYPE value);
-	void setAll(INTENSITY_TYPE value);
+	void setAll(INTENSITY_TYPE value, uint8_t write);
 
 	void execInterrupt();
 
 	void rotate(uint8_t direction, uint8_t rotateAmount);
 	void rotateRow(uint8_t direction, uint8_t rotateAmount);
-	void randomize(uint8_t rows, uint8_t cols, uint8_t on, uint16_t delayTime, uint16_t brightness);
+	void randomize(uint8_t rows, uint8_t cols, uint8_t on, uint16_t delayTime, INTENSITY_TYPE brightness);
 
 
 private:

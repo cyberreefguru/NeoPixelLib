@@ -17,6 +17,8 @@ void rotateLetters( uint8_t direction, uint16_t onTime, uint16_t offTime, uint8_
 void setLetter(uint8_t index, INTENSITY_TYPE value, uint8_t drive);
 void sequenceLetter(uint8_t index, INTENSITY_TYPE value, uint16_t delayTime, uint8_t clearBetween);
 void ghostSequenceLetter(INTENSITY_TYPE value, uint16_t delayTime);
+void sparkle(uint16_t runDuration, uint16_t sparkleDuration, uint16_t numSparkle, INTENSITY_TYPE intensity);
+void rotateChangeSpeed(uint8_t direction, uint16_t start, uint16_t end, uint16_t increment, INTENSITY_TYPE onBrightness, INTENSITY_TYPE offBrightness);
 
 uint8_t SEGMENT_CACHE[NUM_SEGMENTS][2];
 
@@ -26,30 +28,42 @@ uint8_t SEGMENT_CACHE[NUM_SEGMENTS][2];
  */
 void setup()
 {
+	uint8_t index, i, j;
+	uint8_t (*letter)[2];
 
+	// set led to output
 	pinMode(13, OUTPUT);
 
 #ifdef __DEBUG
 	Serial.begin(115200);
-#endif
-
-//#ifdef __DEBUG
 //	Serial.print("free=");
 //	Serial.println(freeRam());
-//#endif
-
-#ifdef __DEBUG
 	Serial.println("Initializing shield driver");
 #endif
+
 	if( driver.initialize(ROWS, COLS) == false )
 	{
 		error(10);
 	}
 
-//#ifdef __DEBUG
+#ifdef __DEBUG
 //	Serial.print("free=");
 //	Serial.println(freeRam());
-//#endif
+#endif
+
+
+	// Build flat array of letter segment values
+	// This allows us to cycle through the segments in order
+	index = 0;
+	for(i=0; i<NUM_LETTERS; i++)
+	{
+		letter = (uint8_t (*)[2])LETTERS[i];
+		for(j=0; j < LETTER_SIZE[i]; j++)
+		{
+			SEGMENT_CACHE[index][0] = letter[j][0];
+			SEGMENT_CACHE[index++][1] = letter[j][1];
+		}
+	}
 
 #ifdef __DEBUG
 	Serial.println("Initializing timer");
@@ -72,30 +86,32 @@ void loop()
 	uint16_t i,j;
 
 	// Turn all off
-	driver.setAll(0);
-	driver.write();
+	driver.clear();
+
+	// sparkle
+	sparkle(3000, 50, 10, MAX_INTENSITY);
+
 
 	// random on
 	driver.randomize(ROWS, COLS, true, 10, MAX_INTENSITY);
 	delay(1000);
 
-	// rotate letters - light through dark
-	rotateLetters(DIRECTION_RIGHT, 150, 0, 1, MAX_INTENSITY, 0);
-	rotateLetters(DIRECTION_RIGHT, 125, 0, 1, MAX_INTENSITY, 0);
-	rotateLetters(DIRECTION_RIGHT, 100, 0, 1, MAX_INTENSITY, 0);
-	rotateLetters(DIRECTION_RIGHT, 75, 0, 1, MAX_INTENSITY, 0);
-	rotateLetters(DIRECTION_RIGHT, 50, 0, 1, MAX_INTENSITY, 0);
-	// rotate letters - light through dark
-	rotateLetters(DIRECTION_LEFT, 50, 0, 1, MAX_INTENSITY, 0);
-	rotateLetters(DIRECTION_LEFT, 75, 0, 1, MAX_INTENSITY, 0);
-	rotateLetters(DIRECTION_LEFT, 100, 0, 1, MAX_INTENSITY, 0);
-	rotateLetters(DIRECTION_LEFT, 125, 0, 1, MAX_INTENSITY, 0);
-	rotateLetters(DIRECTION_LEFT, 150, 0, 1, MAX_INTENSITY, 0);
+	// rotate letters right - light through dark
+	// speeds up, runs fast, slows down
+	rotateChangeSpeed(DIRECTION_RIGHT, 150, 25, 25, MAX_INTENSITY, 0);
+	rotateLetters(DIRECTION_RIGHT, 25, 0, 5, MAX_INTENSITY, 0);
+	rotateChangeSpeed(DIRECTION_RIGHT, 25, 150, 25, MAX_INTENSITY, 0);
+
+	driver.clear();
+	delay(500);
+
+	ghostSequenceLetter(MAX_INTENSITY, 75);
+
+	delay(500);
 
 	// set all on
-	driver.setAll(MAX_INTENSITY);
-	driver.write();
-	delay(1000);
+	driver.setAll(MAX_INTENSITY, true);
+	delay(1250);
 
 	// Random off
 	driver.randomize(ROWS, COLS, false, 10, 0);
@@ -110,13 +126,12 @@ void loop()
 //		sequenceLetter( i, LETTER_SIZE[i], MAX_INTENSITY, 75, true);
 //	}
 
-	delay(500);
+	delay(750);
 
 	// turn all on
-	driver.setAll(MAX_INTENSITY);
-	driver.write();
+	driver.setAll(MAX_INTENSITY, true);
 
-	delay(1000);
+	delay(2000);
 
 	// turn off in sequence
 	for(j=0; j<NUM_LETTERS; j++)
@@ -128,35 +143,17 @@ void loop()
 	// Turns all letters on then off
 	for(i=0; i<7; i++)
 	{
-		driver.setAll(0);
-		driver.write();
+		driver.clear();
 		delay(250);
-		driver.setAll(MAX_INTENSITY);
-		driver.write();
+		driver.setAll(MAX_INTENSITY, true);
 		delay(250);
 	}
 
 	// rotate letters - dark through light
-	rotateLetters(DIRECTION_RIGHT, 150, 0, 1, 0, MAX_INTENSITY);
-	rotateLetters(DIRECTION_RIGHT, 125, 0, 1, 0, MAX_INTENSITY);
-	rotateLetters(DIRECTION_RIGHT, 100, 0, 1, 0, MAX_INTENSITY);
-	rotateLetters(DIRECTION_RIGHT, 75, 0, 1, 0, MAX_INTENSITY);
-	rotateLetters(DIRECTION_RIGHT, 50, 0, 1, 0, MAX_INTENSITY);
-	rotateLetters(DIRECTION_LEFT, 50, 0, 1, 0, MAX_INTENSITY);
-	rotateLetters(DIRECTION_LEFT, 75, 0, 1, 0, MAX_INTENSITY);
-	rotateLetters(DIRECTION_LEFT, 100, 0, 1, 0, MAX_INTENSITY);
-	rotateLetters(DIRECTION_LEFT, 125, 0, 1, 0, MAX_INTENSITY);
-	rotateLetters(DIRECTION_LEFT, 150, 0, 1, 0, MAX_INTENSITY);
-
+	rotateChangeSpeed(DIRECTION_LEFT, 150, 25, 25, 0, MAX_INTENSITY);
+	rotateLetters(DIRECTION_LEFT, 25, 0, 5, 0, MAX_INTENSITY);
+	rotateChangeSpeed(DIRECTION_LEFT, 25, 150, 25, 0, MAX_INTENSITY);
 	delay(750);
-
-	driver.setAll(0);
-	driver.write();
-	delay(750);
-
-	ghostSequenceLetter(MAX_INTENSITY, 75);
-
-	delay(500);
 
 	// Sets POWER on, then off; sets TOWER on, then off
 	for(i=0; i<7; i++)
@@ -191,8 +188,7 @@ void loop()
 	}
 
 	// Sets all off
-	driver.setAll(0);
-	driver.write();
+	driver.clear();
 
 	// Sets each segment of each letter on without clearing in between
 	for(i=0; i<NUM_LETTERS; i++)
@@ -203,17 +199,14 @@ void loop()
 	// sets all off, then on
 	for(i=0; i<7; i++)
 	{
-		driver.setAll(0);
-		driver.write();
+		driver.clear();
 		delay(175);
-		driver.setAll(MAX_INTENSITY);
-		driver.write();
+		driver.setAll(MAX_INTENSITY, true);
 		delay(175);
 	}
 
 	// sets all off
-	driver.setAll(0);
-	driver.write();
+	driver.clear();
 
 	// Sets letter of each word on, then goes to next letter
 	for(i=0; i<5; i++)
@@ -224,13 +217,45 @@ void loop()
 			setLetter( j+(NUM_LETTERS/2), MAX_INTENSITY, true);
 			delay(200);
 		}
-		driver.setAll(0);
-		driver.write();
+		driver.clear();
 		delay(200);
 	}
 
 
 } // end loop
+
+/**
+ * rotates the letters with the rotation speed changing each revolution
+ * start speed = start; end speed = end.
+ *
+ * @direction - left or right
+ * @start duration to start with (ms)
+ * @end duration to end with (ms)
+ * @increment value to change each loop iteration; note: abs(start-end)/increment = loop count
+ * @onBrightness intensity when on
+ * @offBrightness intensity when off
+ */
+void rotateChangeSpeed(uint8_t direction, uint16_t start, uint16_t end, uint16_t increment, INTENSITY_TYPE onBrightness, INTENSITY_TYPE offBrightness)
+{
+	uint16_t i;
+
+	if( start > end )
+	{
+		// Speed up
+		for(i=start; i>=end; i=i-increment)
+		{
+			rotateLetters(direction, i, 0, 1, onBrightness, offBrightness);
+		}
+	}
+	else if( start < end)
+	{
+		// Slow down
+		for(i=start; i<end; i=i+increment)
+		{
+			rotateLetters(direction, i, 0, 1, onBrightness, offBrightness);
+		}
+	}
+}
 
 /**
  * Rotates through all letters; on @ onBrightness for onTime; off @offBrightness for offTime, then next letter
@@ -246,7 +271,7 @@ void rotateLetters( uint8_t direction, uint16_t onTime, uint16_t offTime, uint8_
 {
 	int8_t i, j;
 
-	driver.setAll(offBrightness);
+	driver.setAll(offBrightness, false);
 	for(i=0; i<repeat; i++)
 	{
 		if( direction == DIRECTION_LEFT )
@@ -317,8 +342,7 @@ void sequenceLetter(uint8_t index, INTENSITY_TYPE value, uint16_t delayTime, uin
 		delay(delayTime);
 		if( clearBetween == true)
 		{
-			driver.setAll(0);
-			driver.write();
+			driver.clear();
 		}
 	}
 }
@@ -331,34 +355,19 @@ void sequenceLetter(uint8_t index, INTENSITY_TYPE value, uint16_t delayTime, uin
  */
 void ghostSequenceLetter(INTENSITY_TYPE value, uint16_t delayTime)
 {
-	uint8_t index, i, j;
-	uint8_t (*letter)[2];
+	uint8_t i, j;
 
-	driver.setAll(0);
-
-	// Build flat array of letter segment values
-	index = 0;
-	for(i=0; i<NUM_LETTERS; i++)
+	for(i=0; i<(NUM_SEGMENTS+3); i++)
 	{
-		letter = (uint8_t (*)[2])LETTERS[i];
-		for(j=0; j< LETTER_SIZE[i]; j++)
-		{
-			SEGMENT_CACHE[index][0] = letter[j][0];
-			SEGMENT_CACHE[index++][1] = letter[j][1];
-		}
-	}
-
-	for(i=0; i<(index+3); i++)
-	{
-		if( (i >= 0) && (i < index) )
+		if( (i >= 0) && (i < NUM_SEGMENTS) )
 		{
 			driver.setValue( SEGMENT_CACHE[i][0], SEGMENT_CACHE[i][1], value);
 		}
-		if( (i>0) && (i< index+1) )
+		if( (i>0) && (i< NUM_SEGMENTS+1) )
 		{
 			driver.setValue( SEGMENT_CACHE[i-1][0], SEGMENT_CACHE[i-1][1], value/5);
 		}
-		if( (i>1) && (i < index+2) )
+		if( (i>1) && (i < NUM_SEGMENTS+2) )
 		{
 			driver.setValue( SEGMENT_CACHE[i-2][0], SEGMENT_CACHE[i-2][1], value/10);
 		}
@@ -369,6 +378,40 @@ void ghostSequenceLetter(INTENSITY_TYPE value, uint16_t delayTime)
 		driver.write();
 		delay(delayTime);
 	}
+}
+
+/**
+ * flashes (sparkleDuration) numSparkle random LEDs for runDuration time.
+ * Why 25? Because that's what previous code used ;)
+ *
+ * @runDuration length of time to run routine in ms
+ * @sparkleDuration length of time LED will be on in ms
+ * @numSparkle number of LEDs to turn on at a time
+ * @intensity of LEDs while on
+ */
+void sparkle(uint16_t runDuration, uint16_t sparkleDuration, uint16_t numSparkle, INTENSITY_TYPE intensity)
+{
+	uint8_t i;
+	uint16_t q;
+	uint32_t end;
+
+	// n random on fast
+	driver.clear();
+
+	end = millis() + runDuration;
+	while( millis() < end )
+	{
+		for(i=0; i<numSparkle; i++)
+		{
+			q = random(0, NUM_SEGMENTS);
+			driver.setValue( SEGMENT_CACHE[q][0], SEGMENT_CACHE[q][1], intensity);
+		}
+
+		driver.write();
+		delay(sparkleDuration);
+		driver.clear();
+	}
+
 }
 
 
@@ -388,6 +431,8 @@ void isr()
 
 /**
  * Flashes on-board LED to indicate critical failure
+ *
+ * @errorCode - errorCode determines how quickly to flash
  */
 void error(uint8_t errorCode)
 {

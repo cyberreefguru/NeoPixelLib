@@ -122,8 +122,6 @@ void LedShieldDriverScaled::execInterrupt()
 	// 24 channels per TLC5974
 	for (int8_t c = rows - 1; c >= 0; c--)
 	{
-		// TODO: put code here to send PWM values rather than 1 or 0
-		// 12 bits per channel, send MSB first
 		// 12 bits per channel, send MSB first
 		for (int8_t b = 11; b >= 0; b--)
 		{
@@ -140,36 +138,6 @@ void LedShieldDriverScaled::execInterrupt()
 			ROW_CLOCK_LOW;
 
 		} // end row value write
-
-
-
-
-//		// send either full "off" or full "on" to driver
-//		if( buf[c] == 0 )
-//		{
-//			// 12 bits per channel, send MSB first
-//			for (int8_t b = 11; b >= 0; b--)
-//			{
-//				ROW_DATA_LOW; // data = 0
-//				// toggle clock
-//				ROW_CLOCK_HIGH;
-//				ROW_CLOCK_LOW;
-//
-//			} // end row value write
-//		}
-//		else
-//		{
-//			// 12 bits per channel, send MSB first
-//			for (int8_t b = 11; b >= 0; b--)
-//			{
-//				ROW_DATA_HIGH; // data = 1
-//				// toggle clock
-//				ROW_CLOCK_HIGH;
-//				ROW_CLOCK_LOW;
-//
-//			} // end row value write
-//		}
-
 
 	} // end row write
 
@@ -262,12 +230,14 @@ void LedShieldDriverScaled::blank()
  */
 void LedShieldDriverScaled::clear()
 {
-	setAll(0);
-	write();
+	setAll(0, true);
 }
 
 /**
  * Sets the specified value
+ *
+ * @index the index to change
+ * @value the value
  *
  * NOTE: this routine does NOT check the row/col values; don't do anything stupid
  */
@@ -276,12 +246,15 @@ void LedShieldDriverScaled::setIndexedValue(uint16_t index, INTENSITY_TYPE value
 	frameBuf[index] = value;
 }
 
-
-
 /**
  * Sets the specified value
  *
  * NOTE: this routine does NOT check the row/col values; don't do anything stupid
+ *
+ * @row row index
+ * @col column index
+ * @value intensity value for (r,c)
+ *
  */
 void LedShieldDriverScaled::setValue(uint8_t row, uint8_t col, INTENSITY_TYPE value)
 {
@@ -292,6 +265,10 @@ void LedShieldDriverScaled::setValue(uint8_t row, uint8_t col, INTENSITY_TYPE va
  * Returns the specified value.
  *
  * NOTE: this routine does NOT check the row/col values; don't do anything stupid
+ *
+ * @row row index
+ * @col column index
+ * @return value of (r,c)
  */
 INTENSITY_TYPE LedShieldDriverScaled::getValue(uint8_t row, uint8_t col)
 {
@@ -302,6 +279,9 @@ INTENSITY_TYPE LedShieldDriverScaled::getValue(uint8_t row, uint8_t col)
  * Sets the entire row to the value.
  *
  * NOTE: this routine does NOT check the row value; don't do anything stupid
+ *
+ * @row row index
+ * @value intensity value
  */
 void LedShieldDriverScaled::setRow(uint8_t row, INTENSITY_TYPE value)
 {
@@ -315,6 +295,9 @@ void LedShieldDriverScaled::setRow(uint8_t row, INTENSITY_TYPE value)
  * Sets the entire column to the value.
  *
  * NOTE: this routine does NOT check the col value; don't do anything stupid
+ *
+ * @col column index
+ * @value intensity value
  */
 void LedShieldDriverScaled::setColumn(uint8_t col, INTENSITY_TYPE value)
 {
@@ -324,18 +307,29 @@ void LedShieldDriverScaled::setColumn(uint8_t col, INTENSITY_TYPE value)
 	}
 }
 
+/**
+ * returns the number of rows the driver was initialized with
+ */
 uint8_t LedShieldDriverScaled::getRows()
 {
 	return rows;
 }
 
+/**
+ * returns the number of columns the driver was initialized with
+ */
 uint8_t LedShieldDriverScaled::getColumns()
 {
 	return cols;
 }
 
-
-void LedShieldDriverScaled::setAll(INTENSITY_TYPE value)
+/**
+ * Sets all to value.
+ *
+ * @value intensity value
+ * @w boolean - true=write now; false=no write
+ */
+void LedShieldDriverScaled::setAll(INTENSITY_TYPE value, uint8_t w)
 {
 	for(int8_t j=0; j<cols; j++ )
 	{
@@ -344,9 +338,19 @@ void LedShieldDriverScaled::setAll(INTENSITY_TYPE value)
 			frameBuf[INDEX(i,j)]= value;
 		}
 	}
+	if(w)
+	{
+		write();
+	}
 
 }
 
+/**
+ * rotates teh values in the buffer
+ *
+ * @direction DIRECTION_LEFT or DIRECTION_RIGHT
+ * @rotateAmount number of positions to rotate
+ */
 void LedShieldDriverScaled::rotate(uint8_t direction, uint8_t rotateAmount)
 {
 	uint16_t i;
@@ -366,10 +370,16 @@ void LedShieldDriverScaled::rotate(uint8_t direction, uint8_t rotateAmount)
 	}
 	else if( direction == DIRECTION_RIGHT)
 	{
-
+		//TODO right code for rotate right
 	}
 }
 
+/**
+ * Rotates an entire row
+ *
+ * @direction DIRECTION_LEFT or DIRECTION_RIGHT
+ * @rotateAmount number of positions to rotate
+ */
 void LedShieldDriverScaled::rotateRow(uint8_t direction, uint8_t rotateAmount)
 {
 	int8_t z;
@@ -398,24 +408,25 @@ void LedShieldDriverScaled::rotateRow(uint8_t direction, uint8_t rotateAmount)
 			}
 			setRow(z, j);
 		}
-
 	}
 }
 
-
-void LedShieldDriverScaled::randomize(uint8_t rows, uint8_t cols, uint8_t on, uint16_t delayTime, uint16_t brightness)
+/**
+ * randomly sets a pixel to the specified intensity
+ */
+void LedShieldDriverScaled::randomize(uint8_t rows, uint8_t cols, uint8_t on, uint16_t delayTime, INTENSITY_TYPE brightness)
 {
 	uint16_t i,j, q, total;
 
 	if( on == true )
 	{
 		// set all off
-		setAll(0);
+		setAll(0, false);
 	}
 	else
 	{
 		// set all on
-		setAll(MAX_INTENSITY);
+		setAll(MAX_INTENSITY, false);
 	}
 
 	total = rows*cols;
