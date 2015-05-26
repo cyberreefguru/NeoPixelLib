@@ -4,10 +4,10 @@
  *  Created on: Nov 11, 2013
  *      Author: tsasala
  */
+
 #include "PowerTowerLights.h"
 
 LedShieldDriverScaled driver = LedShieldDriverScaled();
-InterBoardComm comm;
 
 void isr();
 
@@ -51,9 +51,6 @@ void setup()
 		error(10);
 	}
 
-	comm.initialize( TOWER_LIGHT_ADDRESS );
-
-
 #ifdef __DEBUG
 	Serial.print("free=");
 	Serial.println(freeRam());
@@ -68,9 +65,6 @@ void setup()
 #ifdef __DEBUG
 	Serial.println("**** init complete *****");
 #endif
-
-	buffer[0] = TOWER_LIGHT_ADDRESS;
-	comm.sendResponse( MASTER_ADDRESS, RESPONSE_RESET_COMPLETE, 1, buffer);
 
 }
 

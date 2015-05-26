@@ -8,7 +8,6 @@
 #define PowerTowerLights_H_
 
 #include <Arduino.h>
-#include <InterBoardComm.h>
 #include "LedShieldDriverScaled.h"
 #include "FlexiTimer2.h"
 

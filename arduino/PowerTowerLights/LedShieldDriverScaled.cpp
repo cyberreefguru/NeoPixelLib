@@ -90,7 +90,7 @@ boolean LedShieldDriverScaled::initialize(uint8_t r, uint8_t c)
 void LedShieldDriverScaled::execInterrupt()
 {
 	int8_t i, j;
-	int8_t value;
+//	int8_t value;
 	uint8_t *buf = 0;
 
 	buf = (uint8_t *)&driveBuf[INDEX(0,currentCol)];
@@ -104,13 +104,14 @@ void LedShieldDriverScaled::execInterrupt()
 	// 24 channels per TLC5974
 	for (int8_t c = rows - 1; c >= 0; c--)
 	{
-		value = buf[c];
+		// send either full "off" or full "on" to driver
+//		value = buf[c];
 		if( buf[c] == 0 )
 		{
 			// 12 bits per channel, send MSB first
 			for (int8_t b = 11; b >= 0; b--)
 			{
-				ROW_DATA_LOW;
+				ROW_DATA_LOW; // data = 0
 				// toggle clock
 				ROW_CLOCK_HIGH;
 				ROW_CLOCK_LOW;
@@ -122,7 +123,7 @@ void LedShieldDriverScaled::execInterrupt()
 			// 12 bits per channel, send MSB first
 			for (int8_t b = 11; b >= 0; b--)
 			{
-				ROW_DATA_HIGH;
+				ROW_DATA_HIGH; // data = 1
 				// toggle clock
 				ROW_CLOCK_HIGH;
 				ROW_CLOCK_LOW;
@@ -133,9 +134,10 @@ void LedShieldDriverScaled::execInterrupt()
 	} // end row write
 
 	// rotate to next column
-	hsBuffer = (0x0101)<<currentCol; // move to next column
+	// NOTE: board has 16 columns but we are driving 2 at a time, so only effectively 8
+	hsBuffer = (0x0101)<<currentCol; // move to next column; (0x0001 x 16 for full 16 columns)
 
-	for (i = 15; i >=0 ; i--)  {
+	for (i = 15; i >=0 ; i--)  { // TODO: NOTE - PRETTY SURE THIS SHOULD BE 7 NOT 15
 
 		if( ((hsBuffer >> i) & 0x01) == 0x01 )
 		{
