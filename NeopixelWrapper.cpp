@@ -5,7 +5,7 @@
  *      Author: tsasala
  */
 
-#include "NeoPixelWrapper.h"
+#include <NeopixelWrapper.h>
 
 #define FRAMES_PER_SECOND			120
 
@@ -17,7 +17,7 @@ uint8_t gHueUpdateTime = 20;
 /**
  * Constructor
  */
-NeoPixelWrapper::NeoPixelWrapper()
+NeopixelWrapper::NeopixelWrapper()
 {
 	leds = 0;
 	intensity = 200;
@@ -27,7 +27,7 @@ NeoPixelWrapper::NeoPixelWrapper()
  * Returns frames per second
  *
  */
-uint8_t NeoPixelWrapper::getFramesPerSecond()
+uint8_t NeopixelWrapper::getFramesPerSecond()
 {
 	return frameWaitTime*1000;
 }
@@ -36,7 +36,7 @@ uint8_t NeoPixelWrapper::getFramesPerSecond()
  * Changes the amount of times per second functions are
  * updated.
  */
-void NeoPixelWrapper::setFramesPerSecond(uint8_t fps)
+void NeopixelWrapper::setFramesPerSecond(uint8_t fps)
 {
 	frameWaitTime = 1000/fps;
 }
@@ -44,7 +44,7 @@ void NeoPixelWrapper::setFramesPerSecond(uint8_t fps)
 /**
  * Returns the hue update time
  */
-uint8_t NeoPixelWrapper::getHueUpdateTime()
+uint8_t NeopixelWrapper::getHueUpdateTime()
 {
 	return gHueUpdateTime;
 }
@@ -53,7 +53,7 @@ uint8_t NeoPixelWrapper::getHueUpdateTime()
  * Changes the amount of time to wait before updating the hue
  *
  */
-void NeoPixelWrapper::setHueUpdateTime(uint8_t updateTime)
+void NeopixelWrapper::setHueUpdateTime(uint8_t updateTime)
 {
 	gHueUpdateTime = updateTime;
 }
@@ -61,7 +61,7 @@ void NeoPixelWrapper::setHueUpdateTime(uint8_t updateTime)
 /**
  * Returns the hue update time
  */
-uint8_t NeoPixelWrapper::getIntensity()
+uint8_t NeopixelWrapper::getIntensity()
 {
 	return intensity;
 }
@@ -70,7 +70,7 @@ uint8_t NeoPixelWrapper::getIntensity()
  * Changes the amount of time to wait before updating the hue
  *
  */
-void NeoPixelWrapper::setIntensity(uint8_t i)
+void NeopixelWrapper::setIntensity(uint8_t i)
 {
 	intensity = i;
 	FastLED.setBrightness(intensity);
@@ -81,7 +81,7 @@ void NeoPixelWrapper::setIntensity(uint8_t i)
 /**
  * Initializes the library
  */
-boolean NeoPixelWrapper::initialize(uint8_t numLeds, uint8_t intensity)
+boolean NeopixelWrapper::initialize(uint8_t numLeds, uint8_t intensity)
 {
 	boolean status = false;
 
@@ -104,7 +104,7 @@ boolean NeoPixelWrapper::initialize(uint8_t numLeds, uint8_t intensity)
  * @time the time to wait in ms
  * @return boolean, true=command available; false=no command available
  */
-boolean NeoPixelWrapper::commandDelay(uint32_t time)
+boolean NeopixelWrapper::commandDelay(uint32_t time)
 {
 	boolean cmd = isCommandAvailable();
 	if( !cmd )
@@ -130,7 +130,7 @@ boolean NeoPixelWrapper::commandDelay(uint32_t time)
  * @color - color to set
  * @show - if true, sets color immediately
  */
-void NeoPixelWrapper::fill(CRGB color, uint8_t show)
+void NeopixelWrapper::fill(CRGB color, uint8_t show)
 {
     for (uint8_t i = 0; i < FastLED.size(); i++)
     {
@@ -147,7 +147,7 @@ void NeoPixelWrapper::fill(CRGB color, uint8_t show)
  * Repeats every 8 bits.
  *
  */
-void NeoPixelWrapper::fillPattern(uint8_t pattern, CRGB onColor, CRGB offColor)
+void NeopixelWrapper::fillPattern(uint8_t pattern, CRGB onColor, CRGB offColor)
 {
     uint16_t j;
     int i;
@@ -179,7 +179,7 @@ void NeoPixelWrapper::fillPattern(uint8_t pattern, CRGB onColor, CRGB offColor)
 /**
  * Rotates a pattern across the stripe; onTime determines pause between rotation
  */
-void NeoPixelWrapper::pattern(uint16_t repeat, uint8_t pattern, uint8_t direction, CRGB onColor, CRGB offColor, uint32_t onTime, uint32_t offTime)
+void NeopixelWrapper::pattern(uint16_t repeat, uint8_t pattern, uint8_t direction, CRGB onColor, CRGB offColor, uint32_t onTime, uint32_t offTime)
 {
 	uint16_t i, count;
 
@@ -235,7 +235,7 @@ void NeoPixelWrapper::pattern(uint16_t repeat, uint8_t pattern, uint8_t directio
  * @clearAfter - turn LED off after waiting
  * @clearBetween - clear string in between repeats
  */
-void NeoPixelWrapper::wipe(uint8_t pattern, uint8_t direction, CRGB onColor, CRGB offColor, uint32_t onTime, uint32_t offTime, uint8_t clearAfter, uint8_t clearEnd)
+void NeopixelWrapper::wipe(uint8_t pattern, uint8_t direction, CRGB onColor, CRGB offColor, uint32_t onTime, uint32_t offTime, uint8_t clearAfter, uint8_t clearEnd)
 {
 	fill(offColor, true);
 	if( direction == LEFT)
@@ -264,7 +264,7 @@ void NeoPixelWrapper::wipe(uint8_t pattern, uint8_t direction, CRGB onColor, CRG
 /**
  *
  */
-void NeoPixelWrapper::bounce(uint16_t repeat, uint8_t pattern, uint8_t direction, CRGB onColor, CRGB offColor, uint32_t onTime, uint32_t offTime, uint32_t bounceTime, uint8_t clearAfter, uint8_t clearEnd)
+void NeopixelWrapper::bounce(uint16_t repeat, uint8_t pattern, uint8_t direction, CRGB onColor, CRGB offColor, uint32_t onTime, uint32_t offTime, uint32_t bounceTime, uint8_t clearAfter, uint8_t clearEnd)
 {
 	uint16_t count = 0;
 
@@ -298,7 +298,7 @@ void NeoPixelWrapper::bounce(uint16_t repeat, uint8_t pattern, uint8_t direction
 /**
  * Starts in the middle and works out; or starts in the end and works in
  */
-void NeoPixelWrapper::middle(uint16_t repeat, uint8_t direction, CRGB color1, CRGB color2, uint32_t onTime, uint32_t offTime, uint8_t clearAfter, uint8_t clearEnd)
+void NeopixelWrapper::middle(uint16_t repeat, uint8_t direction, CRGB color1, CRGB color2, uint32_t onTime, uint32_t offTime, uint8_t clearAfter, uint8_t clearEnd)
 {
 	uint16_t count = 0;
 	uint8_t numPixels = FastLED.size();
@@ -363,7 +363,7 @@ void NeoPixelWrapper::middle(uint16_t repeat, uint8_t direction, CRGB color1, CR
 /**
  * Flashes random LED with specified color
  */
-void NeoPixelWrapper::randomFlash(uint32_t runTime, uint32_t onTime, uint32_t offTime, CRGB onColor, CRGB offColor)
+void NeopixelWrapper::randomFlash(uint32_t runTime, uint32_t onTime, uint32_t offTime, CRGB onColor, CRGB offColor)
 {
 	uint8_t i;
 
@@ -390,7 +390,7 @@ void NeoPixelWrapper::randomFlash(uint32_t runTime, uint32_t onTime, uint32_t of
  *
  * @glitter if true, randomly pops white into rainbow pattern
  */
-void NeoPixelWrapper::rainbow(uint32_t runTime, uint8_t glitterProbability, CRGB glitterColor)
+void NeopixelWrapper::rainbow(uint32_t runTime, uint8_t glitterProbability, CRGB glitterColor)
 {
     while(isCommandAvailable() == false )
     {
@@ -421,7 +421,7 @@ void NeoPixelWrapper::rainbow(uint32_t runTime, uint8_t glitterProbability, CRGB
  * https://gist.github.com/kriegsman/964de772d64c502760e5
  *
  */
-void NeoPixelWrapper::rainbowFade(uint32_t runTime)
+void NeopixelWrapper::rainbowFade(uint32_t runTime)
 {
 
     while(isCommandAvailable() == false )
@@ -479,7 +479,7 @@ void NeoPixelWrapper::rainbowFade(uint32_t runTime)
  * 5-10 LEDs makes a nice effect
  *
  */
-void NeoPixelWrapper::confetti(uint32_t runTime, CRGB color, uint8_t numLeds)
+void NeopixelWrapper::confetti(uint32_t runTime, CRGB color, uint8_t numLeds)
 {
     while(isCommandAvailable() == false )
     {
@@ -540,7 +540,7 @@ void NeoPixelWrapper::confetti(uint32_t runTime, CRGB color, uint8_t numLeds)
  * Creates "cylon" pattern - bright led followed up dimming LEDs back and forth
  *
  */
-void NeoPixelWrapper::cylon(uint16_t repeat, CRGB color)
+void NeopixelWrapper::cylon(uint16_t repeat, CRGB color)
 {
 	uint16_t count = 0;
 	repeat = FastLED.size()*repeat;
@@ -580,7 +580,7 @@ void NeoPixelWrapper::cylon(uint16_t repeat, CRGB color)
  * No clue how to explain this one...
  *
  */
-void NeoPixelWrapper::bpm(uint32_t runTime)
+void NeopixelWrapper::bpm(uint32_t runTime)
 {
     while(isCommandAvailable() == false )
     {
@@ -608,7 +608,7 @@ void NeoPixelWrapper::bpm(uint32_t runTime)
  * No clue how to explain this one
  *
  */
-void NeoPixelWrapper::juggle(uint32_t runTime)
+void NeopixelWrapper::juggle(uint32_t runTime)
 {
     while(isCommandAvailable() == false )
     {
@@ -634,7 +634,7 @@ void NeoPixelWrapper::juggle(uint32_t runTime)
  * Sets the color of the specified LED for onTime time.  If clearAfter
  * is true, returns color to original color and waits offTime before returning.
  */
-void NeoPixelWrapper::setWipeColor(CRGB newColor, uint16_t index, uint32_t onTime, uint32_t offTime, uint8_t clearAfter)
+void NeopixelWrapper::setWipeColor(CRGB newColor, uint16_t index, uint32_t onTime, uint32_t offTime, uint8_t clearAfter)
 {
     uint32_t curColor;
 
