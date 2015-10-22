@@ -26,13 +26,26 @@
 #define PURPLE	CRGB::Purple
 #define RAINBOW	CRGB::Black
 
+#define DOWN 	0
+#define UP		1
+#define RIGHT	0
+#define LEFT	1
+#define IN		0
+#define OUT		1
+
+
+
 class NeoPixelWrapper
 {
 public:
 	NeoPixelWrapper();
-	boolean initialize(uint8_t numLeds, uint8_t ledPin);
+	boolean initialize(uint8_t numLeds, uint8_t intensity);
 	void setFramesPerSecond(uint8_t fps);
+	uint8_t getFramesPerSecond();
 	void setHueUpdateTime(uint8_t updateTime);
+	uint8_t getHueUpdateTime();
+	void setIntensity(uint8_t i);
+	uint8_t getIntensity();
 
     void fill(CRGB color, uint8_t show);
     void fillPattern(uint8_t pattern, CRGB onColor, CRGB offColor);
@@ -54,6 +67,8 @@ public:
 
 protected:
 	CRGB *leds;
+	uint8_t intensity;
+
 	void setWipeColor(CRGB newColor, uint16_t index, uint32_t onTime, uint32_t offTime, uint8_t clearAfter);
 
 

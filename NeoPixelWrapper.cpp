@@ -20,6 +20,16 @@ uint8_t gHueUpdateTime = 20;
 NeoPixelWrapper::NeoPixelWrapper()
 {
 	leds = 0;
+	intensity = 200;
+}
+
+/**
+ * Returns frames per second
+ *
+ */
+uint8_t NeoPixelWrapper::getFramesPerSecond()
+{
+	return frameWaitTime*1000;
 }
 
 /**
@@ -32,6 +42,14 @@ void NeoPixelWrapper::setFramesPerSecond(uint8_t fps)
 }
 
 /**
+ * Returns the hue update time
+ */
+uint8_t NeoPixelWrapper::getHueUpdateTime()
+{
+	return gHueUpdateTime;
+}
+
+/**
  * Changes the amount of time to wait before updating the hue
  *
  */
@@ -41,9 +59,29 @@ void NeoPixelWrapper::setHueUpdateTime(uint8_t updateTime)
 }
 
 /**
+ * Returns the hue update time
+ */
+uint8_t NeoPixelWrapper::getIntensity()
+{
+	return intensity;
+}
+
+/**
+ * Changes the amount of time to wait before updating the hue
+ *
+ */
+void NeoPixelWrapper::setIntensity(uint8_t i)
+{
+	intensity = i;
+	FastLED.setBrightness(intensity);
+}
+
+
+
+/**
  * Initializes the library
  */
-boolean NeoPixelWrapper::initialize(uint8_t numLeds, uint8_t ledPin)
+boolean NeoPixelWrapper::initialize(uint8_t numLeds, uint8_t intensity)
 {
 	boolean status = false;
 
@@ -52,7 +90,7 @@ boolean NeoPixelWrapper::initialize(uint8_t numLeds, uint8_t ledPin)
 	{
 		FastLED.addLeds<WS2812, LED_PIN>(leds, numLeds).setCorrection(TypicalLEDStrip);
 		// set master brightness control
-		FastLED.setBrightness(200);
+		FastLED.setBrightness(intensity);
 	}
 
 	return status;
