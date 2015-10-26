@@ -5,14 +5,7 @@
  *      Author: tsasala
  */
 
-#include <NeopixelWrapper.h>
-
-#define FRAMES_PER_SECOND			120
-
-uint8_t gHue = 0; // rotating "base color" used by many of the patterns
-uint8_t sparkleCount = 0;
-uint8_t frameWaitTime = 1000/FRAMES_PER_SECOND;
-uint8_t gHueUpdateTime = 20;
+#include "NeopixelWrapper.h"
 
 /**
  * Constructor
@@ -21,6 +14,10 @@ NeopixelWrapper::NeopixelWrapper()
 {
 	leds = 0;
 	intensity = 200;
+	gHue = 0;
+	sparkleCount = 0;
+	frameWaitTime = 1000/DEFAULT_FPS;
+	gHueUpdateTime = 20;
 }
 
 /**
@@ -76,8 +73,6 @@ void NeopixelWrapper::setIntensity(uint8_t i)
 	FastLED.setBrightness(intensity);
 }
 
-
-
 /**
  * Initializes the library
  */
@@ -88,41 +83,14 @@ boolean NeopixelWrapper::initialize(uint8_t numLeds, uint8_t intensity)
 	leds = (CRGB *) malloc(sizeof(CRGB) * numLeds);
 	if (leds != 0)
 	{
-		FastLED.addLeds<WS2812, LED_PIN>(leds, numLeds).setCorrection(TypicalLEDStrip);
+		FastLED.addLeds<DEFAULT_CONTROLLER, DEFAULT_LED_PIN>(leds, numLeds).setCorrection(TypicalLEDStrip);
 		// set master brightness control
 		FastLED.setBrightness(intensity);
+		status = true;
 	}
 
 	return status;
 }
-
-/**
- * Internal delay function that checks for an available command.
- * If a command is available, it will break out of the delay
- * routine and return true.  If delay times out, false is returned.
- *
- * @time the time to wait in ms
- * @return boolean, true=command available; false=no command available
- */
-boolean NeopixelWrapper::commandDelay(uint32_t time)
-{
-	boolean cmd = isCommandAvailable();
-	if( !cmd )
-	{
-		for (uint32_t i = 0; i < time; i++)
-		{
-			delay(1);
-			cmd = isCommandAvailable();
-			if (cmd)
-			{
-				break;
-			}
-		}
-	}
-	return cmd;
-}
-
-
 
 /**
  * sets a color to write to all pixels
@@ -132,6 +100,7 @@ boolean NeopixelWrapper::commandDelay(uint32_t time)
  */
 void NeopixelWrapper::fill(CRGB color, uint8_t show)
 {
+	FastLED.showColor( color );
     for (uint8_t i = 0; i < FastLED.size(); i++)
     {
         leds[i] = color;
@@ -173,8 +142,6 @@ void NeopixelWrapper::fillPattern(uint8_t pattern, CRGB onColor, CRGB offColor)
     FastLED.show();
 
 }
-
-
 
 /**
  * Rotates a pattern across the stripe; onTime determines pause between rotation
@@ -374,16 +341,109 @@ void NeopixelWrapper::randomFlash(uint32_t runTime, uint32_t onTime, uint32_t of
 		i = random(FastLED.size());
 		leds[i] = onColor;
 		FastLED.show();
-		if (commandDelay(onTime))
-			return;
+		if (commandDelay(onTime)) break;
 		leds[i] = offColor;
-		if (commandDelay(offTime))
-			return;
+		if (commandDelay(offTime)) break;
 	}
 
 	fill(offColor, true);
 
 } // randomFlash
+
+
+/**
+ * Fades LEDs up or down with the specified time increment
+ */
+void NeopixelWrapper::fade(uint8_t direction, uint8_t fadeIncrement, uint32_t time, CRGB color)
+{
+	uint8_t i;
+
+	for(i=0; i<255; i+=fadeIncrement)
+	{
+		if( direction == DOWN )
+		{
+			FastLED.setBrightness(255-i);
+		}
+		else if( direction == UP)
+		{
+			FastLED.setBrightness(i);
+		}
+		FastLED.showColor(color);
+
+//		fill( color, true );
+		if( commandDelay(time) ) break;
+	}
+
+}
+
+/**
+ * Flashes LEDs
+ */
+void NeopixelWrapper::strobe(uint32_t duration, CRGB onColor, CRGB offColor, uint32_t onTime, uint32_t offTime )
+{
+	FastLED.setBrightness(255);
+
+	if( duration > 0)
+	{
+		uint32_t end = millis() + duration;
+		while( millis() < end )
+		{
+			fill(onColor, true);
+			if( commandDelay(onTime) ) break;
+			fill(offColor, true);
+			if( commandDelay(offTime) ) break;
+		}
+	}
+	else
+	{
+		while( isCommandAvailable() == false )
+		{
+			fill(onColor, true);
+			if( commandDelay(onTime) ) break;
+			fill(offColor, true);
+			if( commandDelay(offTime) ) break;
+		}
+	}
+}
+
+
+/**
+ * Creates lightning effort
+ */
+void NeopixelWrapper::lightning(CRGB onColor, CRGB offColor)
+{
+
+	uint32_t count, large;
+	uint8_t i, b;
+
+	b = false;
+	FastLED.setBrightness(255);
+
+	count = random(2, 6);
+	for(i=0; i<count; i++)
+	{
+		large = random(0,100);
+		fill(onColor, true);
+		if( large > 40 && b == false)
+		{
+			if( commandDelay(random(100, 350)) ) break;
+			b = true;
+		}
+		else
+		{
+			if( commandDelay(random(20, 50)) ) break;
+		}
+		fill(offColor, true);
+		if( large > 40 && b == false )
+		{
+			if( commandDelay(random(200, 500)) ) break;
+		}
+		else
+		{
+			if( commandDelay(random(30, 70)) ) break;
+		}
+	}
+}
 
 /**
  * Fills strip with rainbow pattern
@@ -473,10 +533,13 @@ void NeopixelWrapper::rainbowFade(uint32_t runTime)
 } // end rainbow fade
 
 
+
 /**
  * Creates random speckles of the specified color.
  *
  * 5-10 LEDs makes a nice effect
+ *
+ * NOTE: runTime has no effect at this time
  *
  */
 void NeopixelWrapper::confetti(uint32_t runTime, CRGB color, uint8_t numLeds)

@@ -8,7 +8,7 @@
 #ifndef NEOPIXELLIBTEST_H_
 #define NEOPIXELLIBTEST_H_
 
-#include <NeopixelWrapper.h>
+#include "NeopixelWrapper.h"
 
 
 #endif /* NEOPIXELLIBTEST_H_ */

@@ -9,10 +9,11 @@
 #define NEOPIXELWRAPPER_H_
 
 #include <Arduino.h>
-#include "NeoPixelLib.h"
 #include <FastLed.h>
 
-#define LED_PIN		3
+#define DEFAULT_LED_PIN		3
+#define DEFAULT_CONTROLLER	NEOPIXEL
+//#define DEFAULT_CONTROLLER	WS2812
 
 #define WHITE	CRGB::White
 #define BLACK	CRGB::Black
@@ -32,6 +33,8 @@
 #define LEFT	1
 #define IN		0
 #define OUT		1
+
+#define DEFAULT_FPS 	120
 
 
 
@@ -55,19 +58,24 @@ public:
     void bounce(uint16_t repeat, uint8_t pattern, uint8_t direction, CRGB onColor, CRGB offColor, uint32_t onTime, uint32_t offTime, uint32_t bounceTime, uint8_t clearAfter, uint8_t clearEnd);
     void middle(uint16_t repeat, uint8_t direction, CRGB color1, CRGB color2, uint32_t onTime, uint32_t offTime, uint8_t clearAfter, uint8_t clearEnd);
     void randomFlash(uint32_t runTime, uint32_t onTime, uint32_t offTime, CRGB onColor, CRGB offColor);
+    void fade(uint8_t direction, uint8_t fadeIncrement, uint32_t time, CRGB color);
+    void strobe(uint32_t duration, CRGB onColor, CRGB offColor, uint32_t onTime, uint32_t offTime );
+    void lightning(CRGB onColor, CRGB offColor);
+
     void rainbow(uint32_t runTime,uint8_t glitterProbability, CRGB glitterColor);
     void rainbowFade(uint32_t runTime);
-
 	void confetti(uint32_t runTime,CRGB color, uint8_t numOn);
 	void cylon(uint16_t repeat, CRGB color);
 	void bpm(uint32_t runTime);
 	void juggle(uint32_t runTime);
 
-	boolean commandDelay(uint32_t waitTime);
-
 protected:
 	CRGB *leds;
 	uint8_t intensity;
+	uint8_t gHue; // rotating "base color" used by many of the patterns
+	uint8_t sparkleCount;
+	uint8_t frameWaitTime;
+	uint8_t gHueUpdateTime;
 
 	void setWipeColor(CRGB newColor, uint16_t index, uint32_t onTime, uint32_t offTime, uint8_t clearAfter);
 
@@ -80,7 +88,8 @@ extern "C"
 {
 #endif
 
-extern boolean isCommandAvailable();
+extern uint8_t isCommandAvailable();
+extern uint8_t commandDelay(uint32_t time);
 
 #ifdef __cplusplus
 } // extern "C"
